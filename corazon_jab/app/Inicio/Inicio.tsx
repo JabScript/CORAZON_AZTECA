@@ -1,5 +1,6 @@
 // app/Inicio/Inicio.tsx
 import Image from "next/image";
+import Link from "next/link";
 import { Anton, Oswald } from "next/font/google";
 import styles from "./Inicio.module.css";
 
@@ -25,7 +26,7 @@ export default function Inicio() {
               <br />
               una forma de vida.
             </p>
-            <button className={styles.cta}>Conoce más</button>
+            <Link href="/Entrenador" className={styles.cta}>Entrenador</Link>
 
             <div className={styles.divider} aria-hidden>
               <span className={styles.dividerLineGreen} />

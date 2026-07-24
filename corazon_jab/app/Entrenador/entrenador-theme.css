@@ -1,0 +1,36 @@
+/* =========================================
+   TEMA COMPARTIDO — Módulo Entrenador
+   Corazón Azteca
+
+   Se importa UNA sola vez en Entrenador/layout.tsx.
+   Todas las variables quedan disponibles para
+   cualquier CSS Module hijo, porque las custom
+   properties de CSS heredan por el árbol del DOM
+   sin importar el scoping de los módulos.
+========================================= */
+
+.entrenadorModulo {
+  --ca-negro: #0d0705;
+  --ca-negro-alt: #170d0a;
+  --ca-oro: #d9b34a;
+  --ca-oro-suave: #f0d98b;
+  --ca-rojo: #b8232b;
+  --ca-rojo-oscuro: #7a141a;
+  --ca-verde: #2f6b4f;
+  --ca-crema: #f3ece0;
+  --ca-texto-muted: #cbbfae;
+  --ca-borde: rgba(217, 179, 74, 0.25);
+
+  min-height: 100vh;
+  background: var(--ca-negro);
+  color: var(--ca-crema);
+  font-family: 'Barlow', sans-serif;
+}
+
+.entrenadorModulo h1,
+.entrenadorModulo h2,
+.entrenadorModulo h3 {
+  font-family: 'Anton', sans-serif;
+  font-weight: 400;
+  letter-spacing: 0.01em;
+}

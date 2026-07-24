@@ -1,0 +1,90 @@
+.pagina {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 3rem 6vw 5rem;
+}
+
+.pagina h1 {
+  font-size: clamp(1.8rem, 4vw, 2.4rem);
+  color: var(--ca-oro-suave);
+  margin: 0 0 0.4rem;
+}
+
+.subtitulo {
+  color: var(--ca-texto-muted);
+  margin-bottom: 2rem;
+}
+
+.filtros {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin-bottom: 2rem;
+}
+
+.filtroBtn {
+  background: transparent;
+  border: 1px solid var(--ca-borde);
+  color: var(--ca-texto-muted);
+  padding: 0.5rem 1.1rem;
+  font-weight: 600;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.filtroBtn:hover {
+  border-color: var(--ca-oro);
+  color: var(--ca-oro-suave);
+}
+
+.filtroActivo {
+  background: var(--ca-rojo);
+  border-color: var(--ca-rojo);
+  color: var(--ca-crema);
+}
+
+.lista {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.diaBloque h2 {
+  font-size: 1.1rem;
+  color: var(--ca-oro);
+  margin-bottom: 0.6rem;
+}
+
+.diaBloque ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.item {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  background: var(--ca-negro-alt);
+  border: 1px solid var(--ca-borde);
+  padding: 0.8rem 1.1rem;
+}
+
+.hora {
+  color: var(--ca-crema);
+  font-weight: 600;
+}
+
+.gimnasio {
+  color: var(--ca-texto-muted);
+}
+
+.vacio {
+  color: var(--ca-texto-muted);
+  text-align: center;
+  padding: 2rem 0;
+}
