@@ -1,0 +1,79 @@
+.pagina {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 3rem 6vw 5rem;
+}
+
+.pagina h1 {
+  font-size: clamp(1.8rem, 4vw, 2.4rem);
+  color: var(--ca-oro-suave);
+  margin: 0 0 0.4rem;
+}
+
+.subtitulo {
+  color: var(--ca-texto-muted);
+  margin-bottom: 2rem;
+}
+
+.lista {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.tarjeta {
+  display: flex;
+  gap: 1.25rem;
+  background: var(--ca-negro-alt);
+  border: 1px solid var(--ca-borde);
+  padding: 1.2rem 1.4rem;
+}
+
+.fechaBloque {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-width: 90px;
+  border-right: 1px solid var(--ca-borde);
+  padding-right: 1.25rem;
+}
+
+.dias {
+  color: var(--ca-rojo);
+  font-weight: 700;
+  font-size: 0.85rem;
+}
+
+.fecha {
+  color: var(--ca-texto-muted);
+  font-size: 0.8rem;
+  margin-top: 0.2rem;
+  text-transform: capitalize;
+}
+
+.info h3 {
+  margin: 0 0 0.2rem;
+  font-size: 1.05rem;
+  color: var(--ca-crema);
+}
+
+.rival {
+  margin: 0 0 0.2rem;
+  color: var(--ca-texto-muted);
+}
+
+.lugar {
+  margin: 0 0 0.4rem;
+  color: var(--ca-texto-muted);
+  font-size: 0.85rem;
+}
+
+.categoria {
+  display: inline-block;
+  color: var(--ca-oro);
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}

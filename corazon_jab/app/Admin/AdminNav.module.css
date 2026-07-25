@@ -1,0 +1,56 @@
+/* app/Admin/AdminNav.module.css */
+
+.nav {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background: rgba(13, 7, 5, 0.92);
+  backdrop-filter: blur(6px);
+  border-bottom: 1px solid var(--ca-borde);
+}
+
+.navInner {
+  display: flex;
+  gap: 0.25rem;
+  overflow-x: auto;
+  padding: 0 6vw;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.tab {
+  display: inline-block;
+  padding: 1rem 1.1rem;
+  color: var(--ca-texto-muted);
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+  border-bottom: 2px solid transparent;
+  transition: color 0.2s ease, border-color 0.2s ease;
+}
+
+.tab:hover {
+  color: var(--ca-oro-suave);
+}
+
+.tabActivo {
+  color: var(--ca-oro-suave);
+  border-bottom-color: var(--ca-rojo);
+}
+
+.adminTag {
+  display: inline-block;
+  margin-left: 0.5rem;
+  padding: 0.15rem 0.5rem;
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--ca-crema);
+  background: var(--ca-rojo);
+  border-radius: 2px;
+  vertical-align: middle;
+}

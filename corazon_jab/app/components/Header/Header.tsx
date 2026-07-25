@@ -9,6 +9,7 @@ import styles from "./Header.module.css";
 
 const navLinks = [
   { label: "Inicio", href: "/" },
+  { label: "Entrenadores", href: "/entrenadores" },
   { label: "Nosotros", href: "/nosotros" },
   { label: "Clases", href: "/clases" },
   { label: "Blog", href: "/blog" },

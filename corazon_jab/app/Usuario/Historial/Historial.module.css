@@ -1,0 +1,354 @@
+/* app/Usuario/Historial/Historial.module.css */
+
+.pagina {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 2.5rem 4vw 5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem;
+}
+
+.pagina h1 {
+  font-size: clamp(1.8rem, 4vw, 2.4rem);
+  color: var(--ca-oro-suave);
+  margin: 0;
+}
+
+.subtitulo {
+  color: var(--ca-texto-muted);
+  font-size: 0.9rem;
+  margin: 0.3rem 0 0;
+}
+
+/* ---------- Récord Profesional ---------- */
+.recordSeccion h2 {
+  font-size: 1.15rem;
+  color: var(--ca-oro-suave);
+  margin: 0 0 1.2rem;
+  font-style: italic;
+}
+
+.recordCard {
+  background: var(--ca-negro-alt);
+  border: 1px solid var(--ca-borde);
+  padding: 1.5rem 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+
+.statsRow {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.statItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.2rem;
+  min-width: 70px;
+}
+
+.statNumero {
+  font-family: 'Anton', sans-serif;
+  font-size: clamp(1.8rem, 3vw, 2.4rem);
+  color: var(--ca-crema);
+  line-height: 1;
+}
+
+.statLabel {
+  font-size: 0.7rem;
+  color: var(--ca-texto-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* Timeline de resultados (V, D, E badges) */
+.timelineResultados {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  justify-content: center;
+  padding-top: 0.5rem;
+}
+
+.resultBadge {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: white;
+}
+
+.resultV {
+  background: #2f8f3e;
+}
+
+.resultD {
+  background: var(--ca-rojo);
+}
+
+.resultE {
+  background: #6b6b3b;
+}
+
+/* ---------- Contenido principal: dos columnas ---------- */
+.contenidoPrincipal {
+  display: grid;
+  grid-template-columns: 1.3fr 1fr;
+  gap: 2rem;
+  align-items: start;
+}
+
+@media (max-width: 768px) {
+  .contenidoPrincipal {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ---------- Cronología de peleas ---------- */
+.cronologia h2 {
+  font-size: 1.15rem;
+  color: var(--ca-oro-suave);
+  margin: 0 0 1.2rem;
+  font-style: italic;
+}
+
+.cronologiaLista {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  position: relative;
+}
+
+/* Línea vertical */
+.cronologiaLista::before {
+  content: '';
+  position: absolute;
+  left: 14px;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: var(--ca-borde);
+}
+
+.peleaItem {
+  position: relative;
+  padding-left: 42px;
+  padding-bottom: 1.5rem;
+}
+
+.peleaDot {
+  position: absolute;
+  left: 6px;
+  top: 4px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.6rem;
+  font-weight: 700;
+  color: white;
+}
+
+.dotVictoria {
+  background: #2f8f3e;
+}
+
+.dotDerrota {
+  background: var(--ca-rojo);
+}
+
+.dotEmpate {
+  background: #6b6b3b;
+}
+
+.peleaMeta {
+  color: var(--ca-texto-muted);
+  font-size: 0.75rem;
+  margin: 0 0 0.2rem;
+}
+
+.peleaRival {
+  color: var(--ca-crema);
+  font-weight: 700;
+  font-size: 0.95rem;
+  margin: 0 0 0.3rem;
+}
+
+.peleaTags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  align-items: center;
+}
+
+.tagResultado {
+  padding: 0.15rem 0.5rem;
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  border-radius: 2px;
+}
+
+.tagVictoria {
+  background: rgba(47, 143, 62, 0.25);
+  color: #5fd97a;
+  border: 1px solid rgba(47, 143, 62, 0.4);
+}
+
+.tagDerrota {
+  background: rgba(184, 35, 43, 0.2);
+  color: #ff6b6b;
+  border: 1px solid rgba(184, 35, 43, 0.4);
+}
+
+.tagEmpate {
+  background: rgba(107, 107, 59, 0.25);
+  color: #bfbf6b;
+  border: 1px solid rgba(107, 107, 59, 0.4);
+}
+
+.tagInfo {
+  color: var(--ca-texto-muted);
+  font-size: 0.72rem;
+}
+
+/* ---------- Panel lateral ---------- */
+.panelLateral {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* Próxima pelea */
+.proximaPelea {
+  background: var(--ca-negro-alt);
+  border: 1px solid var(--ca-borde);
+  padding: 1.3rem 1.5rem;
+}
+
+.proximaLabel {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: var(--ca-oro);
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 0.8rem;
+}
+
+.proximaDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--ca-oro);
+}
+
+.proximaRival {
+  color: var(--ca-crema);
+  font-weight: 700;
+  font-size: 1rem;
+  margin: 0 0 0.3rem;
+}
+
+.proximaDetalle {
+  color: var(--ca-texto-muted);
+  font-size: 0.82rem;
+  margin: 0 0 0.5rem;
+}
+
+.proximaTags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.proximaTag {
+  padding: 0.2rem 0.6rem;
+  font-size: 0.7rem;
+  font-weight: 600;
+  background: rgba(184, 35, 43, 0.2);
+  border: 1px solid var(--ca-rojo);
+  color: var(--ca-crema);
+}
+
+.proximaTagInfo {
+  padding: 0.2rem 0.6rem;
+  font-size: 0.7rem;
+  color: var(--ca-texto-muted);
+  border: 1px solid var(--ca-borde);
+}
+
+/* ---------- Logros ---------- */
+.logros h2 {
+  font-size: 1.15rem;
+  color: var(--ca-oro-suave);
+  margin: 0 0 1rem;
+  font-style: italic;
+}
+
+.logrosLista {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.logroItem {
+  display: flex;
+  gap: 0.9rem;
+  align-items: flex-start;
+  padding: 0.9rem 1rem;
+  background: var(--ca-negro-alt);
+  border: 1px solid var(--ca-borde);
+}
+
+.logroIcono {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: rgba(47, 143, 62, 0.2);
+  border: 1px solid rgba(47, 143, 62, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.9rem;
+  flex-shrink: 0;
+}
+
+.logroInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+}
+
+.logroNombre {
+  color: var(--ca-crema);
+  font-weight: 700;
+  font-size: 0.88rem;
+}
+
+.logroDesc {
+  color: var(--ca-texto-muted);
+  font-size: 0.75rem;
+}
+
+.logroFecha {
+  color: var(--ca-oro);
+  font-size: 0.72rem;
+  font-weight: 600;
+  margin-top: 0.2rem;
+}
