@@ -1,0 +1,139 @@
+/* app/Header/Header.module.css */
+
+.header {
+  --gold: #c9a13a;
+  --gold-light: #e6c565;
+  --red: #b7212a;
+  --cream: #f1e6cf;
+  --bg: #0a0908;
+
+  background: var(--bg);
+  border-bottom: 2px solid var(--gold);
+  position: sticky;
+  top: 0;
+  z-index: 50;
+}
+
+.inner {
+  max-width: 1500px;
+  margin: 0 auto;
+  padding: 0.9rem 2.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2rem;
+}
+
+/* --- Logo --- */
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  text-decoration: none;
+}
+
+.brandIcon {
+  width: 44px;
+  height: 44px;
+  object-fit: contain;
+}
+
+.brandText {
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  letter-spacing: 0.02em;
+  color: var(--cream);
+  white-space: nowrap;
+}
+
+.brandAccent {
+  color: var(--red);
+}
+
+/* --- Nav --- */
+.nav {
+  display: flex;
+  align-items: center;
+  gap: 2.2rem;
+  flex-wrap: nowrap;
+}
+
+.navLink {
+  font-family: var(--font-display);
+  font-size: 0.9rem;
+  letter-spacing: 0.06em;
+  color: var(--cream);
+  text-decoration: none;
+  opacity: 0.85;
+  padding-bottom: 6px;
+  border-bottom: 2px solid transparent;
+  transition: opacity 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+
+.navLink:hover {
+  opacity: 1;
+}
+
+.navLink:focus-visible {
+  outline: 2px solid var(--gold-light);
+  outline-offset: 3px;
+}
+
+.navLinkActive {
+  color: var(--red);
+  opacity: 1;
+  border-bottom-color: var(--red);
+}
+
+/* --- Redes sociales --- */
+.socials {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+}
+
+.socialIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: rgba(201, 161, 58, 0.12);
+  color: var(--cream);
+  transition: background 0.2s ease, color 0.2s ease, transform 0.2s ease;
+}
+
+.socialIcon:hover {
+  background: var(--red);
+  color: var(--cream);
+  transform: translateY(-2px);
+}
+
+.socialIcon:focus-visible {
+  outline: 2px solid var(--gold-light);
+  outline-offset: 2px;
+}
+
+/* --- Responsive --- */
+@media (max-width: 1024px) {
+  .inner {
+    flex-wrap: wrap;
+    padding: 0.9rem 1.5rem;
+  }
+  .nav {
+    order: 3;
+    width: 100%;
+    justify-content: center;
+    gap: 1.2rem;
+    padding-top: 0.8rem;
+    flex-wrap: wrap;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .navLink,
+  .socialIcon {
+    transition: none;
+  }
+}
