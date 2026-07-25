@@ -26,7 +26,11 @@ export default function Inicio() {
               <br />
               una forma de vida.
             </p>
-            <Link href="/Entrenador" className={styles.cta}>Entrenador</Link>
+            <div className={styles.ctaGroup}>
+              <Link href="/Entrenador" className={styles.cta}>Entrenador</Link>
+              <Link href="/Usuario" className={styles.cta}>Usuario</Link>
+              <Link href="/Admin" className={styles.cta}>Admin</Link>
+            </div>
 
             <div className={styles.divider} aria-hidden>
               <span className={styles.dividerLineGreen} />

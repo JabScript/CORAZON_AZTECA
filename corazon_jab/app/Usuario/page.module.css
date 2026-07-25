@@ -1,0 +1,301 @@
+/* app/Usuario/page.module.css — Dashboard */
+
+.pagina {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 2.5rem 4vw 4rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem;
+}
+
+/* ---------- Header del dashboard ---------- */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+
+.saludo h1 {
+  font-size: clamp(1.6rem, 3.5vw, 2.2rem);
+  color: var(--ca-crema);
+  margin: 0;
+}
+
+.saludo h1 em {
+  color: var(--ca-oro-suave);
+  font-style: italic;
+}
+
+.saludoSub {
+  color: var(--ca-texto-muted);
+  font-size: 0.9rem;
+  margin: 0.3rem 0 0;
+}
+
+/* ---------- Próximo entrenamiento ---------- */
+.proximoCard {
+  background: var(--ca-negro-alt);
+  border: 1px solid var(--ca-borde);
+  padding: 1.2rem 1.5rem;
+  min-width: 260px;
+  max-width: 320px;
+}
+
+.proximoLabel {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: var(--ca-verde);
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 0.6rem;
+}
+
+.proximoDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--ca-verde);
+}
+
+.proximoNombre {
+  color: var(--ca-crema);
+  font-weight: 700;
+  font-size: 1rem;
+  margin: 0 0 0.2rem;
+}
+
+.proximoFecha {
+  color: var(--ca-texto-muted);
+  font-size: 0.82rem;
+  margin: 0 0 0.6rem;
+}
+
+.proximoDetalle {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.proximoDetalle span {
+  color: var(--ca-texto-muted);
+  font-size: 0.8rem;
+}
+
+/* ---------- Stats grid ---------- */
+.statsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+.statCard {
+  background: var(--ca-negro-alt);
+  border: 1px solid var(--ca-borde);
+  padding: 1.2rem 1.3rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  position: relative;
+}
+
+.statIcono {
+  font-size: 1.4rem;
+  margin-bottom: 0.3rem;
+}
+
+.statValor {
+  font-family: 'Anton', sans-serif;
+  font-size: 2rem;
+  color: var(--ca-oro-suave);
+  line-height: 1;
+}
+
+.statEtiqueta {
+  color: var(--ca-texto-muted);
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.statExtra {
+  color: var(--ca-texto-muted);
+  font-size: 0.75rem;
+  opacity: 0.7;
+}
+
+.statTrend {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  font-size: 0.8rem;
+}
+
+.trendUp {
+  color: var(--ca-verde);
+}
+
+.trendNeutral {
+  color: var(--ca-texto-muted);
+}
+
+/* ---------- Sección dos columnas ---------- */
+.dosColumnas {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr;
+  gap: 1.5rem;
+}
+
+@media (max-width: 768px) {
+  .dosColumnas {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ---------- Progreso semanal ---------- */
+.seccion h2 {
+  font-size: 1.15rem;
+  color: var(--ca-oro-suave);
+  margin: 0 0 1rem;
+}
+
+.chartWrap {
+  background: var(--ca-negro-alt);
+  border: 1px solid var(--ca-borde);
+  padding: 1.5rem;
+}
+
+.barChart {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1rem;
+  height: 160px;
+  padding-bottom: 0.5rem;
+}
+
+.barGroup {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4rem;
+  flex: 1;
+}
+
+.bars {
+  display: flex;
+  align-items: flex-end;
+  gap: 4px;
+  height: 130px;
+}
+
+.barHoras {
+  width: 18px;
+  background: var(--ca-rojo);
+  border-radius: 2px 2px 0 0;
+  transition: height 0.3s ease;
+}
+
+.barIntensidad {
+  width: 18px;
+  background: var(--ca-oro);
+  border-radius: 2px 2px 0 0;
+  transition: height 0.3s ease;
+}
+
+.barLabel {
+  color: var(--ca-texto-muted);
+  font-size: 0.72rem;
+  text-align: center;
+}
+
+.chartLeyenda {
+  display: flex;
+  gap: 1.5rem;
+  margin-top: 1rem;
+  justify-content: center;
+}
+
+.leyendaItem {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.78rem;
+  color: var(--ca-texto-muted);
+}
+
+.leyendaDot {
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+}
+
+.dotRojo {
+  background: var(--ca-rojo);
+}
+
+.dotOro {
+  background: var(--ca-oro);
+}
+
+/* ---------- Últimos entrenamientos ---------- */
+.listaEntrenamientos {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.entrenamientoItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.9rem 1.2rem;
+  background: var(--ca-negro-alt);
+  border: 1px solid var(--ca-borde);
+  border-bottom: none;
+}
+
+.entrenamientoItem:last-child {
+  border-bottom: 1px solid var(--ca-borde);
+}
+
+.entrenamientoInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.entrenamientoNombre {
+  color: var(--ca-crema);
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.entrenamientoMeta {
+  color: var(--ca-texto-muted);
+  font-size: 0.75rem;
+}
+
+.entrenamientoDerecha {
+  text-align: right;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.15rem;
+}
+
+.entrenamientoFecha {
+  color: var(--ca-texto-muted);
+  font-size: 0.75rem;
+}
+
+.entrenamientoRating {
+  color: var(--ca-oro-suave);
+  font-size: 0.8rem;
+  font-weight: 600;
+}

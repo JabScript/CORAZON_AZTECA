@@ -93,8 +93,14 @@
   margin: 0.5rem 0 1.5rem;
 }
 
-.cta {
+.ctaGroup {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
   align-self: flex-start;
+}
+
+.cta {
   font-family: var(--font-display);
   letter-spacing: 0.05em;
   color: var(--cream);
@@ -186,6 +192,10 @@
   }
   .cta {
     align-self: center;
+  }
+  .ctaGroup {
+    align-self: center;
+    justify-content: center;
   }
   .right {
     order: 3;
