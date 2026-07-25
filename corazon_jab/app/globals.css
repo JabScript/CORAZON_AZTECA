@@ -20,7 +20,10 @@
 }
 
 body {
-  background: var(--background);
+  background:
+    radial-gradient(ellipse at 25% 20%, rgba(120, 20, 20, 0.15), transparent 55%),
+    linear-gradient(135deg, #0a0908 0%, #120d0a 60%, #0a0908 100%);
+  background-attachment: fixed;
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }

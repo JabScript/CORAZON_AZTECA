@@ -1,0 +1,111 @@
+/* app/components/Funcionalidades/Funcionalidades.module.css */
+
+.section {
+  --gold: #c9a13a;
+  --gold-light: #e6c565;
+  --cream: #f1e6cf;
+  --bg: #0a0908;
+
+  background: transparent;
+  padding: 5rem 2rem;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* --- Header --- */
+.header {
+  margin-bottom: 3rem;
+}
+
+.tag {
+  font-family: var(--font-body);
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--gold);
+  display: block;
+  margin-bottom: 0.8rem;
+}
+
+.title {
+  font-family: var(--font-heading);
+  font-size: clamp(1.8rem, 4vw, 2.6rem);
+  color: var(--cream);
+  line-height: 1.2;
+  margin: 0;
+  max-width: 600px;
+}
+
+/* --- Grid --- */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+}
+
+/* --- Card --- */
+.card {
+  border: 1px solid rgba(201, 161, 58, 0.2);
+  border-radius: 10px;
+  padding: 1.8rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  transition: border-color 0.3s ease, background 0.3s ease;
+}
+
+.card:hover {
+  border-color: rgba(201, 161, 58, 0.5);
+  background: rgba(201, 161, 58, 0.03);
+}
+
+.cardIcon {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(201, 161, 58, 0.4);
+  border-radius: 8px;
+  font-size: 1.1rem;
+  margin-bottom: 0.4rem;
+}
+
+.cardTitle {
+  font-family: var(--font-body);
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--cream);
+  margin: 0;
+}
+
+.cardDesc {
+  font-family: var(--font-body);
+  font-size: 0.82rem;
+  color: rgba(241, 230, 207, 0.55);
+  line-height: 1.5;
+  margin: 0;
+}
+
+/* --- Responsive --- */
+@media (max-width: 1024px) {
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card {
+    transition: none;
+  }
+}

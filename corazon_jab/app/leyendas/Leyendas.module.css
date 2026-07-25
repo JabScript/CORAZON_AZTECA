@@ -1,0 +1,258 @@
+/* app/leyendas/Leyendas.module.css */
+
+.page {
+  --gold: #c9a13a;
+  --gold-light: #e6c565;
+  --red: #b7212a;
+  --cream: #f1e6cf;
+
+  padding: 3rem 2rem 5rem;
+  max-width: 1300px;
+  margin: 0 auto;
+}
+
+/* --- Header --- */
+.header {
+  text-align: center;
+  margin-bottom: 4rem;
+}
+
+.tag {
+  font-family: var(--font-body);
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--gold);
+  background: rgba(201, 161, 58, 0.12);
+  border: 1px solid rgba(201, 161, 58, 0.3);
+  border-radius: 20px;
+  padding: 0.35rem 1rem;
+  display: inline-block;
+  margin-bottom: 1rem;
+}
+
+.title {
+  font-family: var(--font-heading);
+  font-size: clamp(2rem, 5vw, 3.2rem);
+  color: var(--cream);
+  line-height: 1.1;
+  margin: 0 0 1rem;
+}
+
+.titleAccent {
+  font-style: italic;
+  color: var(--gold);
+}
+
+.subtitle {
+  font-family: var(--font-body);
+  font-size: 0.92rem;
+  color: rgba(241, 230, 207, 0.55);
+  line-height: 1.5;
+  max-width: 500px;
+  margin: 0 auto 1.5rem;
+}
+
+/* --- Tabs --- */
+.tabs {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.tab {
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  font-weight: 500;
+  letter-spacing: 0.03em;
+  color: rgba(241, 230, 207, 0.6);
+  background: transparent;
+  border: none;
+  padding: 0.6rem 1.4rem;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.tab:hover {
+  color: var(--cream);
+}
+
+.tabActive {
+  background: var(--red);
+  color: var(--cream);
+}
+
+.tab:focus-visible {
+  outline: 2px solid var(--gold-light);
+  outline-offset: 2px;
+}
+
+/* --- Section --- */
+.section {
+  margin-bottom: 4rem;
+}
+
+.sectionHeader {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  margin-bottom: 2rem;
+  gap: 2rem;
+}
+
+.sectionHeaderCenter {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.sectionTitle {
+  font-family: var(--font-heading);
+  font-size: clamp(1.5rem, 3vw, 2rem);
+  color: var(--cream);
+  line-height: 1.15;
+  margin: 0;
+}
+
+.sectionTitleCenter {
+  font-family: var(--font-heading);
+  font-size: clamp(1.5rem, 3vw, 2rem);
+  color: var(--cream);
+  line-height: 1.15;
+  margin: 0 0 0.6rem;
+}
+
+.sectionAccent {
+  font-style: italic;
+  color: var(--gold);
+}
+
+.sectionDesc {
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  color: rgba(241, 230, 207, 0.5);
+  line-height: 1.5;
+  max-width: 360px;
+  margin: 0;
+}
+
+.sectionHeaderCenter .sectionDesc {
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+/* --- Grid --- */
+.grid4 {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.2rem;
+}
+
+.grid3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+}
+
+/* --- Card --- */
+.card {
+  position: relative;
+  border-radius: 10px;
+  overflow: hidden;
+  background: #141210;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+.cardImage {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  overflow: hidden;
+}
+
+.cardImg {
+  object-fit: cover;
+  transition: scale 0.4s ease;
+}
+
+.card:hover .cardImg {
+  scale: 1.05;
+}
+
+.cardTag {
+  position: absolute;
+  top: 0.7rem;
+  left: 0.7rem;
+  font-family: var(--font-body);
+  font-size: 0.6rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: white;
+  padding: 0.25rem 0.6rem;
+  border-radius: 4px;
+}
+
+.cardContent {
+  padding: 1.2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.cardName {
+  font-family: var(--font-body);
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--cream);
+  margin: 0;
+}
+
+.cardRecord {
+  font-family: var(--font-body);
+  font-size: 0.82rem;
+  color: var(--gold);
+  margin: 0;
+}
+
+.cardMeta {
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  color: rgba(241, 230, 207, 0.45);
+  margin: 0;
+}
+
+/* --- Responsive --- */
+@media (max-width: 1024px) {
+  .grid4 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .grid3 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .sectionHeader {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+@media (max-width: 600px) {
+  .grid4,
+  .grid3 {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card,
+  .cardImg {
+    transition: none;
+  }
+}
