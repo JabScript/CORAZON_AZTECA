@@ -1,0 +1,205 @@
+/* app/Admin/Articulos/Articulos.module.css */
+
+.pagina {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 3rem 6vw 5rem;
+}
+
+.pagina h1 {
+  font-size: clamp(1.8rem, 4vw, 2.4rem);
+  color: var(--ca-oro-suave);
+  margin: 0 0 0.4rem;
+}
+
+.subtitulo {
+  color: var(--ca-texto-muted);
+  margin-bottom: 2rem;
+  max-width: 70ch;
+}
+
+.pendingBadge {
+  color: var(--ca-rojo);
+  font-weight: 600;
+}
+
+.filtros {
+  display: flex;
+  gap: 0.6rem;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+}
+
+.filtroBtn {
+  background: transparent;
+  border: 1px solid var(--ca-borde);
+  color: var(--ca-texto-muted);
+  padding: 0.5rem 1.1rem;
+  font-weight: 600;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.filtroBtn:hover {
+  border-color: var(--ca-oro);
+  color: var(--ca-oro-suave);
+}
+
+.filtroActivo {
+  background: var(--ca-rojo);
+  border-color: var(--ca-rojo);
+  color: var(--ca-crema);
+}
+
+.vacio {
+  color: var(--ca-texto-muted);
+  padding: 2rem 0;
+  text-align: center;
+}
+
+.lista {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+
+.tarjeta {
+  background: linear-gradient(180deg, var(--ca-negro-alt) 0%, #0a0503 100%);
+  border: 1px solid var(--ca-borde);
+  padding: 1.4rem 1.6rem;
+}
+
+.cabecera {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+  margin-bottom: 0.6rem;
+}
+
+.estado {
+  display: inline-block;
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  margin-bottom: 0.4rem;
+  background: rgba(201, 161, 58, 0.15);
+  color: var(--ca-oro-suave);
+}
+
+.estado[data-estado="aprobado"] {
+  background: rgba(47, 140, 79, 0.18);
+  color: #6fd196;
+}
+
+.estado[data-estado="rechazado"] {
+  background: rgba(183, 33, 42, 0.18);
+  color: #ff8a8a;
+}
+
+.titulo {
+  font-size: 1.15rem;
+  color: var(--ca-crema);
+  margin: 0 0 0.2rem;
+}
+
+.autor {
+  color: var(--ca-texto-muted);
+  font-size: 0.8rem;
+  margin: 0;
+}
+
+.categoria {
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--ca-oro);
+  border: 1px solid var(--ca-borde);
+  padding: 0.2rem 0.6rem;
+  white-space: nowrap;
+}
+
+.extracto {
+  color: var(--ca-texto-muted);
+  font-size: 0.88rem;
+  line-height: 1.5;
+  margin: 0.6rem 0;
+}
+
+.contenidoCompleto {
+  color: var(--ca-crema);
+  font-size: 0.88rem;
+  line-height: 1.7;
+  white-space: pre-wrap;
+  padding: 1rem;
+  background: rgba(0, 0, 0, 0.25);
+  border-left: 2px solid var(--ca-oro);
+  margin: 0.8rem 0;
+}
+
+.acciones {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-top: 0.8rem;
+}
+
+.verMas {
+  background: transparent;
+  border: none;
+  color: var(--ca-oro-suave);
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0;
+}
+
+.verMas:hover {
+  text-decoration: underline;
+}
+
+.botones {
+  display: flex;
+  gap: 0.6rem;
+}
+
+.btnRechazar {
+  background: transparent;
+  border: 1px solid var(--ca-rojo);
+  color: var(--ca-crema);
+  padding: 0.5rem 1.1rem;
+  font-weight: 600;
+  font-size: 0.82rem;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.btnRechazar:hover {
+  background: rgba(183, 33, 42, 0.15);
+}
+
+.btnAprobar {
+  background: var(--ca-rojo);
+  border: 1px solid var(--ca-rojo);
+  color: var(--ca-crema);
+  padding: 0.5rem 1.1rem;
+  font-weight: 600;
+  font-size: 0.82rem;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.btnAprobar:hover {
+  background: #9a1b23;
+  transform: translateY(-1px);
+}
+
+.motivo {
+  color: var(--ca-texto-muted);
+  font-size: 0.8rem;
+  font-style: italic;
+}

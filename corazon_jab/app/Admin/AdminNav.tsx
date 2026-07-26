@@ -7,6 +7,7 @@ import styles from './AdminNav.module.css';
 const SECCIONES = [
   { href: '/Admin', etiqueta: 'Panel' },
   { href: '/Admin/Directorio', etiqueta: 'Directorio' },
+  { href: '/Admin/Articulos', etiqueta: 'Artículos del Blog' },
 ];
 
 export default function AdminNav() {

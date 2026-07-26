@@ -1,10 +1,11 @@
 // app/blog/page.tsx
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Playfair_Display, Oswald } from "next/font/google";
+import { obtenerArticulosAprobados, type ArticuloBlog } from "../lib/blogStorage";
 import styles from "./Blog.module.css";
 
 const playfair = Playfair_Display({ subsets: ["latin"], weight: ["700"], style: ["normal", "italic"], variable: "--font-heading" });
@@ -89,6 +90,11 @@ const posts = [
 
 export default function BlogPage() {
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
+  const [communityPosts, setCommunityPosts] = useState<ArticuloBlog[]>([]);
+
+  useEffect(() => {
+    setCommunityPosts(obtenerArticulosAprobados());
+  }, []);
 
   const filteredPosts = activeCategory
     ? posts.filter((p) => p.category === activeCategory)
@@ -102,18 +108,42 @@ export default function BlogPage() {
           <span className={styles.tag}>APRENDE Y CRECE</span>
           <h1 className={styles.title}>Blog de Boxeo</h1>
         </div>
-        <div className={styles.categories}>
-          {categories.map((cat) => (
-            <button
-              key={cat}
-              className={`${styles.categoryBtn} ${activeCategory === cat ? styles.categoryBtnActive : ""}`}
-              onClick={() => setActiveCategory(activeCategory === cat ? null : cat)}
-            >
-              {cat}
-            </button>
-          ))}
+        <div className={styles.headerRight}>
+          <Link href="/blog/escribir" className={styles.writeBtn}>
+            + Escribir artículo
+          </Link>
+          <div className={styles.categories}>
+            {categories.map((cat) => (
+              <button
+                key={cat}
+                className={`${styles.categoryBtn} ${activeCategory === cat ? styles.categoryBtnActive : ""}`}
+                onClick={() => setActiveCategory(activeCategory === cat ? null : cat)}
+              >
+                {cat}
+              </button>
+            ))}
+          </div>
         </div>
       </div>
+
+      {/* Artículos de la comunidad (enviados por entrenadores/alumnos y aprobados) */}
+      {communityPosts.length > 0 && (
+        <div className={styles.communitySection}>
+          <h2 className={styles.communityTitle}>De la Comunidad</h2>
+          <div className={styles.communityGrid}>
+            {communityPosts.map((post) => (
+              <article key={post.id} className={styles.communityCard}>
+                <span className={styles.communityCategory}>{post.categoria}</span>
+                <h3 className={styles.communityCardTitle}>{post.titulo}</h3>
+                <p className={styles.communityExcerpt}>{post.extracto}</p>
+                <span className={styles.communityAuthor}>
+                  Por {post.autorNombre} · {post.autorRol === "entrenador" ? "Entrenador" : "Alumno"}
+                </span>
+              </article>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Grid de posts */}
       <div className={styles.grid}>

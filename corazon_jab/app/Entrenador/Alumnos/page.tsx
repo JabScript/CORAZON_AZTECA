@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Link from 'next/link';
 import styles from './Alumnos.module.css';
 
 const ALUMNOS = [
@@ -41,7 +42,7 @@ export default function AlumnosEntrenador() {
 
       <div className={styles.grid}>
         {alumnosFiltrados.map((a) => (
-          <article key={a.id} className={styles.tarjeta}>
+          <Link key={a.id} href={`/Entrenador/Alumnos/${a.id}`} className={styles.tarjeta}>
             <div
               className={styles.foto}
               style={{ '--foto': `url('${a.foto}')` } as React.CSSProperties}
@@ -51,7 +52,7 @@ export default function AlumnosEntrenador() {
               <p className={styles.categoria}>{a.categoria}</p>
               <span className={styles.nivel}>{a.nivel}</span>
             </div>
-          </article>
+          </Link>
         ))}
       </div>
 
