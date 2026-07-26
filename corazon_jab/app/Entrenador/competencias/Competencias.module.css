@@ -6,7 +6,7 @@
 .newBtn:hover { background: #9a1b23; }
 
 .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 2rem; }
-.stat { display: flex; flex-direction: column; align-items: center; gap: 0.3rem; padding: 1.2rem; border: 1px solid rgba(201,161,58,0.12); border-radius: 10px; background: rgba(20,18,16,0.5); }
+.stat { display: flex; flex-direction: column; align-items: center; gap: 0.3rem; padding: 1.2rem; border-radius: 10px; background: rgba(20,18,16,0.5); }
 .statValue { font-family: var(--font-heading); font-size: 1.8rem; color: var(--cream); }
 .statLabel { font-family: var(--font-body); font-size: 0.7rem; color: rgba(241,230,207,0.45); text-transform: uppercase; letter-spacing: 0.05em; }
 
@@ -27,7 +27,7 @@
 
 /* Torneos grid */
 .torneosGrid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; }
-.torneoCard { padding: 1.3rem; border: 1px solid rgba(201,161,58,0.12); border-radius: 10px; background: rgba(20,18,16,0.5); display: flex; flex-direction: column; gap: 0.8rem; }
+.torneoCard { padding: 1.3rem; border-radius: 10px; background: rgba(20,18,16,0.5); display: flex; flex-direction: column; gap: 0.8rem; }
 .torneoHeader { display: flex; justify-content: space-between; align-items: flex-start; gap: 0.5rem; }
 .torneoNombre { font-family: var(--font-heading); font-size: 1rem; font-style: italic; color: var(--cream); margin: 0; }
 .torneoEstado { font-size: 0.65rem; font-weight: 600; letter-spacing: 0.08em; padding: 0.2rem 0.5rem; border-radius: 4px; background: rgba(201,161,58,0.12); color: var(--gold); white-space: nowrap; }

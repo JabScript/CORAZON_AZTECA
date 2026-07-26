@@ -5,7 +5,7 @@
 .subtitle { font-family: var(--font-body); font-size: 0.85rem; color: rgba(241,230,207,0.5); margin: 0.3rem 0 0; max-width: 600px; }
 
 .trends { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 2.5rem; }
-.trendCard { padding: 1.2rem; border: 1px solid rgba(201,161,58,0.12); border-radius: 10px; background: rgba(20,18,16,0.5); display: flex; flex-direction: column; gap: 0.3rem; }
+.trendCard { padding: 1.2rem; border-radius: 10px; background: rgba(20,18,16,0.5); display: flex; flex-direction: column; gap: 0.3rem; }
 .trendLabel { font-family: var(--font-body); font-size: 0.7rem; color: rgba(241,230,207,0.45); text-transform: uppercase; letter-spacing: 0.05em; }
 .trendValuePositive { font-family: var(--font-heading); font-size: 1.5rem; color: var(--green); }
 .trendValueNegative { font-family: var(--font-heading); font-size: 1.5rem; color: var(--red); }
@@ -14,7 +14,7 @@
 .sectionDesc { font-family: var(--font-body); font-size: 0.82rem; color: rgba(241,230,207,0.5); margin: 0 0 1.2rem; }
 
 .insightsList { display: flex; flex-direction: column; gap: 0.8rem; margin-bottom: 2.5rem; }
-.insight { padding: 1.3rem; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; gap: 1rem; border: 1px solid rgba(201,161,58,0.12); background: rgba(20,18,16,0.5); }
+.insight { padding: 1.3rem; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; gap: 1rem; background: rgba(20,18,16,0.5); }
 .insightriesgo { border-left: 3px solid var(--red); }
 .insightoportunidad { border-left: 3px solid var(--gold); }
 .insightprediccion { border-left: 3px solid #6b8fb5; }
@@ -30,7 +30,7 @@
 .insightBtn:hover { background: rgba(201,161,58,0.25); }
 
 .matchesGrid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
-.matchCard { padding: 1.2rem; border: 1px solid rgba(201,161,58,0.12); border-radius: 10px; background: rgba(20,18,16,0.5); display: flex; flex-direction: column; gap: 0.6rem; }
+.matchCard { padding: 1.2rem; border-radius: 10px; background: rgba(20,18,16,0.5); display: flex; flex-direction: column; gap: 0.6rem; }
 .matchFighters { display: flex; align-items: center; justify-content: space-between; gap: 0.6rem; }
 .fighter { font-family: var(--font-heading); font-size: 0.95rem; font-style: italic; color: var(--cream); flex: 1; }
 .vs { font-family: var(--font-body); font-size: 0.7rem; font-weight: 600; color: var(--red); letter-spacing: 0.1em; }

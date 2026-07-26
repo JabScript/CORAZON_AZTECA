@@ -1,0 +1,192 @@
+/* app/registro/Registro.module.css */
+
+.page {
+  --gold: #c9a13a;
+  --gold-light: #e6c565;
+  --red: #b7212a;
+  --cream: #f1e6cf;
+
+  min-height: calc(100vh - 70px);
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 3rem 2rem 5rem;
+}
+
+.container {
+  width: 100%;
+  max-width: 560px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+}
+
+/* --- Tag arriba --- */
+.tag {
+  font-family: var(--font-body);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  color: var(--gold);
+  background: rgba(201, 161, 58, 0.06);
+  border: 1px solid rgba(201, 161, 58, 0.4);
+  border-radius: 24px;
+  padding: 0.45rem 1.4rem;
+  margin-bottom: 1.5rem;
+}
+
+/* --- Title --- */
+.title {
+  font-family: var(--font-heading);
+  font-size: clamp(2.4rem, 5vw, 3.4rem);
+  color: var(--cream);
+  margin: 0 0 0.8rem;
+  line-height: 1;
+}
+
+.titleAccent {
+  font-style: italic;
+  color: var(--gold);
+  margin-left: 0.2em;
+}
+
+.subtitle {
+  font-family: var(--font-body);
+  font-size: 0.92rem;
+  color: rgba(241, 230, 207, 0.55);
+  margin: 0 0 2.5rem;
+  text-align: center;
+}
+
+/* --- Roles --- */
+.rolesList {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-bottom: 2.5rem;
+}
+
+.roleCard {
+  display: grid;
+  grid-template-columns: 44px 1fr auto;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.2rem 1.3rem;
+  background: rgba(20, 18, 16, 0.5);
+  border: 1px solid transparent;
+  border-radius: 10px;
+  text-decoration: none;
+  transition: border-color 0.2s ease, background 0.2s ease, transform 0.2s ease;
+}
+
+.roleCard:hover {
+  transform: translateY(-1px);
+}
+
+.roleCardActive {
+  border-color: rgba(201, 161, 58, 0.5);
+  background: rgba(201, 161, 58, 0.04);
+}
+
+.roleIcon {
+  width: 44px;
+  height: 44px;
+  border-radius: 8px;
+  background: rgba(201, 161, 58, 0.12);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--gold);
+}
+
+.roleContent {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.roleTitle {
+  font-family: var(--font-body);
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--cream);
+  margin: 0;
+}
+
+.roleDesc {
+  font-family: var(--font-body);
+  font-size: 0.82rem;
+  color: rgba(241, 230, 207, 0.5);
+  line-height: 1.4;
+  margin: 0;
+}
+
+.roleArrow {
+  font-size: 1.4rem;
+  color: rgba(241, 230, 207, 0.35);
+}
+
+.roleCardActive .roleArrow {
+  color: var(--gold);
+}
+
+.roleCard:focus-visible {
+  outline: 2px solid var(--gold-light);
+  outline-offset: 2px;
+}
+
+/* --- Divisor --- */
+.divider {
+  width: 100%;
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.divider span {
+  font-family: var(--font-body);
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  color: rgba(241, 230, 207, 0.35);
+}
+
+/* --- Login link --- */
+.loginLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-family: var(--font-body);
+  font-size: 0.92rem;
+  font-weight: 500;
+  color: var(--cream);
+  text-decoration: none;
+  padding: 0.6rem 1rem;
+  transition: color 0.2s ease;
+}
+
+.loginLink:hover {
+  color: var(--gold-light);
+}
+
+.loginLink:focus-visible {
+  outline: 2px solid var(--gold-light);
+  outline-offset: 2px;
+}
+
+/* --- Responsive --- */
+@media (max-width: 600px) {
+  .page {
+    padding: 2rem 1rem 3rem;
+  }
+  .roleCard {
+    padding: 1rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .roleCard {
+    transition: none;
+  }
+}

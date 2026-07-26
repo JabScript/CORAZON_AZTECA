@@ -8,7 +8,7 @@
   --ca-rojo-oscuro: #7a161c;
   --ca-verde: #2f8c4f;
   --ca-negro-alt: rgba(20, 18, 16, 0.5);
-  --ca-borde: rgba(201, 161, 58, 0.12);
+  --ca-borde: transparent;
   --ca-texto-muted: rgba(241, 230, 207, 0.5);
 
   max-width: 900px;
