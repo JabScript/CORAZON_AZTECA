@@ -1,0 +1,244 @@
+/* app/blog/escribir/Escribir.module.css */
+
+.page {
+  --gold: #c9a13a;
+  --gold-light: #e6c565;
+  --red: #b7212a;
+  --green: #2f8c4f;
+  --cream: #f1e6cf;
+
+  min-height: calc(100vh - 70px);
+  padding: 3rem 2rem 5rem;
+}
+
+.container {
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+.backLink {
+  display: inline-block;
+  font-family: var(--font-body);
+  font-size: 0.82rem;
+  color: var(--gold);
+  text-decoration: none;
+  margin-bottom: 1.5rem;
+}
+
+.backLink:hover {
+  color: var(--gold-light);
+}
+
+.tag {
+  font-family: var(--font-body);
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  color: var(--gold);
+  background: rgba(201, 161, 58, 0.08);
+  border: 1px solid rgba(201, 161, 58, 0.35);
+  border-radius: 20px;
+  padding: 0.35rem 1rem;
+  display: inline-block;
+  margin-bottom: 1rem;
+}
+
+.title {
+  font-family: var(--font-heading);
+  font-size: clamp(1.8rem, 4vw, 2.4rem);
+  color: var(--cream);
+  margin: 0 0 0.6rem;
+}
+
+.titleAccent {
+  font-style: italic;
+  color: var(--gold);
+  margin-left: 0.2em;
+}
+
+.subtitle {
+  font-family: var(--font-body);
+  font-size: 0.88rem;
+  color: rgba(241, 230, 207, 0.55);
+  margin: 0 0 2rem;
+  max-width: 480px;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.label {
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: rgba(241, 230, 207, 0.6);
+}
+
+.input,
+.select,
+.textareaShort,
+.textareaLong {
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  color: var(--cream);
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(201, 161, 58, 0.2);
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  outline: none;
+  transition: border-color 0.2s ease, background 0.2s ease;
+}
+
+.input::placeholder,
+.textareaShort::placeholder,
+.textareaLong::placeholder {
+  color: rgba(241, 230, 207, 0.3);
+}
+
+.input:focus,
+.select:focus,
+.textareaShort:focus,
+.textareaLong:focus {
+  border-color: var(--gold);
+  background: rgba(201, 161, 58, 0.04);
+}
+
+.select {
+  cursor: pointer;
+}
+
+.textareaShort {
+  resize: vertical;
+  min-height: 60px;
+}
+
+.textareaLong {
+  resize: vertical;
+  min-height: 220px;
+  line-height: 1.6;
+}
+
+.hint {
+  font-family: var(--font-body);
+  font-size: 0.7rem;
+  color: rgba(241, 230, 207, 0.35);
+  align-self: flex-end;
+}
+
+.submitBtn {
+  margin-top: 0.5rem;
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: var(--cream);
+  background: linear-gradient(180deg, var(--red), #7a161c);
+  border: 1px solid var(--gold);
+  border-radius: 8px;
+  padding: 0.85rem 1.5rem;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.submitBtn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(183, 33, 42, 0.35);
+}
+
+/* Error state */
+.errorText {
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  color: rgba(241, 230, 207, 0.6);
+  text-align: center;
+  margin: 3rem 0 1rem;
+}
+
+/* Confirmation */
+.confirmation {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  padding: 3rem 1.5rem;
+  background: rgba(47, 140, 79, 0.06);
+  border: 1px solid rgba(47, 140, 79, 0.3);
+  border-radius: 12px;
+  text-align: center;
+}
+
+.confirmIcon {
+  color: var(--green);
+}
+
+.confirmTitle {
+  font-family: var(--font-heading);
+  font-size: 1.3rem;
+  color: var(--cream);
+  margin: 0;
+}
+
+.confirmText {
+  font-family: var(--font-body);
+  font-size: 0.88rem;
+  color: rgba(241, 230, 207, 0.6);
+  line-height: 1.5;
+  margin: 0;
+  max-width: 400px;
+}
+
+.confirmActions {
+  display: flex;
+  gap: 1rem;
+  margin-top: 0.8rem;
+}
+
+.primaryBtn {
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--cream);
+  background: var(--red);
+  border-radius: 8px;
+  padding: 0.65rem 1.2rem;
+  text-decoration: none;
+  transition: background 0.2s ease;
+}
+
+.primaryBtn:hover {
+  background: #9a1b23;
+}
+
+.secondaryBtn {
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--cream);
+  background: transparent;
+  border: 1px solid rgba(201, 161, 58, 0.3);
+  border-radius: 8px;
+  padding: 0.65rem 1.2rem;
+  text-decoration: none;
+  transition: border-color 0.2s ease;
+}
+
+.secondaryBtn:hover {
+  border-color: var(--gold);
+}
+
+@media (max-width: 600px) {
+  .confirmActions {
+    flex-direction: column;
+    width: 100%;
+  }
+}

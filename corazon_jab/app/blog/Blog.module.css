@@ -21,6 +21,90 @@
   flex-wrap: wrap;
 }
 
+.headerRight {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.8rem;
+}
+
+.writeBtn {
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--cream);
+  background: var(--red);
+  border-radius: 6px;
+  padding: 0.5rem 1rem;
+  text-decoration: none;
+  transition: background 0.2s ease;
+}
+
+.writeBtn:hover {
+  background: #9a1b23;
+}
+
+/* Community section */
+.communitySection {
+  margin-bottom: 3rem;
+}
+
+.communityTitle {
+  font-family: var(--font-heading);
+  font-size: 1.2rem;
+  font-style: italic;
+  color: var(--gold);
+  margin: 0 0 1rem;
+}
+
+.communityGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.2rem;
+}
+
+.communityCard {
+  padding: 1.2rem;
+  border: 1px solid rgba(201, 161, 58, 0.15);
+  border-radius: 10px;
+  background: rgba(201, 161, 58, 0.03);
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.communityCategory {
+  font-family: var(--font-body);
+  font-size: 0.62rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: var(--gold);
+  text-transform: uppercase;
+  align-self: flex-start;
+}
+
+.communityCardTitle {
+  font-family: var(--font-heading);
+  font-size: 1rem;
+  font-style: italic;
+  color: var(--cream);
+  margin: 0;
+}
+
+.communityExcerpt {
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  color: rgba(241, 230, 207, 0.55);
+  line-height: 1.5;
+  margin: 0;
+}
+
+.communityAuthor {
+  font-family: var(--font-body);
+  font-size: 0.72rem;
+  color: rgba(241, 230, 207, 0.4);
+}
+
 .headerLeft {
   display: flex;
   flex-direction: column;

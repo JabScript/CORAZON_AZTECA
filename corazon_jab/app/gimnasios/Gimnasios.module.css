@@ -11,6 +11,66 @@
   margin: 0 auto;
 }
 
+/* --- Ubicación --- */
+.locationBar {
+  margin-bottom: 1.5rem;
+}
+
+.locationBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: var(--font-body);
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: var(--cream);
+  background: rgba(201, 161, 58, 0.08);
+  border: 1px solid rgba(201, 161, 58, 0.35);
+  border-radius: 20px;
+  padding: 0.55rem 1.1rem;
+  cursor: pointer;
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.locationBtn:hover {
+  background: rgba(201, 161, 58, 0.15);
+  border-color: var(--gold);
+}
+
+.locationBtn:focus-visible {
+  outline: 2px solid var(--gold-light);
+  outline-offset: 2px;
+}
+
+.locationStatus {
+  font-family: var(--font-body);
+  font-size: 0.82rem;
+  color: rgba(241, 230, 207, 0.5);
+}
+
+.locationStatusActive {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-family: var(--font-body);
+  font-size: 0.82rem;
+  color: var(--gold);
+}
+
+.locationError {
+  font-family: var(--font-body);
+  font-size: 0.82rem;
+  color: var(--red);
+}
+
+.cardDistance {
+  font-family: var(--font-body);
+  font-size: 0.72rem;
+  font-weight: 500;
+  color: var(--gold);
+  margin: 0.2rem 0 0;
+}
+
 /* --- Header --- */
 .header {
   margin-bottom: 2rem;
@@ -36,6 +96,58 @@
   font-size: clamp(2rem, 5vw, 3rem);
   color: var(--cream);
   margin: 0;
+}
+
+/* --- Ubicación --- */
+.locationBar {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.locationBtn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: var(--font-body);
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: var(--gold);
+  background: rgba(201, 161, 58, 0.08);
+  border: 1px solid rgba(201, 161, 58, 0.35);
+  border-radius: 20px;
+  padding: 0.5rem 1.1rem;
+  cursor: pointer;
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.locationBtn:hover:not(:disabled) {
+  background: rgba(201, 161, 58, 0.15);
+  border-color: var(--gold);
+}
+
+.locationBtn:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.locationBtn:focus-visible {
+  outline: 2px solid var(--gold-light);
+  outline-offset: 2px;
+}
+
+.locationStatus {
+  font-family: var(--font-body);
+  font-size: 0.78rem;
+  color: rgba(241, 230, 207, 0.5);
+}
+
+.locationError {
+  font-family: var(--font-body);
+  font-size: 0.78rem;
+  color: var(--red);
 }
 
 /* --- Filtros --- */
@@ -254,6 +366,13 @@
   color: rgba(241, 230, 207, 0.45);
 }
 
+.cardDistance {
+  font-family: var(--font-body);
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--gold);
+}
+
 .cardLink {
   font-family: var(--font-body);
   font-size: 0.78rem;
@@ -261,6 +380,10 @@
   color: var(--gold);
   text-decoration: none;
   margin-left: auto;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0;
   transition: color 0.2s ease;
 }
 

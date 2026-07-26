@@ -1,0 +1,87 @@
+/* app/legal/Legal.module.css - Compartido por Términos y Privacidad */
+
+.page {
+  --gold: #c9a13a;
+  --gold-light: #e6c565;
+  --red: #b7212a;
+  --cream: #f1e6cf;
+
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 3rem 2rem 5rem;
+}
+
+.tag {
+  font-family: var(--font-body);
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  color: var(--gold);
+  background: rgba(201, 161, 58, 0.08);
+  border: 1px solid rgba(201, 161, 58, 0.35);
+  border-radius: 20px;
+  padding: 0.35rem 1rem;
+  display: inline-block;
+  margin-bottom: 1rem;
+}
+
+.title {
+  font-family: var(--font-heading);
+  font-size: clamp(1.8rem, 4vw, 2.6rem);
+  color: var(--cream);
+  margin: 0 0 0.5rem;
+}
+
+.updated {
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  color: rgba(241, 230, 207, 0.4);
+  margin: 0 0 2.5rem;
+}
+
+.section {
+  margin-bottom: 2rem;
+}
+
+.sectionTitle {
+  font-family: var(--font-heading);
+  font-size: 1.15rem;
+  font-style: italic;
+  color: var(--gold);
+  margin: 0 0 0.7rem;
+}
+
+.text {
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  color: rgba(241, 230, 207, 0.65);
+  line-height: 1.7;
+  margin: 0 0 0.8rem;
+}
+
+.list {
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  color: rgba(241, 230, 207, 0.65);
+  line-height: 1.7;
+  padding-left: 1.2rem;
+  margin: 0 0 0.8rem;
+}
+
+.list li {
+  margin-bottom: 0.4rem;
+}
+
+.backLink {
+  display: inline-block;
+  margin-top: 2rem;
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  color: var(--gold);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.backLink:hover {
+  color: var(--gold-light);
+}
