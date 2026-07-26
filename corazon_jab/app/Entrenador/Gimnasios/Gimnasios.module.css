@@ -1,10 +1,21 @@
 .pagina {
+  --ca-crema: #f1e6cf;
+  --ca-oro: #c9a13a;
+  --ca-oro-suave: #e6c565;
+  --ca-rojo: #b7212a;
+  --ca-rojo-oscuro: #7a161c;
+  --ca-verde: #2f8c4f;
+  --ca-negro-alt: rgba(20, 18, 16, 0.5);
+  --ca-borde: rgba(201, 161, 58, 0.12);
+  --ca-texto-muted: rgba(241, 230, 207, 0.5);
+
   max-width: 900px;
   margin: 0 auto;
   padding: 3rem 6vw 5rem;
 }
 
 .pagina h1 {
+  font-family: var(--font-heading);
   font-size: clamp(1.8rem, 4vw, 2.4rem);
   color: var(--ca-oro-suave);
   margin: 0 0 0.4rem;

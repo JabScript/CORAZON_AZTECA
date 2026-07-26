@@ -1,0 +1,28 @@
+.page { --gold: #c9a13a; --cream: #f1e6cf; --red: #b7212a; --green: #2f8c4f; }
+.header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 2rem; }
+.title { font-family: var(--font-heading); font-size: 2rem; color: var(--cream); margin: 0; }
+.subtitle { font-family: var(--font-body); font-size: 0.85rem; color: rgba(241,230,207,0.5); margin: 0.3rem 0 0; }
+.newBtn { font-family: var(--font-body); font-size: 0.82rem; font-weight: 500; color: var(--cream); background: var(--red); border: none; border-radius: 8px; padding: 0.65rem 1.2rem; cursor: pointer; }
+.newBtn:hover { background: #9a1b23; }
+
+.summary { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 2.5rem; }
+.summaryCard { display: flex; flex-direction: column; align-items: center; gap: 0.3rem; padding: 1.2rem; border: 1px solid rgba(201,161,58,0.12); border-radius: 10px; background: rgba(20,18,16,0.5); }
+.summaryValue { font-family: var(--font-heading); font-size: 1.8rem; color: var(--cream); }
+.summaryValueRed { font-family: var(--font-heading); font-size: 1.8rem; color: var(--red); }
+.summaryLabel { font-family: var(--font-body); font-size: 0.72rem; color: rgba(241,230,207,0.45); text-transform: uppercase; letter-spacing: 0.05em; }
+
+.grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem; }
+.alumnoCard { padding: 1.5rem; border: 1px solid rgba(201,161,58,0.12); border-radius: 10px; background: rgba(20,18,16,0.5); }
+.alumnoName { font-family: var(--font-heading); font-size: 1.1rem; font-style: italic; color: var(--cream); margin: 0 0 1rem; }
+.metasList { display: flex; flex-direction: column; gap: 1rem; }
+.metaItem { padding: 0.8rem; background: rgba(255,255,255,0.02); border-radius: 8px; }
+.metaHeader { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem; }
+.metaTipo { font-family: var(--font-body); font-size: 0.6rem; font-weight: 600; letter-spacing: 0.08em; padding: 0.15rem 0.5rem; border-radius: 4px; }
+.metaDeadline { font-family: var(--font-body); font-size: 0.7rem; color: rgba(241,230,207,0.4); }
+.metaDesc { font-family: var(--font-body); font-size: 0.85rem; color: var(--cream); margin: 0 0 0.7rem; line-height: 1.4; }
+.metaProgress { display: flex; align-items: center; gap: 0.6rem; }
+.progressBar { flex: 1; height: 6px; background: rgba(255,255,255,0.06); border-radius: 3px; overflow: hidden; }
+.progressFill { height: 100%; background: linear-gradient(90deg, var(--gold), var(--red)); border-radius: 3px; }
+.progressPercent { font-family: var(--font-body); font-size: 0.75rem; font-weight: 500; color: var(--gold); min-width: 34px; text-align: right; }
+
+@media (max-width: 1024px) { .summary { grid-template-columns: repeat(2, 1fr); } .grid { grid-template-columns: 1fr; } }

@@ -1,0 +1,20 @@
+.page { --gold: #c9a13a; --cream: #f1e6cf; --red: #b7212a; --green: #2f8c4f; }
+.header { margin-bottom: 2rem; position: relative; }
+.title { font-family: var(--font-heading); font-size: 1.8rem; color: var(--cream); margin: 0; }
+.subtitle { font-family: var(--font-body); font-size: 0.85rem; color: rgba(241,230,207,0.5); margin: 0.3rem 0 0; }
+.activeBadge { font-family: var(--font-body); font-size: 0.7rem; font-weight: 600; color: var(--green); background: rgba(47,140,79,0.12); border: 1px solid rgba(47,140,79,0.3); border-radius: 14px; padding: 0.25rem 0.8rem; position: absolute; top: 0; right: 0; }
+.fightCard { border: 1px solid rgba(201,161,58,0.2); border-radius: 10px; padding: 1.5rem; margin-bottom: 2rem; background: rgba(20,18,16,0.5); }
+.fightTitle { font-family: var(--font-heading); font-size: 1.1rem; color: var(--gold); margin: 0 0 1rem; }
+.fightDetails { display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem; font-family: var(--font-body); font-size: 0.85rem; color: rgba(241,230,207,0.7); }
+.label { color: rgba(241,230,207,0.4); margin-right: 0.3rem; }
+.countdown { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-bottom: 2.5rem; }
+.countdownItem { display: flex; flex-direction: column; align-items: center; gap: 0.2rem; padding: 1.2rem; border: 1px solid rgba(183,33,42,0.3); border-radius: 10px; background: rgba(183,33,42,0.05); }
+.countdownValue { font-family: var(--font-heading); font-size: 2rem; color: var(--red); }
+.countdownLabel { font-family: var(--font-body); font-size: 0.7rem; color: rgba(241,230,207,0.5); text-transform: uppercase; letter-spacing: 0.05em; }
+.sectionTitle { font-family: var(--font-heading); font-size: 1.2rem; font-style: italic; color: var(--cream); margin: 0 0 1rem; }
+.tableWrapper { overflow-x: auto; }
+.table { width: 100%; border-collapse: collapse; font-family: var(--font-body); font-size: 0.82rem; }
+.table th { text-align: left; color: rgba(241,230,207,0.4); font-size: 0.68rem; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; padding: 0.8rem 0.6rem; border-bottom: 1px solid rgba(201,161,58,0.1); }
+.table td { padding: 0.8rem 0.6rem; color: rgba(241,230,207,0.65); border-bottom: 1px solid rgba(255,255,255,0.04); }
+.dayName { color: var(--cream); font-weight: 500; }
+@media (max-width: 768px) { .countdown { grid-template-columns: 1fr; } .fightDetails { grid-template-columns: 1fr; } }

@@ -1,0 +1,42 @@
+.page { --gold: #c9a13a; --cream: #f1e6cf; --red: #b7212a; --green: #2f8c4f; }
+.header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 2rem; }
+.title { font-family: var(--font-heading); font-size: 2rem; color: var(--cream); margin: 0; }
+.subtitle { font-family: var(--font-body); font-size: 0.85rem; color: rgba(241,230,207,0.5); margin: 0.3rem 0 0; }
+.newBtn { font-family: var(--font-body); font-size: 0.82rem; font-weight: 500; color: var(--cream); background: var(--red); border: none; border-radius: 8px; padding: 0.65rem 1.2rem; cursor: pointer; }
+.newBtn:hover { background: #9a1b23; }
+
+.stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 2rem; }
+.stat { display: flex; flex-direction: column; align-items: center; gap: 0.3rem; padding: 1.2rem; border: 1px solid rgba(201,161,58,0.12); border-radius: 10px; background: rgba(20,18,16,0.5); }
+.statValue { font-family: var(--font-heading); font-size: 1.8rem; color: var(--cream); }
+.statLabel { font-family: var(--font-body); font-size: 0.7rem; color: rgba(241,230,207,0.45); text-transform: uppercase; letter-spacing: 0.05em; }
+
+.tabs { display: flex; gap: 0.4rem; margin-bottom: 1.5rem; border-bottom: 1px solid rgba(201,161,58,0.1); }
+.tab { font-family: var(--font-body); font-size: 0.85rem; font-weight: 500; color: rgba(241,230,207,0.5); background: transparent; border: none; padding: 0.7rem 1.2rem; cursor: pointer; border-bottom: 2px solid transparent; transition: color 0.2s ease, border-color 0.2s ease; }
+.tab:hover { color: var(--cream); }
+.tabActive { color: var(--gold); border-bottom-color: var(--gold); }
+
+/* Tabla */
+.tableWrapper { overflow-x: auto; }
+.table { width: 100%; border-collapse: collapse; font-family: var(--font-body); font-size: 0.82rem; }
+.table th { text-align: left; color: rgba(241,230,207,0.4); font-size: 0.68rem; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; padding: 0.8rem 0.6rem; border-bottom: 1px solid rgba(201,161,58,0.1); }
+.table td { padding: 0.9rem 0.6rem; color: rgba(241,230,207,0.65); border-bottom: 1px solid rgba(255,255,255,0.04); vertical-align: middle; }
+.alumno { color: var(--cream); font-weight: 500; }
+.estado { font-size: 0.7rem; padding: 0.25rem 0.6rem; border-radius: 4px; background: rgba(201,161,58,0.12); color: var(--gold); }
+.estado[data-estado="Ganada"] { background: rgba(47,140,79,0.15); color: var(--green); }
+.estado[data-estado="Perdida"] { background: rgba(183,33,42,0.15); color: var(--red); }
+
+/* Torneos grid */
+.torneosGrid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; }
+.torneoCard { padding: 1.3rem; border: 1px solid rgba(201,161,58,0.12); border-radius: 10px; background: rgba(20,18,16,0.5); display: flex; flex-direction: column; gap: 0.8rem; }
+.torneoHeader { display: flex; justify-content: space-between; align-items: flex-start; gap: 0.5rem; }
+.torneoNombre { font-family: var(--font-heading); font-size: 1rem; font-style: italic; color: var(--cream); margin: 0; }
+.torneoEstado { font-size: 0.65rem; font-weight: 600; letter-spacing: 0.08em; padding: 0.2rem 0.5rem; border-radius: 4px; background: rgba(201,161,58,0.12); color: var(--gold); white-space: nowrap; }
+.torneoEstado[data-estado="Completado"] { background: rgba(47,140,79,0.15); color: var(--green); }
+.torneoInfo { display: flex; flex-direction: column; gap: 0.3rem; font-family: var(--font-body); font-size: 0.78rem; color: rgba(241,230,207,0.55); }
+.torneoInfo strong { color: rgba(241,230,207,0.4); font-weight: 500; }
+.participantes { padding-top: 0.6rem; border-top: 1px solid rgba(255,255,255,0.04); }
+.participantesLabel { font-family: var(--font-body); font-size: 0.7rem; color: rgba(241,230,207,0.4); text-transform: uppercase; letter-spacing: 0.05em; display: block; margin-bottom: 0.4rem; }
+.participantesList { display: flex; flex-wrap: wrap; gap: 0.3rem; }
+.participanteChip { font-family: var(--font-body); font-size: 0.72rem; color: var(--gold); background: rgba(201,161,58,0.1); padding: 0.2rem 0.5rem; border-radius: 4px; }
+
+@media (max-width: 1024px) { .stats { grid-template-columns: repeat(2, 1fr); } .torneosGrid { grid-template-columns: 1fr; } .header { flex-direction: column; gap: 1rem; } }

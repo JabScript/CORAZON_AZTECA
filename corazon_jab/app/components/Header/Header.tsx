@@ -18,6 +18,8 @@ const navLinks = [
   { label: "Blog", href: "/blog" },
 ];
 
+
+
 export default function Header() {
   const pathname = usePathname();
   const [scrolled, setScrolled] = useState(false);

@@ -1,0 +1,61 @@
+.page { --gold: #c9a13a; --gold-light: #e6c565; --red: #b7212a; --cream: #f1e6cf; --green: #2f8c4f; }
+
+/* Header */
+.header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 2rem; gap: 2rem; }
+.headerLeft { flex: 1; }
+.title { font-family: var(--font-heading); font-size: 2.2rem; color: var(--cream); margin: 0; font-weight: 700; }
+.title em { color: var(--gold); font-style: italic; }
+.subtitle { font-family: var(--font-body); font-size: 0.85rem; color: rgba(241,230,207,0.5); margin: 0.3rem 0 0; }
+
+/* Next training card */
+.nextTraining { background: rgba(183,33,42,0.08); border: 1px solid rgba(183,33,42,0.3); border-radius: 10px; padding: 1rem 1.3rem; min-width: 280px; }
+.nextLabel { font-family: var(--font-body); font-size: 0.6rem; font-weight: 600; letter-spacing: 0.1em; color: var(--red); text-transform: uppercase; }
+.nextTitle { font-family: var(--font-heading); font-size: 1.1rem; color: var(--cream); margin: 0.4rem 0 0.2rem; }
+.nextTime { font-family: var(--font-body); font-size: 0.75rem; color: rgba(241,230,207,0.5); margin: 0 0 0.6rem; }
+.nextDetails { display: flex; flex-direction: column; gap: 0.2rem; font-family: var(--font-body); font-size: 0.75rem; color: rgba(241,230,207,0.6); }
+
+/* Stats */
+.stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 2.5rem; }
+.stat { display: flex; flex-direction: column; gap: 0.15rem; padding: 1.2rem; border: 1px solid rgba(201,161,58,0.12); border-radius: 10px; background: rgba(20,18,16,0.5); position: relative; }
+.statTop { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.3rem; }
+.statIcon { font-size: 1.1rem; }
+.statTrend { font-size: 0.6rem; color: var(--green); background: rgba(47,140,79,0.15); padding: 0.15rem 0.3rem; border-radius: 3px; }
+.statValue { font-family: var(--font-heading); font-size: 1.5rem; color: var(--cream); }
+.statLabel { font-family: var(--font-body); font-size: 0.72rem; color: rgba(241,230,207,0.55); }
+.statSub { font-family: var(--font-body); font-size: 0.65rem; color: rgba(241,230,207,0.35); }
+
+/* Bottom grid */
+.bottomGrid { display: grid; grid-template-columns: 1.2fr 1fr; gap: 2rem; margin-bottom: 2rem; }
+.sectionTitle { font-family: var(--font-heading); font-size: 1.1rem; font-style: italic; color: var(--cream); margin: 0 0 1rem; }
+
+/* Chart */
+.chartSection { padding: 1.2rem; border: 1px solid rgba(201,161,58,0.08); border-radius: 10px; background: rgba(20,18,16,0.3); }
+.chart { display: flex; align-items: flex-end; gap: 1.2rem; height: 140px; margin-bottom: 0.8rem; }
+.barGroup { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 0.4rem; height: 100%; }
+.bars { display: flex; gap: 4px; align-items: flex-end; height: 100%; }
+.barHours { width: 16px; background: var(--gold); border-radius: 3px 3px 0 0; transition: height 0.3s ease; }
+.barIntensity { width: 16px; background: var(--red); border-radius: 3px 3px 0 0; transition: height 0.3s ease; }
+.barLabel { font-family: var(--font-body); font-size: 0.65rem; color: rgba(241,230,207,0.4); }
+.legend { display: flex; gap: 1.2rem; justify-content: center; }
+.legendItem { font-family: var(--font-body); font-size: 0.7rem; color: rgba(241,230,207,0.5); display: flex; align-items: center; gap: 0.3rem; }
+.legendDotHours { width: 10px; height: 10px; border-radius: 2px; background: var(--gold); }
+.legendDotIntensity { width: 10px; height: 10px; border-radius: 2px; background: var(--red); }
+
+/* Recent trainings */
+.recentSection { padding: 1.2rem; border: 1px solid rgba(201,161,58,0.08); border-radius: 10px; background: rgba(20,18,16,0.3); }
+.recentList { display: flex; flex-direction: column; gap: 0.5rem; }
+.recentItem { display: flex; justify-content: space-between; align-items: center; padding: 0.7rem 0; border-bottom: 1px solid rgba(255,255,255,0.04); }
+.recentInfo { display: flex; flex-direction: column; gap: 0.15rem; }
+.recentType { font-family: var(--font-body); font-size: 0.85rem; font-weight: 500; color: var(--cream); }
+.recentMeta { font-family: var(--font-body); font-size: 0.7rem; color: rgba(241,230,207,0.45); }
+.recentRight { display: flex; flex-direction: column; align-items: flex-end; gap: 0.15rem; }
+.recentDate { font-family: var(--font-body); font-size: 0.7rem; color: rgba(241,230,207,0.4); }
+.recentRating { font-family: var(--font-body); font-size: 0.75rem; font-weight: 500; color: var(--gold); }
+
+/* User bar */
+.userBar { display: flex; align-items: center; gap: 0.7rem; padding-top: 1.5rem; border-top: 1px solid rgba(201,161,58,0.08); }
+.userAvatar { width: 34px; height: 34px; border-radius: 50%; background: rgba(201,161,58,0.15); display: flex; align-items: center; justify-content: center; font-family: var(--font-body); font-size: 0.7rem; font-weight: 600; color: var(--gold); }
+.userName { font-family: var(--font-body); font-size: 0.82rem; color: rgba(241,230,207,0.6); }
+
+/* Responsive */
+@media (max-width: 1024px) { .stats { grid-template-columns: repeat(2, 1fr); } .bottomGrid { grid-template-columns: 1fr; } .header { flex-direction: column; } .nextTraining { min-width: auto; } }

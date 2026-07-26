@@ -1,0 +1,44 @@
+.page { --gold: #c9a13a; --cream: #f1e6cf; --red: #b7212a; --green: #2f8c4f; }
+.header { display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; margin-bottom: 2rem; }
+.title { font-family: var(--font-heading); font-size: 2rem; color: var(--cream); margin: 0; }
+.subtitle { font-family: var(--font-body); font-size: 0.85rem; color: rgba(241,230,207,0.5); margin: 0.3rem 0 0; flex: 1; }
+.newBtn { font-family: var(--font-body); font-size: 0.82rem; font-weight: 500; color: var(--cream); background: var(--red); border: none; border-radius: 8px; padding: 0.65rem 1.2rem; cursor: pointer; transition: background 0.2s ease; align-self: center; }
+.newBtn:hover { background: #9a1b23; }
+
+.tabs { display: flex; gap: 0.4rem; margin-bottom: 1.5rem; border-bottom: 1px solid rgba(201,161,58,0.1); }
+.tab { font-family: var(--font-body); font-size: 0.85rem; font-weight: 500; color: rgba(241,230,207,0.5); background: transparent; border: none; padding: 0.7rem 1.2rem; cursor: pointer; border-bottom: 2px solid transparent; transition: color 0.2s ease, border-color 0.2s ease; }
+.tab:hover { color: var(--cream); }
+.tabActive { color: var(--gold); border-bottom-color: var(--gold); }
+
+/* Tabla */
+.tableWrapper { overflow-x: auto; }
+.table { width: 100%; border-collapse: collapse; font-family: var(--font-body); font-size: 0.82rem; }
+.table th { text-align: left; color: rgba(241,230,207,0.4); font-size: 0.68rem; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; padding: 0.8rem 0.6rem; border-bottom: 1px solid rgba(201,161,58,0.1); }
+.table td { padding: 1rem 0.6rem; color: rgba(241,230,207,0.7); border-bottom: 1px solid rgba(255,255,255,0.04); vertical-align: middle; }
+.alumnoName { color: var(--cream); font-weight: 500; }
+.planName { color: var(--gold); }
+
+.levelBadge { font-size: 0.65rem; font-weight: 500; padding: 0.2rem 0.5rem; border-radius: 4px; text-transform: uppercase; letter-spacing: 0.05em; background: rgba(201,161,58,0.12); color: var(--gold); }
+.levelBadge[data-level="Profesional"] { background: rgba(183,33,42,0.15); color: var(--red); }
+.levelBadge[data-level="Principiante"] { background: rgba(47,140,79,0.15); color: var(--green); }
+
+.progressBar { position: relative; width: 100px; height: 6px; background: rgba(255,255,255,0.06); border-radius: 3px; overflow: hidden; }
+.progressFill { height: 100%; background: linear-gradient(90deg, var(--gold), var(--red)); border-radius: 3px; }
+.progressText { font-size: 0.7rem; color: rgba(241,230,207,0.6); margin-left: 8px; position: absolute; left: 100%; top: -6px; }
+
+.actionBtn { font-family: var(--font-body); font-size: 0.75rem; color: var(--gold); background: transparent; border: 1px solid rgba(201,161,58,0.3); border-radius: 4px; padding: 0.3rem 0.7rem; cursor: pointer; transition: background 0.2s ease; }
+.actionBtn:hover { background: rgba(201,161,58,0.1); }
+
+/* Grid biblioteca */
+.grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+.templateCard { padding: 1.3rem; border: 1px solid rgba(201,161,58,0.15); border-radius: 10px; background: rgba(20,18,16,0.5); display: flex; flex-direction: column; gap: 0.5rem; transition: border-color 0.2s ease; }
+.templateCard:hover { border-color: rgba(201,161,58,0.4); }
+.focusTag { font-family: var(--font-body); font-size: 0.65rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gold); background: rgba(201,161,58,0.12); padding: 0.2rem 0.5rem; border-radius: 4px; align-self: flex-start; }
+.templateName { font-family: var(--font-heading); font-size: 1.05rem; font-style: italic; color: var(--cream); margin: 0; }
+.templateDesc { font-family: var(--font-body); font-size: 0.8rem; color: rgba(241,230,207,0.55); line-height: 1.5; margin: 0; }
+.templateMeta { font-family: var(--font-body); font-size: 0.75rem; color: rgba(241,230,207,0.4); }
+.assignBtn { margin-top: 0.5rem; font-family: var(--font-body); font-size: 0.8rem; font-weight: 500; color: var(--gold); background: transparent; border: none; padding: 0.4rem 0; text-align: left; cursor: pointer; transition: color 0.2s ease; }
+.assignBtn:hover { color: var(--gold-light, #e6c565); }
+
+@media (max-width: 1024px) { .grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 600px) { .grid { grid-template-columns: 1fr; } .header { flex-direction: column; } }
