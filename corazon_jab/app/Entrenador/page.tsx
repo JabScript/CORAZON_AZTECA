@@ -1,134 +1,53 @@
-'use client';
+// app/entrenador/page.tsx
+"use client";
 
-import { useState, useEffect } from 'react';
-import Image from 'next/image';
-import Link from 'next/link';
-import styles from './page.module.css';
-import { obtenerPerfil, type PerfilEntrenador } from '../lib/entrenadorStorage';
+import styles from "./Dashboard.module.css";
 
-export default function PerfilEntrenadorPage() {
-  const [perfil, setPerfil] = useState<PerfilEntrenador | null>(null);
-  const [fotoAmpliada, setFotoAmpliada] = useState<{ src: string; alt: string } | null>(null);
+import Link from "next/link";
 
-  useEffect(() => {
-    setPerfil(obtenerPerfil());
-  }, []);
-
-  if (!perfil) return null;
-
+export default function EntrenadorDashboard() {
   return (
-    <main className={styles.pagina}>
-      {/* ---------- Cabecera de perfil ---------- */}
-      <section className={styles.cabecera}>
-        <div className={styles.foto}>
-          {perfil.foto ? (
-            <Image
-              src={perfil.foto}
-              alt={`Foto de ${perfil.nombre}`}
-              width={160}
-              height={160}
-              style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '50%' }}
-            />
-          ) : null}
+    <div className={styles.page}>
+      <div className={styles.headerRow}>
+        <div>
+          <h1 className={styles.title}>Mi Perfil</h1>
+          <p className={styles.subtitle}>Panel de entrenador — gestiona tus clases, alumnos y planes.</p>
         </div>
-        <div className={styles.cabeceraInfo}>
-          <span className={styles.especialidad}>{perfil.especialidad}</span>
-          <h1>{perfil.nombre}</h1>
-          <p className={styles.trayectoria}>
-            {perfil.anosTrayectoria} años de trayectoria como entrenador
-          </p>
-          <p className={styles.bio}>{perfil.bio}</p>
-          <Link href="/Entrenador/Perfil" className={styles.btnEditar}>
-            Editar perfil
-          </Link>
+        <Link href="/Entrenador/Perfil" className={styles.editBtn}>
+          Editar Perfil
+        </Link>
+      </div>
+
+      <div className={styles.grid}>
+        <div className={styles.card}>
+          <span className={styles.cardValue}>24</span>
+          <span className={styles.cardLabel}>Alumnos activos</span>
         </div>
-      </section>
-
-      {/* ---------- Lo más relevante ---------- */}
-      {perfil.logros.length > 0 && (
-        <section className={styles.seccion}>
-          <h2>Lo más relevante</h2>
-          <ul className={styles.logros}>
-            {perfil.logros.map((logro, idx) => (
-              <li key={idx}>{logro}</li>
-            ))}
-          </ul>
-        </section>
-      )}
-
-      {/* ---------- Galería de trayectoria ---------- */}
-      {perfil.galeria.length > 0 && (
-        <section className={styles.seccion}>
-          <h2>Galería de trayectoria</h2>
-          <div className={styles.galeria}>
-            {perfil.galeria.map((foto) => (
-              <button
-                key={foto.id}
-                type="button"
-                className={styles.galeriaItem}
-                onClick={() => setFotoAmpliada(foto)}
-                aria-label={`Ampliar foto: ${foto.alt}`}
-              >
-                <Image
-                  src={foto.src}
-                  alt={foto.alt}
-                  width={200}
-                  height={200}
-                  style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                />
-              </button>
-            ))}
-          </div>
-        </section>
-      )}
-
-      {/* ---------- Redes sociales ---------- */}
-      {perfil.redes.length > 0 && (
-        <section className={styles.seccion}>
-          <h2>Redes sociales</h2>
-          <div className={styles.redes}>
-            {perfil.redes.map((red, idx) => (
-              <a
-                key={idx}
-                href={red.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className={styles.redItem}
-              >
-                <span className={styles.redNombre}>{red.nombre}</span>
-                <span className={styles.redUsuario}>{red.usuario}</span>
-              </a>
-            ))}
-          </div>
-        </section>
-      )}
-
-      {/* ---------- Visor de foto ampliada ---------- */}
-      {fotoAmpliada && (
-        <div
-          className={styles.visor}
-          role="dialog"
-          aria-modal="true"
-          onClick={() => setFotoAmpliada(null)}
-        >
-          <Image
-            src={fotoAmpliada.src}
-            alt={fotoAmpliada.alt}
-            width={800}
-            height={800}
-            className={styles.visorImg}
-            style={{ maxWidth: '90vw', maxHeight: '85vh', objectFit: 'contain' }}
-          />
-          <button
-            type="button"
-            className={styles.visorCerrar}
-            onClick={() => setFotoAmpliada(null)}
-            aria-label="Cerrar foto"
-          >
-            &times;
-          </button>
+        <div className={styles.card}>
+          <span className={styles.cardValue}>12</span>
+          <span className={styles.cardLabel}>Clases esta semana</span>
         </div>
-      )}
-    </main>
+        <div className={styles.card}>
+          <span className={styles.cardValue}>3</span>
+          <span className={styles.cardLabel}>Gimnasios</span>
+        </div>
+        <div className={styles.card}>
+          <span className={styles.cardValue}>2</span>
+          <span className={styles.cardLabel}>Competencias próximas</span>
+        </div>
+      </div>
+
+      <div className={styles.info}>
+        <h2 className={styles.sectionTitle}>Información del Entrenador</h2>
+        <div className={styles.infoGrid}>
+          <div><span className={styles.label}>Nombre:</span> Ricardo Mendoza</div>
+          <div><span className={styles.label}>Especialidad:</span> Boxeo Profesional, Sparring</div>
+          <div><span className={styles.label}>Experiencia:</span> 12 años</div>
+          <div><span className={styles.label}>Certificaciones:</span> WBC Trainer Level 2</div>
+          <div><span className={styles.label}>Gimnasio principal:</span> Triple Boxing CDMX</div>
+          <div><span className={styles.label}>Contacto:</span> coach.mendoza@corazonazteca.com</div>
+        </div>
+      </div>
+    </div>
   );
 }

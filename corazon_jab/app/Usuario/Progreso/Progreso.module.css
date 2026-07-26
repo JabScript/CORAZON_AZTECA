@@ -1,0 +1,233 @@
+/* app/usuario/progreso/Progreso.module.css */
+
+.page {
+  --gold: #c9a13a;
+  --gold-light: #e6c565;
+  --red: #b7212a;
+  --cream: #f1e6cf;
+  --green: #2f8c4f;
+}
+
+/* --- Header --- */
+.header {
+  margin-bottom: 1.5rem;
+}
+
+.title {
+  font-family: var(--font-heading);
+  font-size: 1.8rem;
+  color: var(--cream);
+  margin: 0;
+}
+
+.subtitle {
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  color: rgba(241, 230, 207, 0.5);
+  margin: 0.3rem 0 0;
+}
+
+/* --- Tabs --- */
+.tabs {
+  display: flex;
+  gap: 0.4rem;
+  margin-bottom: 2rem;
+}
+
+.tab {
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: rgba(241, 230, 207, 0.55);
+  background: transparent;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.tab:hover {
+  color: var(--cream);
+}
+
+.tabActive {
+  background: var(--red);
+  color: var(--cream);
+}
+
+/* --- Chart --- */
+.chartSection {
+  margin-bottom: 3rem;
+}
+
+.chartTitle {
+  font-family: var(--font-heading);
+  font-size: 1.2rem;
+  color: var(--cream);
+  margin: 0 0 0.2rem;
+}
+
+.chartSubtitle {
+  font-family: var(--font-body);
+  font-size: 0.78rem;
+  color: rgba(241, 230, 207, 0.4);
+  margin: 0 0 1.5rem;
+}
+
+.chart {
+  display: flex;
+  align-items: flex-end;
+  gap: 0.8rem;
+  height: 180px;
+  padding-bottom: 2rem;
+  border-bottom: 1px solid rgba(201, 161, 58, 0.1);
+}
+
+.bar {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  height: 100%;
+  position: relative;
+}
+
+.barFill {
+  width: 100%;
+  max-width: 36px;
+  background: linear-gradient(180deg, var(--gold), rgba(201, 161, 58, 0.4));
+  border-radius: 4px 4px 0 0;
+  transition: height 0.4s ease;
+}
+
+.barValue {
+  font-family: var(--font-body);
+  font-size: 0.65rem;
+  color: var(--cream);
+  position: absolute;
+  top: -18px;
+  white-space: nowrap;
+}
+
+.barLabel {
+  font-family: var(--font-body);
+  font-size: 0.65rem;
+  color: rgba(241, 230, 207, 0.4);
+  position: absolute;
+  bottom: -20px;
+}
+
+/* --- Bottom grid --- */
+.bottomGrid {
+  display: grid;
+  grid-template-columns: 1fr 1.5fr;
+  gap: 2.5rem;
+}
+
+.sectionTitle {
+  font-family: var(--font-heading);
+  font-size: 1.1rem;
+  font-style: italic;
+  color: var(--cream);
+  margin: 0 0 1rem;
+}
+
+/* --- Summary --- */
+.summaryList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.summaryItem {
+  display: grid;
+  grid-template-columns: 24px 1fr auto auto;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.6rem 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.summaryIcon {
+  font-size: 0.9rem;
+}
+
+.summaryLabel {
+  font-family: var(--font-body);
+  font-size: 0.82rem;
+  color: rgba(241, 230, 207, 0.65);
+}
+
+.summaryValue {
+  font-family: var(--font-body);
+  font-size: 0.88rem;
+  font-weight: 500;
+  color: var(--cream);
+}
+
+.summaryChange {
+  font-family: var(--font-body);
+  font-size: 0.72rem;
+  color: var(--green);
+  font-weight: 500;
+}
+
+/* --- Sessions table --- */
+.sessionsTable {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--font-body);
+  font-size: 0.78rem;
+}
+
+.sessionsTable th {
+  text-align: left;
+  color: rgba(241, 230, 207, 0.35);
+  font-size: 0.65rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 0.6rem 0.5rem;
+  border-bottom: 1px solid rgba(201, 161, 58, 0.1);
+}
+
+.sessionsTable td {
+  padding: 0.7rem 0.5rem;
+  color: rgba(241, 230, 207, 0.6);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+}
+
+.sessionType {
+  font-size: 0.7rem;
+  padding: 0.15rem 0.4rem;
+  border-radius: 3px;
+  background: rgba(201, 161, 58, 0.12);
+  color: var(--gold);
+}
+
+.intensityVal {
+  color: var(--gold);
+  font-weight: 500;
+}
+
+.ratingVal {
+  color: var(--gold);
+}
+
+/* --- Responsive --- */
+@media (max-width: 1024px) {
+  .bottomGrid {
+    grid-template-columns: 1fr;
+  }
+  .chart {
+    gap: 0.4rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .barFill {
+    transition: none;
+  }
+}

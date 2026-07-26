@@ -1,6 +1,15 @@
 /* app/Usuario/Historial/Historial.module.css */
 
 .pagina {
+  --ca-crema: #f1e6cf;
+  --ca-oro: #c9a13a;
+  --ca-oro-suave: #e6c565;
+  --ca-rojo: #b7212a;
+  --ca-negro-alt: rgba(20, 18, 16, 0.5);
+  --ca-borde: rgba(201, 161, 58, 0.12);
+  --ca-texto-muted: rgba(241, 230, 207, 0.5);
+  --cream: #f1e6cf;
+
   max-width: 1100px;
   margin: 0 auto;
   padding: 2.5rem 4vw 5rem;
@@ -10,21 +19,24 @@
 }
 
 .pagina h1 {
+  font-family: var(--font-heading);
   font-size: clamp(1.8rem, 4vw, 2.4rem);
-  color: var(--ca-oro-suave);
+  color: var(--cream, #f1e6cf);
   margin: 0;
 }
 
 .subtitulo {
-  color: var(--ca-texto-muted);
+  font-family: var(--font-body);
+  color: rgba(241, 230, 207, 0.5);
   font-size: 0.9rem;
   margin: 0.3rem 0 0;
 }
 
 /* ---------- Récord Profesional ---------- */
 .recordSeccion h2 {
+  font-family: var(--font-heading);
   font-size: 1.15rem;
-  color: var(--ca-oro-suave);
+  color: var(--cream, #f1e6cf);
   margin: 0 0 1.2rem;
   font-style: italic;
 }

@@ -1,0 +1,19 @@
+.page { --gold: #c9a13a; --cream: #f1e6cf; --red: #b7212a; --green: #2f8c4f; }
+.header { margin-bottom: 2rem; }
+.title { font-family: var(--font-heading); font-size: 1.8rem; color: var(--cream); margin: 0; }
+.subtitle { font-family: var(--font-body); font-size: 0.85rem; color: rgba(241,230,207,0.5); margin: 0.3rem 0 0; }
+.macros { display: grid; grid-template-columns: repeat(5, 1fr); gap: 1rem; margin-bottom: 2.5rem; }
+.macroCard { display: flex; flex-direction: column; align-items: center; gap: 0.2rem; padding: 1.2rem 0.8rem; border: 1px solid rgba(201,161,58,0.12); border-radius: 10px; background: rgba(20,18,16,0.5); }
+.macroLabel { font-family: var(--font-body); font-size: 0.7rem; color: rgba(241,230,207,0.45); text-transform: uppercase; letter-spacing: 0.06em; }
+.macroValue { font-family: var(--font-heading); font-size: 1.4rem; color: var(--cream); }
+.macroValue small { font-size: 0.7rem; color: rgba(241,230,207,0.5); margin-left: 2px; }
+.macroTarget { font-family: var(--font-body); font-size: 0.68rem; color: var(--green); }
+.sectionTitle { font-family: var(--font-heading); font-size: 1.2rem; font-style: italic; color: var(--cream); margin: 0 0 1rem; }
+.tableWrapper { overflow-x: auto; }
+.table { width: 100%; border-collapse: collapse; font-family: var(--font-body); font-size: 0.8rem; }
+.table th { text-align: left; color: rgba(241,230,207,0.4); font-size: 0.68rem; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; padding: 0.8rem 0.6rem; border-bottom: 1px solid rgba(201,161,58,0.1); }
+.table td { padding: 0.9rem 0.6rem; color: rgba(241,230,207,0.65); border-bottom: 1px solid rgba(255,255,255,0.04); }
+.table tr:hover td { background: rgba(201,161,58,0.03); }
+.mealName { color: var(--cream); font-weight: 500; }
+.highlight { color: var(--gold); font-weight: 500; }
+@media (max-width: 768px) { .macros { grid-template-columns: repeat(2, 1fr); } }

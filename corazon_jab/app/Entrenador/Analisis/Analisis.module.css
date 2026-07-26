@@ -1,0 +1,42 @@
+.page { --gold: #c9a13a; --cream: #f1e6cf; --red: #b7212a; --green: #2f8c4f; }
+.header { margin-bottom: 2rem; }
+.badge { font-family: var(--font-body); font-size: 0.65rem; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--gold); background: rgba(201,161,58,0.12); border: 1px solid rgba(201,161,58,0.3); border-radius: 14px; padding: 0.25rem 0.7rem; display: inline-block; margin-bottom: 0.8rem; }
+.title { font-family: var(--font-heading); font-size: 2rem; color: var(--cream); margin: 0; }
+.subtitle { font-family: var(--font-body); font-size: 0.85rem; color: rgba(241,230,207,0.5); margin: 0.3rem 0 0; max-width: 600px; }
+
+.trends { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 2.5rem; }
+.trendCard { padding: 1.2rem; border: 1px solid rgba(201,161,58,0.12); border-radius: 10px; background: rgba(20,18,16,0.5); display: flex; flex-direction: column; gap: 0.3rem; }
+.trendLabel { font-family: var(--font-body); font-size: 0.7rem; color: rgba(241,230,207,0.45); text-transform: uppercase; letter-spacing: 0.05em; }
+.trendValuePositive { font-family: var(--font-heading); font-size: 1.5rem; color: var(--green); }
+.trendValueNegative { font-family: var(--font-heading); font-size: 1.5rem; color: var(--red); }
+
+.sectionTitle { font-family: var(--font-heading); font-size: 1.2rem; font-style: italic; color: var(--cream); margin: 0 0 0.4rem; }
+.sectionDesc { font-family: var(--font-body); font-size: 0.82rem; color: rgba(241,230,207,0.5); margin: 0 0 1.2rem; }
+
+.insightsList { display: flex; flex-direction: column; gap: 0.8rem; margin-bottom: 2.5rem; }
+.insight { padding: 1.3rem; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; gap: 1rem; border: 1px solid rgba(201,161,58,0.12); background: rgba(20,18,16,0.5); }
+.insightriesgo { border-left: 3px solid var(--red); }
+.insightoportunidad { border-left: 3px solid var(--gold); }
+.insightprediccion { border-left: 3px solid #6b8fb5; }
+
+.insightLeft { flex: 1; }
+.insightTipo { font-family: var(--font-body); font-size: 0.65rem; font-weight: 600; letter-spacing: 0.1em; color: var(--gold); }
+.insight.insightriesgo .insightTipo { color: var(--red); }
+.insight.insightprediccion .insightTipo { color: #6b8fb5; }
+.insightAlumno { font-family: var(--font-body); font-size: 0.72rem; color: rgba(241,230,207,0.45); margin-left: 0.8rem; }
+.insightTitle { font-family: var(--font-heading); font-size: 1rem; color: var(--cream); margin: 0.4rem 0; font-style: italic; }
+.insightDesc { font-family: var(--font-body); font-size: 0.82rem; color: rgba(241,230,207,0.6); line-height: 1.4; margin: 0; }
+.insightBtn { font-family: var(--font-body); font-size: 0.78rem; font-weight: 500; color: var(--cream); background: rgba(201,161,58,0.15); border: 1px solid rgba(201,161,58,0.3); border-radius: 6px; padding: 0.55rem 1rem; cursor: pointer; white-space: nowrap; transition: background 0.2s ease; }
+.insightBtn:hover { background: rgba(201,161,58,0.25); }
+
+.matchesGrid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+.matchCard { padding: 1.2rem; border: 1px solid rgba(201,161,58,0.12); border-radius: 10px; background: rgba(20,18,16,0.5); display: flex; flex-direction: column; gap: 0.6rem; }
+.matchFighters { display: flex; align-items: center; justify-content: space-between; gap: 0.6rem; }
+.fighter { font-family: var(--font-heading); font-size: 0.95rem; font-style: italic; color: var(--cream); flex: 1; }
+.vs { font-family: var(--font-body); font-size: 0.7rem; font-weight: 600; color: var(--red); letter-spacing: 0.1em; }
+.matchDetails { display: flex; gap: 0.4rem; font-family: var(--font-body); font-size: 0.75rem; color: rgba(241,230,207,0.5); }
+.matchScore { display: flex; justify-content: space-between; align-items: center; padding-top: 0.6rem; border-top: 1px solid rgba(255,255,255,0.04); }
+.matchScoreValue { font-family: var(--font-heading); font-size: 1.3rem; color: var(--gold); }
+.matchScoreLabel { font-family: var(--font-body); font-size: 0.7rem; color: rgba(241,230,207,0.4); text-transform: uppercase; letter-spacing: 0.05em; }
+
+@media (max-width: 1024px) { .trends { grid-template-columns: repeat(2, 1fr); } .matchesGrid { grid-template-columns: 1fr; } .insight { flex-direction: column; align-items: flex-start; } }
