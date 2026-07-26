@@ -31,8 +31,8 @@
 
 /* Grid biblioteca */
 .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
-.templateCard { padding: 1.3rem; border: 1px solid rgba(201,161,58,0.15); border-radius: 10px; background: rgba(20,18,16,0.5); display: flex; flex-direction: column; gap: 0.5rem; transition: border-color 0.2s ease; }
-.templateCard:hover { border-color: rgba(201,161,58,0.4); }
+.templateCard { padding: 1.3rem; border-radius: 10px; background: rgba(20,18,16,0.5); display: flex; flex-direction: column; gap: 0.5rem; transition: background 0.2s ease; }
+.templateCard:hover { background: rgba(30,26,22,0.6); }
 .focusTag { font-family: var(--font-body); font-size: 0.65rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gold); background: rgba(201,161,58,0.12); padding: 0.2rem 0.5rem; border-radius: 4px; align-self: flex-start; }
 .templateName { font-family: var(--font-heading); font-size: 1.05rem; font-style: italic; color: var(--cream); margin: 0; }
 .templateDesc { font-family: var(--font-body); font-size: 0.8rem; color: rgba(241,230,207,0.55); line-height: 1.5; margin: 0; }
