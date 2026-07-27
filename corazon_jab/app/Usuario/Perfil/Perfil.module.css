@@ -1,0 +1,358 @@
+/* app/Usuario/Perfil/Perfil.module.css */
+
+.pagina {
+  --ca-crema: #f1e6cf;
+  --ca-oro: #c9a13a;
+  --ca-oro-suave: #e6c565;
+  --ca-rojo: #b7212a;
+  --ca-rojo-oscuro: #7a161c;
+  --ca-negro-alt: rgba(20, 18, 16, 0.5);
+  --ca-borde: rgba(201, 161, 58, 0.2);
+  --ca-texto-muted: rgba(241, 230, 207, 0.5);
+
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 2.5rem 6vw 5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem;
+}
+
+/* ---------- Encabezado ---------- */
+.encabezado {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.encabezado h1 {
+  font-family: var(--font-heading);
+  font-size: clamp(1.6rem, 3vw, 2.2rem);
+  color: var(--ca-oro-suave);
+  margin: 0;
+}
+
+.btnGuardar {
+  font-family: var(--font-body);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  padding: 0.75rem 2rem;
+  font-size: 0.9rem;
+  color: var(--ca-crema);
+  background: linear-gradient(180deg, var(--ca-rojo) 0%, var(--ca-rojo-oscuro) 100%);
+  border: 2px solid var(--ca-oro);
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.btnGuardar:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 14px rgba(184, 35, 43, 0.4);
+}
+
+.btnGuardar:focus-visible {
+  outline: 3px solid var(--ca-oro-suave);
+  outline-offset: 3px;
+}
+
+/* ---------- Secciones ---------- */
+.seccion {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.seccion h2 {
+  font-family: var(--font-heading);
+  font-size: 1.15rem;
+  color: var(--ca-oro-suave);
+  border-left: 3px solid var(--ca-rojo);
+  padding-left: 0.75rem;
+  margin: 0;
+}
+
+/* ---------- Foto de perfil ---------- */
+.fotoPerfilWrap {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.fotoPreview {
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  border: 3px solid var(--ca-oro);
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--ca-negro-alt);
+  flex-shrink: 0;
+}
+
+.fotoImg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.fotoPlaceholder {
+  color: var(--ca-oro-suave);
+  font-family: var(--font-heading);
+  font-size: 2.2rem;
+}
+
+/* ---------- Formulario ---------- */
+.formGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+.campo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.campo span {
+  color: var(--ca-oro-suave);
+  font-size: 0.78rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  font-family: var(--font-body);
+}
+
+.campo input,
+.campo select {
+  background: var(--ca-negro-alt);
+  border: 1px solid var(--ca-borde);
+  color: var(--ca-crema);
+  padding: 0.7rem 0.9rem;
+  font-size: 0.9rem;
+  font-family: var(--font-body);
+  transition: border-color 0.2s ease;
+}
+
+.campo input:focus,
+.campo select:focus {
+  border-color: var(--ca-oro);
+  outline: none;
+}
+
+.campo select option {
+  color: var(--ca-crema);
+  background: #1c130f;
+}
+
+.campo select option:checked {
+  color: #1a1206;
+  background: var(--ca-oro);
+}
+
+/* ---------- Entrenador ---------- */
+.entrenadorTitleRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.entrenadorCard {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.entrenadorAvatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background: rgba(201, 161, 58, 0.15);
+  color: var(--ca-oro);
+  font-family: var(--font-heading);
+  font-size: 1.1rem;
+}
+
+.entrenadorAvatarImg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.entrenadorInfo {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.entrenadorNombre {
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--ca-crema);
+  text-decoration: none;
+}
+
+.entrenadorNombre:hover {
+  color: var(--ca-oro-suave);
+  text-decoration: underline;
+}
+
+.entrenadorEspecialidad {
+  font-family: var(--font-body);
+  font-size: 0.72rem;
+  color: var(--ca-texto-muted);
+}
+
+.entrenadorVacio {
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  color: var(--ca-texto-muted);
+  margin: 0;
+}
+
+.btnQuitarEntrenador {
+  font-family: var(--font-body);
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--ca-rojo);
+  background: rgba(183, 33, 42, 0.1);
+  border: 1px solid rgba(183, 33, 42, 0.35);
+  border-radius: 4px;
+  padding: 0.5rem 0.9rem;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.2s ease;
+}
+
+.btnQuitarEntrenador:hover {
+  background: rgba(183, 33, 42, 0.22);
+}
+
+.entrenadorEditor {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.entrenadorOpciones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+
+.entrenadorOpcionBtn {
+  font-family: var(--font-body);
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: var(--ca-texto-muted);
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--ca-borde);
+  border-radius: 4px;
+  padding: 0.55rem 1rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.entrenadorOpcionBtn:hover {
+  border-color: var(--ca-oro);
+  color: var(--ca-crema);
+}
+
+.entrenadorOpcionActiva {
+  background: rgba(201, 161, 58, 0.18);
+  border-color: var(--ca-oro);
+  color: var(--ca-oro-suave);
+}
+
+.entrenadorSelect,
+.entrenadorInput {
+  font-family: var(--font-body);
+  font-size: 0.88rem;
+  color: var(--ca-crema);
+  background: var(--ca-negro-alt);
+  border: 1px solid var(--ca-borde);
+  border-radius: 4px;
+  padding: 0.7rem 0.9rem;
+}
+
+.entrenadorSelect option {
+  background: #1c130f;
+  color: var(--ca-crema);
+}
+
+.entrenadorEditorAcciones {
+  display: flex;
+  gap: 0.6rem;
+}
+
+.btnGuardarEntrenador {
+  font-family: var(--font-body);
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #1a1206;
+  background: var(--ca-oro);
+  border: none;
+  border-radius: 4px;
+  padding: 0.6rem 1.3rem;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.btnGuardarEntrenador:hover {
+  background: var(--ca-oro-suave);
+}
+
+.btnCancelarEntrenador {
+  font-family: var(--font-body);
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: var(--ca-texto-muted);
+  background: transparent;
+  border: 1px solid var(--ca-borde);
+  border-radius: 4px;
+  padding: 0.6rem 1.3rem;
+  cursor: pointer;
+  transition: color 0.2s ease, border-color 0.2s ease;
+}
+
+.btnCancelarEntrenador:hover {
+  color: var(--ca-crema);
+  border-color: rgba(241, 230, 207, 0.4);
+}
+
+/* ---------- Botón secundario ---------- */
+.btnSecundario {
+  background: var(--ca-negro-alt);
+  border: 1px solid var(--ca-oro);
+  color: var(--ca-oro-suave);
+  padding: 0.6rem 1.2rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  font-family: var(--font-body);
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.btnSecundario:hover {
+  background: rgba(217, 179, 74, 0.12);
+  transform: translateY(-1px);
+}
+
+.btnSecundario:focus-visible {
+  outline: 2px solid var(--ca-oro-suave);
+  outline-offset: 2px;
+}

@@ -1,7 +1,13 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import styles from './Directorio.module.css';
+import {
+  obtenerEntrenadoresPublicos,
+  eliminarEntrenador,
+  type PerfilEntrenador,
+} from '../../lib/entrenadorStorage';
+import { eliminarCuenta } from '../../lib/authStorage';
 
 type Usuario = {
   id: number;
@@ -21,7 +27,7 @@ type Usuario = {
   nombreEntrenador?: string;
 };
 
-const USUARIOS: Usuario[] = [
+const USUARIOS_INICIALES: Usuario[] = [
   {
     id: 1, nombre: 'Iker Domínguez', edad: 22, peso: 61.2, estatura: 172,
     nacionalidad: 'Mexicana', gimnasio: 'Gimnasio Corazón Azteca',
@@ -64,78 +70,186 @@ const USUARIOS: Usuario[] = [
   },
 ];
 
-const FILTROS = ['Todos', 'Con entrenador', 'Independientes'] as const;
-type Filtro = (typeof FILTROS)[number];
+const FILTROS_USUARIOS = ['Todos', 'Con entrenador', 'Independientes'] as const;
+type FiltroUsuarios = (typeof FILTROS_USUARIOS)[number];
+
+type Tab = 'alumnos' | 'entrenadores';
 
 export default function DirectorioAdmin() {
-  const [filtro, setFiltro] = useState<Filtro>('Todos');
+  const [tab, setTab] = useState<Tab>('alumnos');
+  const [filtro, setFiltro] = useState<FiltroUsuarios>('Todos');
+  const [usuarios, setUsuarios] = useState<Usuario[]>(USUARIOS_INICIALES);
+  const [entrenadores, setEntrenadores] = useState<PerfilEntrenador[]>([]);
 
-  const usuariosFiltrados = USUARIOS.filter((u) => {
+  useEffect(() => {
+    setEntrenadores(obtenerEntrenadoresPublicos());
+  }, []);
+
+  const usuariosFiltrados = usuarios.filter((u) => {
     if (filtro === 'Con entrenador') return u.tieneEntrenador;
     if (filtro === 'Independientes') return !u.tieneEntrenador;
     return true;
   });
 
+  const handleEliminarUsuario = (id: number, nombre: string) => {
+    const confirmado = window.confirm(
+      `¿Eliminar el perfil de "${nombre}"? Esta acción no se puede deshacer.`
+    );
+    if (!confirmado) return;
+
+    // Elimina también su cuenta de login si existe (los usuarios de ejemplo
+    // 1-5 comparten id con su usuarioId de sesión, ver authStorage.ts).
+    eliminarCuenta(id);
+    setUsuarios((prev) => prev.filter((u) => u.id !== id));
+  };
+
+  const handleEliminarEntrenador = (ent: PerfilEntrenador) => {
+    const confirmado = window.confirm(
+      `¿Eliminar el perfil de entrenador "${ent.nombre}"? Esta acción no se puede deshacer.`
+    );
+    if (!confirmado) return;
+
+    eliminarEntrenador(ent.id);
+    // Si el id sigue el patrón "entrenador-<usuarioId>" (creado desde el
+    // registro real), también eliminamos su cuenta de login.
+    const usuarioId = Number(ent.id.replace('entrenador-', ''));
+    if (!Number.isNaN(usuarioId)) {
+      eliminarCuenta(usuarioId);
+    }
+    setEntrenadores((prev) => prev.filter((e) => e.id !== ent.id));
+  };
+
   return (
     <main className={styles.pagina}>
-      <h1>Directorio de usuarios</h1>
+      <h1>Directorio</h1>
       <p className={styles.subtitulo}>
-        {USUARIOS.length} boxeadores registrados en la plataforma.
+        Gestión de alumnos y entrenadores registrados en la plataforma.
       </p>
 
-      <div className={styles.filtros}>
-        {FILTROS.map((f) => (
-          <button
-            key={f}
-            type="button"
-            className={`${styles.filtroBtn} ${filtro === f ? styles.filtroActivo : ''}`}
-            onClick={() => setFiltro(f)}
-          >
-            {f}
-          </button>
-        ))}
+      <div className={styles.tabs}>
+        <button
+          type="button"
+          className={`${styles.tabBtn} ${tab === 'alumnos' ? styles.tabActivo : ''}`}
+          onClick={() => setTab('alumnos')}
+        >
+          Alumnos ({usuarios.length})
+        </button>
+        <button
+          type="button"
+          className={`${styles.tabBtn} ${tab === 'entrenadores' ? styles.tabActivo : ''}`}
+          onClick={() => setTab('entrenadores')}
+        >
+          Entrenadores ({entrenadores.length})
+        </button>
       </div>
 
-      <div className={styles.grid}>
-        {usuariosFiltrados.map((u) => (
-          <article key={u.id} className={styles.tarjeta}>
-            <div className={styles.tarjetaHeader}>
-              <div
-                className={styles.foto}
-                style={{ '--foto': `url('${u.foto}')` } as React.CSSProperties}
-              />
-              <div className={styles.infoHeader}>
-                <h3>{u.nombre}</h3>
-                <p className={styles.datoLinea}>
-                  {u.edad} años · {u.peso} kg · {u.estatura} cm
-                </p>
-                <p className={styles.datoLinea}>
-                  {u.nacionalidad} · {u.gimnasio}
-                </p>
-              </div>
-            </div>
+      {tab === 'alumnos' && (
+        <>
+          <div className={styles.filtros}>
+            {FILTROS_USUARIOS.map((f) => (
+              <button
+                key={f}
+                type="button"
+                className={`${styles.filtroBtn} ${filtro === f ? styles.filtroActivo : ''}`}
+                onClick={() => setFiltro(f)}
+              >
+                {f}
+              </button>
+            ))}
+          </div>
 
-            <div className={styles.record}>
-              <span><strong>{u.peleas}</strong> peleas</span>
-              <span><strong>{u.victorias}</strong> V</span>
-              <span><strong>{u.empates}</strong> E</span>
-              <span><strong>{u.derrotas}</strong> D</span>
-              <span><strong>{u.victoriasKO}</strong> KO</span>
-            </div>
+          <div className={styles.grid}>
+            {usuariosFiltrados.map((u) => (
+              <article key={u.id} className={styles.tarjeta}>
+                <div className={styles.tarjetaHeader}>
+                  <div
+                    className={styles.foto}
+                    style={{ '--foto': `url('${u.foto}')` } as React.CSSProperties}
+                  />
+                  <div className={styles.infoHeader}>
+                    <h3>{u.nombre}</h3>
+                    <p className={styles.datoLinea}>
+                      {u.edad} años · {u.peso} kg · {u.estatura} cm
+                    </p>
+                    <p className={styles.datoLinea}>
+                      {u.nacionalidad} · {u.gimnasio}
+                    </p>
+                  </div>
+                </div>
 
-            {u.tieneEntrenador ? (
-              <span className={styles.entrenadorBadge}>
-                Entrenado por <strong>{u.nombreEntrenador}</strong>
-              </span>
-            ) : (
-              <span className={styles.independienteBadge}>Entrenamiento independiente</span>
-            )}
-          </article>
-        ))}
-      </div>
+                <div className={styles.record}>
+                  <span><strong>{u.peleas}</strong> peleas</span>
+                  <span><strong>{u.victorias}</strong> V</span>
+                  <span><strong>{u.empates}</strong> E</span>
+                  <span><strong>{u.derrotas}</strong> D</span>
+                  <span><strong>{u.victoriasKO}</strong> KO</span>
+                </div>
 
-      {usuariosFiltrados.length === 0 && (
-        <p className={styles.vacio}>No hay usuarios en esta categoría.</p>
+                {u.tieneEntrenador ? (
+                  <span className={styles.entrenadorBadge}>
+                    Entrenado por <strong>{u.nombreEntrenador}</strong>
+                  </span>
+                ) : (
+                  <span className={styles.independienteBadge}>Entrenamiento independiente</span>
+                )}
+
+                <button
+                  type="button"
+                  className={styles.btnEliminarPerfil}
+                  onClick={() => handleEliminarUsuario(u.id, u.nombre)}
+                >
+                  Eliminar perfil
+                </button>
+              </article>
+            ))}
+          </div>
+
+          {usuariosFiltrados.length === 0 && (
+            <p className={styles.vacio}>No hay usuarios en esta categoría.</p>
+          )}
+        </>
+      )}
+
+      {tab === 'entrenadores' && (
+        <>
+          <div className={styles.grid}>
+            {entrenadores.map((ent) => (
+              <article key={ent.id} className={styles.tarjeta}>
+                <div className={styles.tarjetaHeader}>
+                  <div
+                    className={styles.foto}
+                    style={ent.foto ? ({ '--foto': `url('${ent.foto}')` } as React.CSSProperties) : undefined}
+                  />
+                  <div className={styles.infoHeader}>
+                    <h3>{ent.nombre}</h3>
+                    <p className={styles.datoLinea}>{ent.especialidad}</p>
+                    <p className={styles.datoLinea}>{ent.anosTrayectoria} años de trayectoria</p>
+                  </div>
+                </div>
+
+                {ent.logros.length > 0 && (
+                  <ul className={styles.logrosLista}>
+                    {ent.logros.slice(0, 2).map((logro, i) => (
+                      <li key={i}>{logro}</li>
+                    ))}
+                  </ul>
+                )}
+
+                <button
+                  type="button"
+                  className={styles.btnEliminarPerfil}
+                  onClick={() => handleEliminarEntrenador(ent)}
+                >
+                  Eliminar perfil
+                </button>
+              </article>
+            ))}
+          </div>
+
+          {entrenadores.length === 0 && (
+            <p className={styles.vacio}>No hay entrenadores registrados.</p>
+          )}
+        </>
       )}
     </main>
   );

@@ -116,6 +116,22 @@ export function actualizarFotoCuenta(usuarioId: number, foto: string): void {
   guardarCuentas(cuentas);
 }
 
+/** Elimina una cuenta por usuarioId (acción de admin) */
+export function eliminarCuenta(usuarioId: number): void {
+  guardarCuentas(obtenerCuentas().filter((c) => c.usuarioId !== usuarioId));
+}
+
+/** Actualiza el nombre y/o foto de una cuenta ya registrada, por usuarioId */
+export function actualizarCuenta(
+  usuarioId: number,
+  data: { nombre?: string; foto?: string }
+): void {
+  const cuentas = obtenerCuentas().map((c) =>
+    c.usuarioId === usuarioId ? { ...c, ...data } : c
+  );
+  guardarCuentas(cuentas);
+}
+
 /** Autentica por email + password. Devuelve null si no coincide o está pendiente de aprobación. */
 export function autenticar(email: string, password: string): Cuenta | null {
   const normalizado = email.trim().toLowerCase();

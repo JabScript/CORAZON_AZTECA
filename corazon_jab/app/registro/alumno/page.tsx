@@ -108,6 +108,7 @@ export default function RegistroAlumnoPage() {
 
     // Guarda los datos deportivos/de entrenador del alumno
     registrarAlumno({
+      usuarioId: cuenta.usuarioId,
       nombre,
       apellido,
       apodo: apodo.trim() || undefined,

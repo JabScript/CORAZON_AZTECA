@@ -188,3 +188,10 @@ function actualizarListaPublica(perfil: PerfilEntrenador): void {
   }
   localStorage.setItem(ENTRENADORES_KEY, JSON.stringify(lista));
 }
+
+/** Elimina el perfil público de un entrenador (acción de admin) */
+export function eliminarEntrenador(id: string): void {
+  if (typeof window === 'undefined') return;
+  const lista = obtenerEntrenadoresPublicos().filter((e) => e.id !== id);
+  localStorage.setItem(ENTRENADORES_KEY, JSON.stringify(lista));
+}

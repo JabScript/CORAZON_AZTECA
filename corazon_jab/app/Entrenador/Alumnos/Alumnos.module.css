@@ -61,6 +61,12 @@
   gap: 1.5rem;
 }
 
+.tarjetaWrap {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
 .tarjeta {
   background: linear-gradient(180deg, var(--ca-negro-alt) 0%, #0a0503 100%);
   border: 1px solid var(--ca-borde);
@@ -76,6 +82,24 @@
 .tarjeta:hover {
   border-color: var(--ca-oro);
   transform: translateY(-3px);
+}
+
+.btnEliminarAlumno {
+  align-self: flex-start;
+  background: transparent;
+  border: 1px solid var(--ca-rojo-oscuro);
+  color: var(--ca-texto-muted);
+  padding: 0.4rem 0.8rem;
+  font-weight: 600;
+  font-size: 0.75rem;
+  cursor: pointer;
+  transition: border-color 0.2s ease, color 0.2s ease, background 0.2s ease;
+}
+
+.btnEliminarAlumno:hover {
+  border-color: var(--ca-rojo);
+  color: var(--ca-crema);
+  background: rgba(183, 33, 42, 0.12);
 }
 
 .foto {

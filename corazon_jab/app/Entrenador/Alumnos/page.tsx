@@ -18,11 +18,20 @@ const ESTADOS_SALUD = ['Todos', 'Lesionados', 'Sin lesión'] as const;
 const ESTADOS_TITULO = ['Todos', 'Campeones'] as const;
 
 export default function AlumnosEntrenador() {
+  const [alumnos, setAlumnos] = useState(ALUMNOS);
   const [categoria, setCategoria] = useState('Todas');
   const [estadoSalud, setEstadoSalud] = useState<typeof ESTADOS_SALUD[number]>('Todos');
   const [estadoTitulo, setEstadoTitulo] = useState<typeof ESTADOS_TITULO[number]>('Todos');
 
-  const alumnosFiltrados = ALUMNOS.filter((a) => {
+  const handleEliminarAlumno = (id: number, nombre: string) => {
+    const confirmado = window.confirm(
+      `¿Eliminar a "${nombre}" de tu lista de alumnos? Esta acción no se puede deshacer.`
+    );
+    if (!confirmado) return;
+    setAlumnos((prev) => prev.filter((a) => a.id !== id));
+  };
+
+  const alumnosFiltrados = alumnos.filter((a) => {
     const coincideCategoria = categoria === 'Todas' || a.categoria === categoria;
     const coincideSalud =
       estadoSalud === 'Todos' ||
@@ -32,14 +41,14 @@ export default function AlumnosEntrenador() {
     return coincideCategoria && coincideSalud && coincideTitulo;
   });
 
-  const lesionadosCount = ALUMNOS.filter((a) => a.lesionado).length;
-  const campeonesCount = ALUMNOS.filter((a) => a.esCampeon).length;
+  const lesionadosCount = alumnos.filter((a) => a.lesionado).length;
+  const campeonesCount = alumnos.filter((a) => a.esCampeon).length;
 
   return (
     <main className={styles.pagina}>
       <h1>Mis alumnos</h1>
       <p className={styles.subtitulo}>
-        {ALUMNOS.length} alumnos activos bajo tu cargo.
+        {alumnos.length} alumnos activos bajo tu cargo.
         {campeonesCount > 0 && (
           <span className={styles.alertaCampeones}> 🏆 {campeonesCount} campeón{campeonesCount !== 1 ? 'es' : ''} de división</span>
         )}
@@ -86,30 +95,40 @@ export default function AlumnosEntrenador() {
 
       <div className={styles.grid}>
         {alumnosFiltrados.map((a) => (
-          <Link key={a.id} href={`/Entrenador/Alumnos/${a.id}`} className={styles.tarjeta}>
-            <div
-              className={styles.foto}
-              style={{ '--foto': `url('${a.foto}')` } as React.CSSProperties}
-            />
-            <div className={styles.info}>
-              <h3>{a.nombre}</h3>
-              <p className={styles.categoria}>{a.categoria}</p>
-              <span className={styles.nivel}>{a.nivel}</span>
-              {a.esCampeon && (
-                <span className={styles.badgeCampeon}>
-                  🏆 Campeón {a.categoria} · {a.federacion}
-                </span>
-              )}
-              {a.lesionado ? (
-                <span className={styles.badgeLesion} data-alta={a.altaMedica}>
-                  🩹 {a.tipoLesion}
-                  {a.altaMedica ? ' · Alta médica' : ' · Sin alta'}
-                </span>
-              ) : (
-                <span className={styles.badgeSano}>✓ Sin lesión</span>
-              )}
-            </div>
-          </Link>
+          <div key={a.id} className={styles.tarjetaWrap}>
+            <Link href={`/Entrenador/Alumnos/${a.id}`} className={styles.tarjeta}>
+              <div
+                className={styles.foto}
+                style={{ '--foto': `url('${a.foto}')` } as React.CSSProperties}
+              />
+              <div className={styles.info}>
+                <h3>{a.nombre}</h3>
+                <p className={styles.categoria}>{a.categoria}</p>
+                <span className={styles.nivel}>{a.nivel}</span>
+                {a.esCampeon && (
+                  <span className={styles.badgeCampeon}>
+                    🏆 Campeón {a.categoria} · {a.federacion}
+                  </span>
+                )}
+                {a.lesionado ? (
+                  <span className={styles.badgeLesion} data-alta={a.altaMedica}>
+                    🩹 {a.tipoLesion}
+                    {a.altaMedica ? ' · Alta médica' : ' · Sin alta'}
+                  </span>
+                ) : (
+                  <span className={styles.badgeSano}>✓ Sin lesión</span>
+                )}
+              </div>
+            </Link>
+            <button
+              type="button"
+              className={styles.btnEliminarAlumno}
+              onClick={() => handleEliminarAlumno(a.id, a.nombre)}
+              aria-label={`Eliminar a ${a.nombre} de tus alumnos`}
+            >
+              Eliminar alumno
+            </button>
+          </div>
         ))}
       </div>
 
