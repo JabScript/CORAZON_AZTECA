@@ -1,8 +1,17 @@
 // app/usuario/page.tsx (Dashboard)
 "use client";
 
+import { useState, useEffect } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { obtenerSesion } from "../lib/sesionStorage";
+import {
+  obtenerAlumnoPorUsuarioId,
+  actualizarEntrenadorAlumno,
+  type DatosAlumno,
+  type OrigenEntrenador,
+} from "../lib/alumnoStorage";
+import { obtenerEntrenadoresPublicos, type PerfilEntrenador } from "../lib/entrenadorStorage";
 import styles from "./Dashboard.module.css";
 
 const stats = [
@@ -32,6 +41,47 @@ export default function DashboardPage() {
   const maxVal = Math.max(...weeklyProgress.map(w => Math.max(w.hours, w.intensity)));
   const sesion = obtenerSesion();
   const primerNombre = sesion.nombre.split(" ")[0] || sesion.nombre;
+
+  const [datosAlumno, setDatosAlumno] = useState<DatosAlumno | null>(null);
+  const [entrenadores, setEntrenadores] = useState<PerfilEntrenador[]>([]);
+  const [editandoEntrenador, setEditandoEntrenador] = useState(false);
+  const [opcionEntrenador, setOpcionEntrenador] = useState<OrigenEntrenador>("independiente");
+  const [entrenadorIdSeleccionado, setEntrenadorIdSeleccionado] = useState("");
+  const [nombreManual, setNombreManual] = useState("");
+
+  useEffect(() => {
+    setDatosAlumno(obtenerAlumnoPorUsuarioId(sesion.usuarioId));
+    setEntrenadores(obtenerEntrenadoresPublicos());
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [sesion.usuarioId]);
+
+  const entrenadorActual =
+    datosAlumno?.origenEntrenador === "directorio" && datosAlumno.entrenadorId
+      ? entrenadores.find((e) => e.id === datosAlumno.entrenadorId)
+      : null;
+
+  const handleAbrirEditor = () => {
+    setOpcionEntrenador(datosAlumno?.origenEntrenador ?? "independiente");
+    setEntrenadorIdSeleccionado(datosAlumno?.entrenadorId ?? "");
+    setNombreManual(datosAlumno?.nombreEntrenadorManual ?? "");
+    setEditandoEntrenador(true);
+  };
+
+  const handleGuardarEntrenador = () => {
+    actualizarEntrenadorAlumno(sesion.usuarioId, {
+      origenEntrenador: opcionEntrenador,
+      entrenadorId: opcionEntrenador === "directorio" ? entrenadorIdSeleccionado : undefined,
+      nombreEntrenadorManual: opcionEntrenador === "manual" ? nombreManual.trim() : undefined,
+    });
+    setDatosAlumno(obtenerAlumnoPorUsuarioId(sesion.usuarioId));
+    setEditandoEntrenador(false);
+  };
+
+  const handleQuitarEntrenador = () => {
+    if (!confirm("¿Quieres dejar de tener entrenador y pasar a entrenamiento independiente?")) return;
+    actualizarEntrenadorAlumno(sesion.usuarioId, { origenEntrenador: "independiente" });
+    setDatosAlumno(obtenerAlumnoPorUsuarioId(sesion.usuarioId));
+  };
 
   return (
     <div className={styles.page}>
@@ -76,6 +126,108 @@ export default function DashboardPage() {
             <span className={styles.statSub}>{s.sub}</span>
           </div>
         ))}
+      </div>
+
+      {/* Entrenador */}
+      <div className={styles.entrenadorSection}>
+        <div className={styles.entrenadorHeader}>
+          <h2 className={styles.sectionTitle}>Mi Entrenador</h2>
+          {!editandoEntrenador && (
+            <button type="button" className={styles.btnCambiarEntrenador} onClick={handleAbrirEditor}>
+              {datosAlumno && datosAlumno.origenEntrenador !== "independiente" ? "Cambiar entrenador" : "Elegir entrenador"}
+            </button>
+          )}
+        </div>
+
+        {!editandoEntrenador ? (
+          <>
+            {entrenadorActual ? (
+              <div className={styles.entrenadorCard}>
+                <div className={styles.entrenadorAvatar}>
+                  {entrenadorActual.foto ? (
+                    <Image src={entrenadorActual.foto} alt={entrenadorActual.nombre} width={48} height={48} className={styles.entrenadorAvatarImg} unoptimized />
+                  ) : (
+                    entrenadorActual.nombre.charAt(0).toUpperCase()
+                  )}
+                </div>
+                <div className={styles.entrenadorInfo}>
+                  <Link href={`/entrenadores/${entrenadorActual.id}`} className={styles.entrenadorNombre}>{entrenadorActual.nombre}</Link>
+                  <span className={styles.entrenadorEspecialidad}>{entrenadorActual.especialidad}</span>
+                </div>
+                <button type="button" className={styles.btnQuitarEntrenador} onClick={handleQuitarEntrenador}>
+                  Quitar entrenador
+                </button>
+              </div>
+            ) : datosAlumno?.origenEntrenador === "manual" && datosAlumno.nombreEntrenadorManual ? (
+              <div className={styles.entrenadorCard}>
+                <div className={styles.entrenadorAvatar}>{datosAlumno.nombreEntrenadorManual.charAt(0).toUpperCase()}</div>
+                <div className={styles.entrenadorInfo}>
+                  <span className={styles.entrenadorNombre}>{datosAlumno.nombreEntrenadorManual}</span>
+                  <span className={styles.entrenadorEspecialidad}>Agregado manualmente (no está en el directorio)</span>
+                </div>
+                <button type="button" className={styles.btnQuitarEntrenador} onClick={handleQuitarEntrenador}>
+                  Quitar entrenador
+                </button>
+              </div>
+            ) : (
+              <p className={styles.entrenadorVacio}>Actualmente entrenas de forma independiente, sin entrenador asignado.</p>
+            )}
+          </>
+        ) : (
+          <div className={styles.entrenadorEditor}>
+            <div className={styles.entrenadorOpciones}>
+              <button
+                type="button"
+                className={`${styles.entrenadorOpcionBtn} ${opcionEntrenador === "independiente" ? styles.entrenadorOpcionActiva : ""}`}
+                onClick={() => setOpcionEntrenador("independiente")}
+              >
+                Independiente
+              </button>
+              <button
+                type="button"
+                className={`${styles.entrenadorOpcionBtn} ${opcionEntrenador === "directorio" ? styles.entrenadorOpcionActiva : ""}`}
+                onClick={() => setOpcionEntrenador("directorio")}
+              >
+                Del directorio
+              </button>
+              <button
+                type="button"
+                className={`${styles.entrenadorOpcionBtn} ${opcionEntrenador === "manual" ? styles.entrenadorOpcionActiva : ""}`}
+                onClick={() => setOpcionEntrenador("manual")}
+              >
+                No está en el directorio
+              </button>
+            </div>
+
+            {opcionEntrenador === "directorio" && (
+              <select
+                className={styles.entrenadorSelect}
+                value={entrenadorIdSeleccionado}
+                onChange={(e) => setEntrenadorIdSeleccionado(e.target.value)}
+              >
+                <option value="">— Elige un entrenador —</option>
+                {entrenadores.map((ent) => (
+                  <option key={ent.id} value={ent.id}>{ent.nombre} · {ent.especialidad}</option>
+                ))}
+              </select>
+            )}
+
+            {opcionEntrenador === "manual" && (
+              <input
+                type="text"
+                className={styles.entrenadorInput}
+                placeholder="Nombre de tu entrenador"
+                value={nombreManual}
+                onChange={(e) => setNombreManual(e.target.value)}
+              />
+            )}
+
+            <div className={styles.entrenadorEditorAcciones}>
+              <button type="button" className={styles.btnGuardarEntrenador} onClick={handleGuardarEntrenador}>Guardar</button>
+              <button type="button" className={styles.btnCancelarEntrenador} onClick={() => setEditandoEntrenador(false)}>Cancelar</button>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Bottom grid */}
