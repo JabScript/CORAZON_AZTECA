@@ -1,10 +1,6 @@
 /* app/components/Secciones/Secciones.module.css */
 
 .section {
-  --gold: #c9a13a;
-  --gold-light: #e6c565;
-  --red: #b7212a;
-  --cream: #f1e6cf;
   --bg: #0a0908;
 
   background: transparent;

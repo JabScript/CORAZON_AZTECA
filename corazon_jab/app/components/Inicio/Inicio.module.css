@@ -1,11 +1,7 @@
 /* app/Inicio/Inicio.module.css */
 
 .hero {
-  --gold: #c9a13a;
-  --gold-light: #e6c565;
-  --red: #b7212a;
   --red-dark: #7a161c;
-  --cream: #f1e6cf;
   --bg: #0a0908;
 
   font-family: var(--font-body);
