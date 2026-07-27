@@ -6,6 +6,7 @@ import {
   obtenerArticulos,
   aprobarArticulo,
   rechazarArticulo,
+  eliminarArticulo,
   type ArticuloBlog,
   type EstadoArticulo,
 } from '../../lib/blogStorage';
@@ -40,14 +41,21 @@ export default function ArticulosAdminPage() {
     refrescar();
   };
 
+  const handleEliminar = (id: number, titulo: string) => {
+    const confirmado = window.confirm(`¿Eliminar "${titulo}"? Esta acción no se puede deshacer.`);
+    if (!confirmado) return;
+    eliminarArticulo(id);
+    refrescar();
+  };
+
   const filtrados = articulos.filter((a) => filtro === 'todos' || a.estado === filtro);
   const pendientesCount = articulos.filter((a) => a.estado === 'pendiente').length;
 
   return (
     <main className={styles.pagina}>
-      <h1>Artículos del Blog</h1>
+      <h1>Artículos y Logros</h1>
       <p className={styles.subtitulo}>
-        Revisa, aprueba o rechaza los artículos enviados por entrenadores y alumnos.
+        Revisa, aprueba o rechaza los artículos y logros deportivos enviados por entrenadores y alumnos.
         {pendientesCount > 0 && (
           <span className={styles.pendingBadge}> {pendientesCount} pendiente{pendientesCount !== 1 ? 's' : ''} de revisión</span>
         )}
@@ -74,6 +82,9 @@ export default function ArticulosAdminPage() {
             <article key={a.id} className={styles.tarjeta}>
               <div className={styles.cabecera}>
                 <div>
+                  <span className={styles.tipoBadge} data-tipo={a.tipo}>
+                    {a.tipo === 'logro' ? `${a.icono ?? '🏆'} LOGRO` : '📝 ARTÍCULO'}
+                  </span>
                   <span className={styles.estado} data-estado={a.estado}>{a.estado.toUpperCase()}</span>
                   <h3 className={styles.titulo}>{a.titulo}</h3>
                   <p className={styles.autor}>
@@ -99,16 +110,21 @@ export default function ArticulosAdminPage() {
                   {expandido === a.id ? 'Ocultar contenido' : 'Ver contenido completo'}
                 </button>
 
-                {a.estado === 'pendiente' && (
-                  <div className={styles.botones}>
-                    <button type="button" className={styles.btnRechazar} onClick={() => handleRechazar(a.id)}>
-                      Rechazar
-                    </button>
-                    <button type="button" className={styles.btnAprobar} onClick={() => handleAprobar(a.id)}>
-                      Aprobar y publicar
-                    </button>
-                  </div>
-                )}
+                <div className={styles.botones}>
+                  {a.estado === 'pendiente' && (
+                    <>
+                      <button type="button" className={styles.btnRechazar} onClick={() => handleRechazar(a.id)}>
+                        Rechazar
+                      </button>
+                      <button type="button" className={styles.btnAprobar} onClick={() => handleAprobar(a.id)}>
+                        Aprobar y publicar
+                      </button>
+                    </>
+                  )}
+                  <button type="button" className={styles.btnEliminar} onClick={() => handleEliminar(a.id, a.titulo)}>
+                    Eliminar
+                  </button>
+                </div>
 
                 {a.estado === 'rechazado' && a.motivoRechazo && (
                   <span className={styles.motivo}>Motivo: {a.motivoRechazo}</span>

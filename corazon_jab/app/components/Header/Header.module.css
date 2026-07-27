@@ -206,6 +206,7 @@
   background: linear-gradient(180deg, var(--red), #7a161c);
   border: 1px solid var(--gold);
   border-radius: 4px;
+  cursor: pointer;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 

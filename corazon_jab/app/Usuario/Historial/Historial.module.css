@@ -306,11 +306,62 @@
 }
 
 /* ---------- Logros ---------- */
+.logrosHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+}
+
 .logros h2 {
   font-size: 1.15rem;
   color: var(--ca-oro-suave);
-  margin: 0 0 1rem;
+  margin: 0;
   font-style: italic;
+}
+
+.btnCompartirLogro {
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--ca-crema);
+  background: var(--ca-rojo);
+  border-radius: 6px;
+  padding: 0.4rem 0.8rem;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background 0.2s ease;
+}
+
+.btnCompartirLogro:hover {
+  background: #9a1b23;
+}
+
+.logrosVacio {
+  text-align: center;
+  padding: 1.5rem 1rem;
+  background: var(--ca-negro-alt);
+  border: 1px dashed var(--ca-borde);
+}
+
+.logrosVacio p {
+  color: var(--ca-texto-muted);
+  font-size: 0.85rem;
+  margin: 0 0 0.5rem;
+}
+
+.logrosVacioLink {
+  font-family: var(--font-body);
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--ca-oro);
+  text-decoration: none;
+}
+
+.logrosVacioLink:hover {
+  color: var(--ca-oro-suave);
 }
 
 .logrosLista {

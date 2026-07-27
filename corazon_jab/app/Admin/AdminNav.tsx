@@ -1,17 +1,25 @@
 'use client';
 
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
+import { cerrarSesion, obtenerSesion } from '../lib/sesionStorage';
 import styles from './AdminNav.module.css';
 
 const SECCIONES = [
   { href: '/Admin', etiqueta: 'Panel' },
   { href: '/Admin/Directorio', etiqueta: 'Directorio' },
-  { href: '/Admin/Articulos', etiqueta: 'Artículos del Blog' },
+  { href: '/Admin/Articulos', etiqueta: 'Artículos y Logros' },
 ];
 
 export default function AdminNav() {
   const pathname = usePathname();
+  const router = useRouter();
+  const sesion = obtenerSesion();
+
+  const handleLogout = () => {
+    cerrarSesion();
+    router.push('/login');
+  };
 
   return (
     <nav className={styles.nav} aria-label="Secciones de administración">
@@ -33,6 +41,10 @@ export default function AdminNav() {
           );
         })}
         <span className={styles.adminTag}>Admin</span>
+        <span className={styles.adminUser}>{sesion.nombre}</span>
+        <button type="button" className={styles.logoutBtn} onClick={handleLogout}>
+          Cerrar sesión
+        </button>
       </div>
     </nav>
   );

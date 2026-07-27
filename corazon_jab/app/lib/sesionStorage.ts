@@ -21,11 +21,13 @@ export interface PeleaProxima {
 const SESION_KEY = 'corazon_azteca_sesion';
 const PELEAS_PROXIMAS_KEY = 'corazon_azteca_peleas_proximas';
 
-// Sesión por defecto (simula un admin para desarrollo)
-const SESION_DEFAULT: Sesion = {
-  usuarioId: 1,
-  nombre: 'Iker Domínguez',
-  rol: 'admin',
+// Sesión de respaldo únicamente para renderizado en servidor (SSR) antes de
+// hidratar. Nunca se usa como sesión real: `haySesion()` es la fuente de
+// verdad sobre si alguien inició sesión de verdad.
+const SESION_VACIA: Sesion = {
+  usuarioId: 0,
+  nombre: '',
+  rol: 'usuario',
 };
 
 // Peleas próximas de ejemplo
@@ -40,22 +42,34 @@ const PELEAS_DEFAULT: PeleaProxima[] = [
   },
 ];
 
-/** Obtiene la sesión actual */
+/** Verifica si hay una sesión real guardada (usuario logueado) */
+export function haySesion(): boolean {
+  if (typeof window === 'undefined') return false;
+  return localStorage.getItem(SESION_KEY) !== null;
+}
+
+/** Obtiene la sesión actual. Si no hay ninguna, devuelve una sesión vacía (sin loguear). */
 export function obtenerSesion(): Sesion {
-  if (typeof window === 'undefined') return SESION_DEFAULT;
+  if (typeof window === 'undefined') return SESION_VACIA;
   try {
     const raw = localStorage.getItem(SESION_KEY);
-    if (!raw) return SESION_DEFAULT;
+    if (!raw) return SESION_VACIA;
     return JSON.parse(raw) as Sesion;
   } catch {
-    return SESION_DEFAULT;
+    return SESION_VACIA;
   }
 }
 
-/** Guarda/cambia la sesión */
+/** Guarda/cambia la sesión (usado al iniciar sesión) */
 export function guardarSesion(sesion: Sesion): void {
   if (typeof window === 'undefined') return;
   localStorage.setItem(SESION_KEY, JSON.stringify(sesion));
+}
+
+/** Cierra la sesión actual */
+export function cerrarSesion(): void {
+  if (typeof window === 'undefined') return;
+  localStorage.removeItem(SESION_KEY);
 }
 
 /** Verifica si el usuario actual es admin */

@@ -27,9 +27,8 @@ export default function Inicio() {
               una forma de vida.
             </p>
             <div className={styles.ctaGroup}>
-              <Link href="/Entrenador" className={styles.cta}>Entrenador</Link>
-              <Link href="/Usuario" className={styles.cta}>Usuario</Link>
-              <Link href="/Admin" className={styles.cta}>Admin</Link>
+              <Link href="/login" className={styles.cta}>Iniciar sesión</Link>
+              <Link href="/registro" className={styles.cta}>Crear cuenta</Link>
             </div>
 
             <div className={styles.divider} aria-hidden>

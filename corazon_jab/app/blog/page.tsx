@@ -5,7 +5,7 @@ import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Playfair_Display, Oswald } from "next/font/google";
-import { obtenerArticulosAprobados, type ArticuloBlog } from "../lib/blogStorage";
+import { obtenerArticulosAprobados, obtenerLogrosAprobados, type ArticuloBlog } from "../lib/blogStorage";
 import styles from "./Blog.module.css";
 
 const playfair = Playfair_Display({ subsets: ["latin"], weight: ["700"], style: ["normal", "italic"], variable: "--font-heading" });
@@ -91,9 +91,11 @@ const posts = [
 export default function BlogPage() {
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
   const [communityPosts, setCommunityPosts] = useState<ArticuloBlog[]>([]);
+  const [communityLogros, setCommunityLogros] = useState<ArticuloBlog[]>([]);
 
   useEffect(() => {
     setCommunityPosts(obtenerArticulosAprobados());
+    setCommunityLogros(obtenerLogrosAprobados());
   }, []);
 
   const filteredPosts = activeCategory
@@ -125,6 +127,28 @@ export default function BlogPage() {
           </div>
         </div>
       </div>
+
+      {/* Logros deportivos de la comunidad (enviados por alumnos/entrenadores y aprobados) */}
+      {communityLogros.length > 0 && (
+        <div className={styles.logrosSection}>
+          <h2 className={styles.communityTitle}>🏆 Logros de la Comunidad</h2>
+          <div className={styles.logrosGrid}>
+            {communityLogros.map((logro) => (
+              <article key={logro.id} className={styles.logroCard}>
+                <span className={styles.logroIcono}>{logro.icono ?? "🏆"}</span>
+                <div className={styles.logroContenido}>
+                  <span className={styles.communityCategory}>{logro.categoria}</span>
+                  <h3 className={styles.communityCardTitle}>{logro.titulo}</h3>
+                  <p className={styles.communityExcerpt}>{logro.extracto}</p>
+                  <span className={styles.communityAuthor}>
+                    Por {logro.autorNombre} · {logro.autorRol === "entrenador" ? "Entrenador" : "Alumno"}
+                  </span>
+                </div>
+              </article>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Artículos de la comunidad (enviados por entrenadores/alumnos y aprobados) */}
       {communityPosts.length > 0 && (

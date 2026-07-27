@@ -2,8 +2,10 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { Playfair_Display, Oswald } from "next/font/google";
+import { cerrarSesion, obtenerSesion } from "../lib/sesionStorage";
+import RequireRole from "../components/RequireRole/RequireRole";
 import styles from "./Entrenador.module.css";
 
 const playfair = Playfair_Display({ subsets: ["latin"], weight: ["700"], style: ["normal", "italic"], variable: "--font-heading" });
@@ -43,13 +45,20 @@ const navItems = [
     icon: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>,
   },
   {
-    label: "Mis Artículos", href: "/blog/mis-articulos",
+    label: "Mis Artículos", href: "/Entrenador/mis-articulos",
     icon: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>,
   },
 ];
 
-export default function EntrenadorLayout({ children }: { children: React.ReactNode }) {
+function EntrenadorLayoutInner({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
+  const router = useRouter();
+  const sesion = obtenerSesion();
+
+  const handleLogout = () => {
+    cerrarSesion();
+    router.push("/login");
+  };
 
   return (
     <div className={`${styles.layout} ${playfair.variable} ${oswald.variable}`}>
@@ -69,10 +78,29 @@ export default function EntrenadorLayout({ children }: { children: React.ReactNo
             );
           })}
         </nav>
+        <div className={styles.sidebarFooter}>
+          <span className={styles.sidebarUser}>{sesion.nombre}</span>
+          <button type="button" className={styles.logoutBtn} onClick={handleLogout}>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+              <polyline points="16 17 21 12 16 7" />
+              <line x1="21" y1="12" x2="9" y2="12" />
+            </svg>
+            Cerrar sesión
+          </button>
+        </div>
       </aside>
       <main className={styles.content}>
         {children}
       </main>
     </div>
+  );
+}
+
+export default function EntrenadorLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <RequireRole rolPermitido="entrenador">
+      <EntrenadorLayoutInner>{children}</EntrenadorLayoutInner>
+    </RequireRole>
   );
 }

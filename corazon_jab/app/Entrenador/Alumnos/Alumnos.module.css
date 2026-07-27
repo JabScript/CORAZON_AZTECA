@@ -107,6 +107,62 @@
   font-size: 0.8rem;
 }
 
+.alertaLesionados {
+  color: var(--ca-rojo);
+  font-weight: 600;
+}
+
+.alertaCampeones {
+  color: var(--ca-oro);
+  font-weight: 600;
+}
+
+.badgeCampeon {
+  display: block;
+  width: fit-content;
+  margin-top: 0.4rem;
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: #1a1206;
+  background: linear-gradient(135deg, var(--ca-oro-suave), var(--ca-oro));
+  border-radius: 4px;
+  padding: 0.2rem 0.5rem;
+  line-height: 1.4;
+}
+
+.badgeLesion {
+  display: block;
+  width: fit-content;
+  margin-top: 0.4rem;
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: #ff8a8a;
+  background: rgba(183, 33, 42, 0.15);
+  border: 1px solid rgba(183, 33, 42, 0.35);
+  border-radius: 4px;
+  padding: 0.2rem 0.5rem;
+  line-height: 1.4;
+}
+
+.badgeLesion[data-alta="true"] {
+  color: #6fd196;
+  background: rgba(47, 140, 79, 0.15);
+  border-color: rgba(47, 140, 79, 0.35);
+}
+
+.badgeSano {
+  display: block;
+  width: fit-content;
+  margin-top: 0.4rem;
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: #6fd196;
+  background: rgba(47, 140, 79, 0.1);
+  border: 1px solid rgba(47, 140, 79, 0.25);
+  border-radius: 4px;
+  padding: 0.2rem 0.5rem;
+}
+
 .vacio {
   color: var(--ca-texto-muted);
   text-align: center;
