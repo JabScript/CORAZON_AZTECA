@@ -1,13 +1,14 @@
 // app/registro/alumno/page.tsx
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { Playfair_Display, Oswald } from "next/font/google";
 import { obtenerEntrenadoresPublicos, type PerfilEntrenador } from "../../lib/entrenadorStorage";
 import { registrarAlumno, type OrigenEntrenador } from "../../lib/alumnoStorage";
-import { correoExiste, registrarCuenta, rutaPanel } from "../../lib/authStorage";
+import { correoExiste, registrarCuenta, rutaPanel, imagenPerfilABase64 } from "../../lib/authStorage";
 import { guardarSesion } from "../../lib/sesionStorage";
 import styles from "../FormRegistro.module.css";
 
@@ -31,6 +32,8 @@ export default function RegistroAlumnoPage() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [aceptaTerminos, setAceptaTerminos] = useState(false);
+  const [foto, setFoto] = useState<string | null>(null);
+  const fotoInputRef = useRef<HTMLInputElement>(null);
 
   // --- Entrenador ---
   const [opcionEntrenador, setOpcionEntrenador] = useState<OpcionEntrenador>("sin_entrenador");
@@ -43,6 +46,13 @@ export default function RegistroAlumnoPage() {
   useEffect(() => {
     setEntrenadores(obtenerEntrenadoresPublicos());
   }, []);
+
+  const handleFotoChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const archivo = e.target.files?.[0];
+    if (!archivo) return;
+    const base64 = await imagenPerfilABase64(archivo);
+    setFoto(base64);
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -93,6 +103,7 @@ export default function RegistroAlumnoPage() {
       password,
       nombre: nombreCompleto,
       rol: "usuario",
+      foto: foto ?? undefined,
     });
 
     // Guarda los datos deportivos/de entrenador del alumno
@@ -112,7 +123,7 @@ export default function RegistroAlumnoPage() {
     });
 
     // Auto-login: el alumno queda logueado inmediatamente tras registrarse.
-    guardarSesion({ usuarioId: cuenta.usuarioId, nombre: nombreCompleto, rol: "usuario" });
+    guardarSesion({ usuarioId: cuenta.usuarioId, nombre: nombreCompleto, rol: "usuario", foto: foto ?? undefined });
     router.push(rutaPanel("usuario"));
   };
 
@@ -128,6 +139,32 @@ export default function RegistroAlumnoPage() {
         <p className={styles.subtitle}>Completa tus datos para empezar a entrenar.</p>
 
         <form className={styles.form} onSubmit={handleSubmit}>
+          <div className={styles.field}>
+            <label className={styles.label}>Foto de perfil (opcional)</label>
+            <div className={styles.fotoPerfilWrap}>
+              <div className={styles.fotoPreviewCircle}>
+                {foto ? (
+                  <Image src={foto} alt="Vista previa" width={72} height={72} className={styles.fotoPreviewImg} unoptimized />
+                ) : (
+                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                    <circle cx="12" cy="8" r="4" />
+                    <path d="M4 21v-2a4 4 0 0 1 4-4h8a4 4 0 0 1 4 4v2" />
+                  </svg>
+                )}
+              </div>
+              <button type="button" className={styles.entrenadorOpcionBtn} onClick={() => fotoInputRef.current?.click()}>
+                {foto ? "Cambiar foto" : "Subir foto"}
+              </button>
+              <input
+                ref={fotoInputRef}
+                type="file"
+                accept="image/*"
+                hidden
+                onChange={handleFotoChange}
+              />
+            </div>
+          </div>
+
           <div className={styles.fieldGroup}>
             <div className={styles.field}>
               <label className={styles.label}>Nombre</label>

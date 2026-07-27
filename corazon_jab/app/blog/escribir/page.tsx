@@ -1,12 +1,15 @@
 // app/blog/escribir/page.tsx
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { Playfair_Display, Oswald } from "next/font/google";
-import { enviarArticulo, type TipoPublicacion } from "../../lib/blogStorage";
+import { enviarArticulo, imagenABase64, type TipoPublicacion } from "../../lib/blogStorage";
 import { obtenerSesion } from "../../lib/sesionStorage";
 import styles from "./Escribir.module.css";
+
+const MAX_IMAGEN_MB = 4;
 
 const playfair = Playfair_Display({ subsets: ["latin"], weight: ["700"], style: ["normal", "italic"], variable: "--font-heading" });
 const oswald = Oswald({ subsets: ["latin"], weight: ["400", "500", "600"], variable: "--font-body" });
@@ -26,10 +29,39 @@ export default function EscribirArticuloPage() {
   const [contenido, setContenido] = useState("");
   const [categoria, setCategoria] = useState(categoriesArticulo[0]);
   const [icono, setIcono] = useState(iconosLogro[0]);
+  const [imagen, setImagen] = useState<string | null>(null);
+  const [errorImagen, setErrorImagen] = useState("");
   const [enviado, setEnviado] = useState(false);
+  const inputImagenRef = useRef<HTMLInputElement>(null);
 
   const puedeEscribir = sesion.rol === "entrenador" || sesion.rol === "usuario";
   const categorias = tipo === "logro" ? categoriesLogro : categoriesArticulo;
+
+  const handleImagenChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const archivo = e.target.files?.[0];
+    if (!archivo) return;
+
+    setErrorImagen("");
+
+    if (!archivo.type.startsWith("image/")) {
+      setErrorImagen("El archivo debe ser una imagen (JPG, PNG, WEBP...).");
+      return;
+    }
+
+    if (archivo.size > MAX_IMAGEN_MB * 1024 * 1024) {
+      setErrorImagen(`La imagen no debe superar ${MAX_IMAGEN_MB}MB.`);
+      return;
+    }
+
+    const base64 = await imagenABase64(archivo);
+    setImagen(base64);
+  };
+
+  const quitarImagen = () => {
+    setImagen(null);
+    setErrorImagen("");
+    if (inputImagenRef.current) inputImagenRef.current.value = "";
+  };
 
   const cambiarTipo = (nuevoTipo: TipoPublicacion) => {
     setTipo(nuevoTipo);
@@ -47,6 +79,7 @@ export default function EscribirArticuloPage() {
       contenido,
       categoria,
       icono: tipo === "logro" ? icono : undefined,
+      imagen: imagen ?? undefined,
     });
     setEnviado(true);
   };
@@ -134,6 +167,49 @@ export default function EscribirArticuloPage() {
         </div>
 
         <form className={styles.form} onSubmit={handleSubmit}>
+          <div className={styles.field}>
+            <label className={styles.label}>Imagen (opcional)</label>
+
+            {imagen ? (
+              <div className={styles.imagenPreviewWrap}>
+                <Image
+                  src={imagen}
+                  alt="Vista previa de la imagen"
+                  width={400}
+                  height={220}
+                  className={styles.imagenPreview}
+                  unoptimized
+                />
+                <button type="button" className={styles.imagenQuitarBtn} onClick={quitarImagen}>
+                  Quitar imagen
+                </button>
+              </div>
+            ) : (
+              <button
+                type="button"
+                className={styles.imagenUploadBtn}
+                onClick={() => inputImagenRef.current?.click()}
+              >
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                  <rect x="3" y="3" width="18" height="18" rx="2" />
+                  <circle cx="8.5" cy="8.5" r="1.5" />
+                  <path d="M21 15l-5-5L5 21" />
+                </svg>
+                Subir una imagen
+              </button>
+            )}
+
+            <input
+              ref={inputImagenRef}
+              type="file"
+              accept="image/*"
+              onChange={handleImagenChange}
+              className={styles.imagenInputOculto}
+            />
+            <span className={styles.hint}>JPG, PNG o WEBP. Máx. {MAX_IMAGEN_MB}MB.</span>
+            {errorImagen && <p className={styles.errorText} style={{ margin: 0, textAlign: "left" }}>{errorImagen}</p>}
+          </div>
+
           {tipo === "logro" && (
             <div className={styles.field}>
               <label className={styles.label}>Ícono del logro</label>

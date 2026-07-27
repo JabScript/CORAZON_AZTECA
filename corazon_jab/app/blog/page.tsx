@@ -135,7 +135,13 @@ export default function BlogPage() {
           <div className={styles.logrosGrid}>
             {communityLogros.map((logro) => (
               <article key={logro.id} className={styles.logroCard}>
-                <span className={styles.logroIcono}>{logro.icono ?? "🏆"}</span>
+                {logro.imagen ? (
+                  <div className={styles.communityImageWrap}>
+                    <Image src={logro.imagen} alt={logro.titulo} fill className={styles.communityImg} unoptimized />
+                  </div>
+                ) : (
+                  <span className={styles.logroIcono}>{logro.icono ?? "🏆"}</span>
+                )}
                 <div className={styles.logroContenido}>
                   <span className={styles.communityCategory}>{logro.categoria}</span>
                   <h3 className={styles.communityCardTitle}>{logro.titulo}</h3>
@@ -157,6 +163,11 @@ export default function BlogPage() {
           <div className={styles.communityGrid}>
             {communityPosts.map((post) => (
               <article key={post.id} className={styles.communityCard}>
+                {post.imagen && (
+                  <div className={styles.communityImageWrap}>
+                    <Image src={post.imagen} alt={post.titulo} fill className={styles.communityImg} unoptimized />
+                  </div>
+                )}
                 <span className={styles.communityCategory}>{post.categoria}</span>
                 <h3 className={styles.communityCardTitle}>{post.titulo}</h3>
                 <p className={styles.communityExcerpt}>{post.extracto}</p>

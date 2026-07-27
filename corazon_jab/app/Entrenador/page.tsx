@@ -3,15 +3,28 @@
 
 import styles from "./Dashboard.module.css";
 
+import Image from "next/image";
 import Link from "next/link";
+import { obtenerSesion } from "../lib/sesionStorage";
 
 export default function EntrenadorDashboard() {
+  const sesion = obtenerSesion();
+
   return (
     <div className={styles.page}>
       <div className={styles.headerRow}>
-        <div>
-          <h1 className={styles.title}>Mi Perfil</h1>
-          <p className={styles.subtitle}>Panel de entrenador — gestiona tus clases, alumnos y planes.</p>
+        <div className={styles.headerUserRow}>
+          <div className={styles.headerAvatar}>
+            {sesion.foto ? (
+              <Image src={sesion.foto} alt={sesion.nombre} width={64} height={64} className={styles.headerAvatarImg} unoptimized />
+            ) : (
+              sesion.nombre.charAt(0).toUpperCase()
+            )}
+          </div>
+          <div>
+            <h1 className={styles.title}>Mi Perfil</h1>
+            <p className={styles.subtitle}>Panel de entrenador — gestiona tus clases, alumnos y planes.</p>
+          </div>
         </div>
         <Link href="/Entrenador/Perfil" className={styles.editBtn}>
           Editar Perfil

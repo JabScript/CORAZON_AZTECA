@@ -2,8 +2,8 @@
 "use client";
 
 import { useState } from "react";
-import Image from "next/image";
 import { Playfair_Display, Oswald } from "next/font/google";
+import ImagenEditable from "../components/ImagenEditable/ImagenEditable";
 import styles from "./Leyendas.module.css";
 
 const playfair = Playfair_Display({ subsets: ["latin"], weight: ["700"], style: ["normal", "italic"], variable: "--font-heading" });
@@ -11,6 +11,7 @@ const oswald = Oswald({ subsets: ["latin"], weight: ["400", "500", "600"], varia
 
 const mexicanLegends = [
   {
+    slug: "chavez",
     name: "Julio César Chávez",
     tag: "LEYENDA ABSOLUTA",
     tagColor: "#b7212a",
@@ -20,6 +21,7 @@ const mexicanLegends = [
     era: "1980s–2000s",
   },
   {
+    slug: "canelo",
     name: "Canelo Álvarez",
     tag: "CAMPEÓN MUNDIAL",
     tagColor: "#c9a13a",
@@ -29,6 +31,7 @@ const mexicanLegends = [
     era: "2010s–Presente",
   },
   {
+    slug: "sanchez",
     name: "Salvador Sánchez",
     tag: "CAMPEÓN INVICTO",
     tagColor: "#2f8c4f",
@@ -38,6 +41,7 @@ const mexicanLegends = [
     era: "1970s–1982",
   },
   {
+    slug: "olivares",
     name: "Rubén Olivares",
     tag: "LEYENDA ETERNA",
     tagColor: "#b7212a",
@@ -46,10 +50,21 @@ const mexicanLegends = [
     titles: "3 títulos mundiales",
     era: "1960s–1980s",
   },
+  {
+    slug: "barby-juarez",
+    name: 'Mariana "Barby" Juárez',
+    tag: "REINA DEL BOXEO",
+    tagColor: "#c9a13a",
+    image: "/leyendas/barby-juarez.jpg",
+    record: "57-13-4",
+    titles: "Múltiple campeona mundial WBC",
+    era: "2000–Presente",
+  },
 ];
 
 const internationalLegends = [
   {
+    slug: "ali",
     name: "Muhammad Ali",
     tag: "EL MÁS GRANDE",
     image: "/leyendas/ali.jpg",
@@ -57,6 +72,7 @@ const internationalLegends = [
     country: "EE.UU.",
   },
   {
+    slug: "pacquiao",
     name: "Manny Pacquiao",
     tag: "PAC-MAN",
     image: "/leyendas/pacquiao.jpg",
@@ -64,6 +80,7 @@ const internationalLegends = [
     country: "Filipinas",
   },
   {
+    slug: "tyson",
     name: "Mike Tyson",
     tag: "IRON MIKE",
     image: "/leyendas/tyson.jpg",
@@ -124,8 +141,9 @@ export default function LeyendasPage() {
             {mexicanLegends.map((legend) => (
               <article key={legend.name} className={styles.card}>
                 <div className={styles.cardImage}>
-                  <Image
-                    src={legend.image}
+                  <ImagenEditable
+                    clave={`leyenda-${legend.slug}`}
+                    srcOriginal={legend.image}
                     alt={legend.name}
                     fill
                     sizes="(max-width: 768px) 100vw, 25vw"
@@ -164,8 +182,9 @@ export default function LeyendasPage() {
             {internationalLegends.map((legend) => (
               <article key={legend.name} className={styles.card}>
                 <div className={styles.cardImage}>
-                  <Image
-                    src={legend.image}
+                  <ImagenEditable
+                    clave={`leyenda-${legend.slug}`}
+                    srcOriginal={legend.image}
                     alt={legend.name}
                     fill
                     sizes="(max-width: 768px) 100vw, 33vw"

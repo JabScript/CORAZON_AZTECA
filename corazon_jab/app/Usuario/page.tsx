@@ -1,6 +1,8 @@
 // app/usuario/page.tsx (Dashboard)
 "use client";
 
+import Image from "next/image";
+import { obtenerSesion } from "../lib/sesionStorage";
 import styles from "./Dashboard.module.css";
 
 const stats = [
@@ -28,14 +30,27 @@ const recentTrainings = [
 
 export default function DashboardPage() {
   const maxVal = Math.max(...weeklyProgress.map(w => Math.max(w.hours, w.intensity)));
+  const sesion = obtenerSesion();
+  const primerNombre = sesion.nombre.split(" ")[0] || sesion.nombre;
 
   return (
     <div className={styles.page}>
       {/* Header */}
       <div className={styles.header}>
         <div className={styles.headerLeft}>
-          <h1 className={styles.title}>¡A entrenar, <em>Carlos</em>!</h1>
-          <p className={styles.subtitle}>Tu resumen de entrenamiento.</p>
+          <div className={styles.headerUserRow}>
+            <div className={styles.headerAvatar}>
+              {sesion.foto ? (
+                <Image src={sesion.foto} alt={sesion.nombre} width={56} height={56} className={styles.headerAvatarImg} unoptimized />
+              ) : (
+                sesion.nombre.charAt(0).toUpperCase()
+              )}
+            </div>
+            <div>
+              <h1 className={styles.title}>¡A entrenar, <em>{primerNombre}</em>!</h1>
+              <p className={styles.subtitle}>Tu resumen de entrenamiento.</p>
+            </div>
+          </div>
         </div>
         <div className={styles.nextTraining}>
           <span className={styles.nextLabel}>▲ PRÓXIMO ENTRENAMIENTO</span>
@@ -107,8 +122,14 @@ export default function DashboardPage() {
 
       {/* Usuario footer */}
       <div className={styles.userBar}>
-        <div className={styles.userAvatar}>CG</div>
-        <span className={styles.userName}>Carlos &quot;El Rayo&quot; Gut...</span>
+        <div className={styles.userAvatar}>
+          {sesion.foto ? (
+            <Image src={sesion.foto} alt={sesion.nombre} width={34} height={34} className={styles.userAvatarImg} unoptimized />
+          ) : (
+            sesion.nombre.charAt(0).toUpperCase()
+          )}
+        </div>
+        <span className={styles.userName}>{sesion.nombre}</span>
       </div>
     </div>
   );
