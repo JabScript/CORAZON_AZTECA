@@ -16,6 +16,18 @@ export interface Cuenta {
   rol: Rol;
   /** true si la cuenta está pendiente de aprobación (ej. solicitudes de admin) */
   pendiente?: boolean;
+  /** Foto de perfil (base64 data URL), opcional */
+  foto?: string;
+}
+
+/** Convierte un archivo de imagen a base64 data URL, para foto de perfil */
+export function imagenPerfilABase64(archivo: File): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result as string);
+    reader.onerror = reject;
+    reader.readAsDataURL(archivo);
+  });
 }
 
 const CUENTAS_KEY = "corazon_azteca_cuentas";
@@ -78,6 +90,7 @@ export function registrarCuenta(data: {
   nombre: string;
   rol: Rol;
   pendiente?: boolean;
+  foto?: string;
 }): Cuenta {
   const cuentas = obtenerCuentas();
 
@@ -88,10 +101,19 @@ export function registrarCuenta(data: {
     nombre: data.nombre.trim(),
     rol: data.rol,
     pendiente: data.pendiente ?? false,
+    foto: data.foto,
   };
 
   guardarCuentas([...cuentas, nueva]);
   return nueva;
+}
+
+/** Actualiza la foto de perfil de una cuenta ya registrada, por usuarioId */
+export function actualizarFotoCuenta(usuarioId: number, foto: string): void {
+  const cuentas = obtenerCuentas().map((c) =>
+    c.usuarioId === usuarioId ? { ...c, foto } : c
+  );
+  guardarCuentas(cuentas);
 }
 
 /** Autentica por email + password. Devuelve null si no coincide o está pendiente de aprobación. */

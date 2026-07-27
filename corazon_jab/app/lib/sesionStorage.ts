@@ -7,6 +7,8 @@ export interface Sesion {
   usuarioId: number;
   nombre: string;
   rol: Rol;
+  /** Foto de perfil (base64 data URL), opcional */
+  foto?: string;
 }
 
 export interface PeleaProxima {

@@ -92,6 +92,18 @@
   padding: 1.3rem;
   border-radius: 10px;
   background: rgba(20, 18, 16, 0.5);
+  overflow: hidden;
+}
+
+.cardImageWrap {
+  position: relative;
+  width: calc(100% + 2.6rem);
+  aspect-ratio: 16 / 9;
+  margin: -1.3rem -1.3rem 0.8rem;
+}
+
+.cardImg {
+  object-fit: cover;
 }
 
 .cardTop {

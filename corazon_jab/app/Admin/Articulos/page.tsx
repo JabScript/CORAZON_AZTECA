@@ -2,6 +2,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import Image from 'next/image';
 import {
   obtenerArticulos,
   aprobarArticulo,
@@ -80,6 +81,11 @@ export default function ArticulosAdminPage() {
         <div className={styles.lista}>
           {filtrados.map((a) => (
             <article key={a.id} className={styles.tarjeta}>
+              {a.imagen && (
+                <div className={styles.imagenWrap}>
+                  <Image src={a.imagen} alt={a.titulo} fill className={styles.imagen} unoptimized />
+                </div>
+              )}
               <div className={styles.cabecera}>
                 <div>
                   <span className={styles.tipoBadge} data-tipo={a.tipo}>

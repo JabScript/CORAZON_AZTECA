@@ -17,12 +17,24 @@ export interface ArticuloBlog {
   categoria: string;
   /** Emoji/ícono del logro (solo aplica cuando tipo === "logro") */
   icono?: string;
+  /** Imagen de portada (base64 data URL), opcional */
+  imagen?: string;
   autorId: number;
   autorNombre: string;
   autorRol: "entrenador" | "usuario";
   estado: EstadoArticulo;
   fechaEnvio: string; // ISO date
   motivoRechazo?: string;
+}
+
+/** Convierte un archivo de imagen a base64 data URL para guardarlo en localStorage */
+export function imagenABase64(archivo: File): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result as string);
+    reader.onerror = reject;
+    reader.readAsDataURL(archivo);
+  });
 }
 
 const BLOG_KEY = "corazon_azteca_blog_articulos";
@@ -86,6 +98,7 @@ export function enviarArticulo(data: {
   contenido: string;
   categoria: string;
   icono?: string;
+  imagen?: string;
 }): ArticuloBlog {
   const sesion = obtenerSesion();
   const articulos = obtenerArticulos();
@@ -98,6 +111,7 @@ export function enviarArticulo(data: {
     contenido: data.contenido,
     categoria: data.categoria,
     icono: data.icono,
+    imagen: data.imagen,
     autorId: sesion.usuarioId,
     autorNombre: sesion.nombre,
     autorRol: sesion.rol === "entrenador" ? "entrenador" : "usuario",

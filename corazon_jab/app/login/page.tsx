@@ -41,7 +41,7 @@ export default function LoginPage() {
       return;
     }
 
-    guardarSesion({ usuarioId: cuenta.usuarioId, nombre: cuenta.nombre, rol: cuenta.rol });
+    guardarSesion({ usuarioId: cuenta.usuarioId, nombre: cuenta.nombre, rol: cuenta.rol, foto: cuenta.foto });
     router.push(rutaPanel(cuenta.rol));
   };
 

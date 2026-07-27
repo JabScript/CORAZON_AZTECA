@@ -1,11 +1,12 @@
 // app/registro/entrenador/page.tsx
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { Playfair_Display, Oswald } from "next/font/google";
-import { correoExiste, registrarCuenta, rutaPanel } from "../../lib/authStorage";
+import { correoExiste, registrarCuenta, rutaPanel, imagenPerfilABase64 } from "../../lib/authStorage";
 import { guardarSesion } from "../../lib/sesionStorage";
 import { guardarPerfil } from "../../lib/entrenadorStorage";
 import styles from "../FormRegistro.module.css";
@@ -30,6 +31,15 @@ export default function RegistroEntrenadorPage() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [aceptaTerminos, setAceptaTerminos] = useState(false);
   const [error, setError] = useState("");
+  const [foto, setFoto] = useState<string | null>(null);
+  const fotoInputRef = useRef<HTMLInputElement>(null);
+
+  const handleFotoChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const archivo = e.target.files?.[0];
+    if (!archivo) return;
+    const base64 = await imagenPerfilABase64(archivo);
+    setFoto(base64);
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -67,6 +77,7 @@ export default function RegistroEntrenadorPage() {
       password,
       nombre: nombreCompleto,
       rol: "entrenador",
+      foto: foto ?? undefined,
     });
 
     // Crea el perfil público de entrenador para que aparezca en /entrenadores
@@ -76,7 +87,7 @@ export default function RegistroEntrenadorPage() {
       nombre: nombreCompleto,
       especialidad: especialidades.trim() || "Boxeo",
       anosTrayectoria: Number(anosExperiencia) || 0,
-      foto: "",
+      foto: foto ?? "",
       bio: bio.trim() || `Entrenador en ${gimnasio.trim() || "Corazón Azteca"}.`,
       logros: certificaciones.trim() ? [certificaciones.trim()] : [],
       redes: [],
@@ -84,7 +95,7 @@ export default function RegistroEntrenadorPage() {
     });
 
     // Auto-login: el entrenador queda logueado inmediatamente tras registrarse.
-    guardarSesion({ usuarioId: cuenta.usuarioId, nombre: nombreCompleto, rol: "entrenador" });
+    guardarSesion({ usuarioId: cuenta.usuarioId, nombre: nombreCompleto, rol: "entrenador", foto: foto ?? undefined });
     router.push(rutaPanel("entrenador"));
   };
 
@@ -100,6 +111,32 @@ export default function RegistroEntrenadorPage() {
         <p className={styles.subtitle}>Comparte tu experiencia y guía a la próxima generación.</p>
 
         <form className={styles.form} onSubmit={handleSubmit}>
+          <div className={styles.field}>
+            <label className={styles.label}>Foto de perfil (opcional)</label>
+            <div className={styles.fotoPerfilWrap}>
+              <div className={styles.fotoPreviewCircle}>
+                {foto ? (
+                  <Image src={foto} alt="Vista previa" width={72} height={72} className={styles.fotoPreviewImg} unoptimized />
+                ) : (
+                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                    <circle cx="12" cy="8" r="4" />
+                    <path d="M4 21v-2a4 4 0 0 1 4-4h8a4 4 0 0 1 4 4v2" />
+                  </svg>
+                )}
+              </div>
+              <button type="button" className={styles.entrenadorOpcionBtn} onClick={() => fotoInputRef.current?.click()}>
+                {foto ? "Cambiar foto" : "Subir foto"}
+              </button>
+              <input
+                ref={fotoInputRef}
+                type="file"
+                accept="image/*"
+                hidden
+                onChange={handleFotoChange}
+              />
+            </div>
+          </div>
+
           <div className={styles.fieldGroup}>
             <div className={styles.field}>
               <label className={styles.label}>Nombre</label>

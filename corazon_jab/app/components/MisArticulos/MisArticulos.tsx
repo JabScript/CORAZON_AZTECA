@@ -5,6 +5,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { Playfair_Display, Oswald } from "next/font/google";
 import { obtenerMisArticulos, eliminarArticulo, type ArticuloBlog } from "../../lib/blogStorage";
 import styles from "./MisArticulos.module.css";
@@ -52,6 +53,11 @@ export default function MisArticulos({ writeHref }: MisArticulosProps) {
         <div className={styles.list}>
           {articulos.map((a) => (
             <article key={a.id} className={styles.card}>
+              {a.imagen && (
+                <div className={styles.cardImageWrap}>
+                  <Image src={a.imagen} alt={a.titulo} fill className={styles.cardImg} unoptimized />
+                </div>
+              )}
               <div className={styles.cardTop}>
                 <span className={styles.tipoBadge} data-tipo={a.tipo}>
                   {a.tipo === "logro" ? `${a.icono ?? "🏆"} Logro` : "📝 Artículo"}

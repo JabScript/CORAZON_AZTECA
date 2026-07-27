@@ -68,6 +68,18 @@
   background: linear-gradient(180deg, var(--ca-negro-alt) 0%, #0a0503 100%);
   border: 1px solid var(--ca-borde);
   padding: 1.4rem 1.6rem;
+  overflow: hidden;
+}
+
+.imagenWrap {
+  position: relative;
+  width: calc(100% + 3.2rem);
+  aspect-ratio: 16 / 7;
+  margin: -1.4rem -1.6rem 1rem;
+}
+
+.imagen {
+  object-fit: cover;
 }
 
 .cabecera {

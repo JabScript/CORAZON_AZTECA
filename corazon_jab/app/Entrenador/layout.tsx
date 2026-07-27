@@ -2,6 +2,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import { Playfair_Display, Oswald } from "next/font/google";
 import { cerrarSesion, obtenerSesion } from "../lib/sesionStorage";
@@ -79,7 +80,16 @@ function EntrenadorLayoutInner({ children }: { children: React.ReactNode }) {
           })}
         </nav>
         <div className={styles.sidebarFooter}>
-          <span className={styles.sidebarUser}>{sesion.nombre}</span>
+          <div className={styles.sidebarUserRow}>
+            <div className={styles.sidebarAvatar}>
+              {sesion.foto ? (
+                <Image src={sesion.foto} alt={sesion.nombre} width={32} height={32} className={styles.sidebarAvatarImg} unoptimized />
+              ) : (
+                sesion.nombre.charAt(0).toUpperCase()
+              )}
+            </div>
+            <span className={styles.sidebarUser}>{sesion.nombre}</span>
+          </div>
           <button type="button" className={styles.logoutBtn} onClick={handleLogout}>
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
               <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
