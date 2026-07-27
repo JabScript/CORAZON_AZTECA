@@ -16,7 +16,7 @@ const gyms = [
   {
     name: "Gimnasio Rompiendo Barreras",
     address: "Av. Insurgentes Sur 1234, CDMX",
-    image: "/gimnasios/gym1.jpg",
+    image: "/1.jpg",
     rating: 4.8,
     reviews: 254,
     tags: ["Boxeo amateur", "Boxeo profesional", "Kickboxing"],
@@ -29,7 +29,7 @@ const gyms = [
   {
     name: "Nuevo Jordan Gym",
     address: "Calzada de Tlalpan 450, CDMX",
-    image: "/gimnasios/gym2.jpg",
+    image: "/2.jpg",
     rating: 4.6,
     reviews: 189,
     tags: ["Boxeo amateur", "MMA", "Acond. físico"],
@@ -42,7 +42,7 @@ const gyms = [
   {
     name: "Boxeo de Campeones",
     address: "Av. Revolución 789, CDMX",
-    image: "/gimnasios/gym3.jpg",
+    image: "/3.webp",
     rating: 4.9,
     reviews: 112,
     tags: ["Boxeo profesional", "Sparring", "Nutrición"],

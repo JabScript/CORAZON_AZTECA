@@ -14,7 +14,7 @@ const eras = [
     slug: "inicios",
     decade: "1890s",
     title: "Los Inicios",
-    image: "/historia/inicios.jpg",
+    image: "/inicios.webp",
     description:
       "El boxeo llegó a México a finales del siglo XIX a través de marineros y trabajadores ferroviarios estadounidenses. Las primeras peleas se realizaban en patios y plazas públicas, cautivando rápidamente a la clase trabajadora mexicana.",
   },
@@ -22,7 +22,7 @@ const eras = [
     slug: "campeones",
     decade: "1920s",
     title: "Primeros Campeones",
-    image: "/historia/campeones.jpg",
+    image: "/primeros.jpg",
     description:
       "La década de 1920 vio nacer a los primeros campeones mexicanos reconocidos internacionalmente. Los gimnasios comenzaron a proliferar en la Ciudad de México y Guadalajara, profesionalizando el deporte.",
   },
@@ -30,7 +30,7 @@ const eras = [
     slug: "epoca-dorada",
     decade: "1940s–50s",
     title: "La Época Dorada",
-    image: "/historia/epoca-dorada.jpg",
+    image: "/epo.jpg",
     description:
       "México se consolidó como potencia mundial del boxeo. Raúl 'Ratón' Macías, Kid Azteca y otros ídolos llenaron la Arena Coliseo y la Arena México, convirtiendo el boxeo en el deporte nacional por excelencia.",
   },
@@ -38,7 +38,7 @@ const eras = [
     slug: "impacto-social",
     decade: "1970s–80s",
     title: "Impacto Social y Cultural",
-    image: "/historia/impacto-social.jpg",
+    image: "/imp.jpg",
     description:
       "El boxeo se convirtió en un camino de ascenso social para miles de jóvenes mexicanos. Figuras como Salvador Sánchez y Rubén Olivares trascendieron el ring para convertirse en símbolos culturales.",
   },
@@ -46,7 +46,7 @@ const eras = [
     slug: "leyendas-era",
     decade: "1990s–2000s",
     title: "La Era de las Leyendas",
-    image: "/historia/leyendas-era.jpg",
+    image: "/leyendas.jpg",
     description:
       "Julio César Chávez, Erik Morales, Marco Antonio Barrera y Juan Manuel Márquez protagonizaron las peleas más memorables de la historia, llevando el boxeo mexicano a su punto más alto de popularidad global.",
   },
@@ -54,7 +54,7 @@ const eras = [
     slug: "actualidad",
     decade: "Actualidad",
     title: "El Legado Continúa",
-    image: "/historia/actualidad.jpg",
+    image: "/actual.jpg",
     description:
       "Canelo Álvarez y una nueva generación de peleadores mantienen viva la tradición. El boxeo mexicano sigue siendo sinónimo de valentía, corazón y técnica en todo el mundo.",
   },
