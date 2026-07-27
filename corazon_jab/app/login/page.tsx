@@ -2,23 +2,54 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { Playfair_Display, Oswald } from "next/font/google";
+import { guardarSesion, haySesion, obtenerSesion } from "../lib/sesionStorage";
+import { autenticar, rutaPanel } from "../lib/authStorage";
 import styles from "./Login.module.css";
 
 const playfair = Playfair_Display({ subsets: ["latin"], weight: ["700"], style: ["normal", "italic"], variable: "--font-heading" });
 const oswald = Oswald({ subsets: ["latin"], weight: ["400", "500", "600"], variable: "--font-body" });
 
 const demoAccounts = [
-  { role: "Alumno", email: "alumno@knockout.com" },
-  { role: "Entrenador", email: "entrenador@knockout.com" },
-  { role: "Admin", email: "admin@knockout.com" },
+  { role: "Alumno", email: "iker.dominguez@corazonazteca.com", password: "Boxer123" },
+  { role: "Entrenador", email: "rodrigo.cazares@corazonazteca.com", password: "Coach123" },
+  { role: "Admin", email: "admin1@corazonazteca.com", password: "Admin123" },
 ];
 
 export default function LoginPage() {
+  const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+
+  // Si ya hay una sesión activa, no tiene sentido mostrar el login: redirige al panel.
+  useEffect(() => {
+    if (haySesion()) {
+      router.replace(rutaPanel(obtenerSesion().rol));
+    }
+  }, [router]);
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const cuenta = autenticar(email, password);
+
+    if (!cuenta) {
+      setError("Correo o contraseña incorrectos, o la cuenta está pendiente de aprobación.");
+      return;
+    }
+
+    guardarSesion({ usuarioId: cuenta.usuarioId, nombre: cuenta.nombre, rol: cuenta.rol });
+    router.push(rutaPanel(cuenta.rol));
+  };
+
+  const usarCuentaDemo = (demoEmail: string, demoPassword: string) => {
+    setEmail(demoEmail);
+    setPassword(demoPassword);
+    setError("");
+  };
 
   return (
     <main className={`${styles.page} ${playfair.variable} ${oswald.variable}`}>
@@ -29,7 +60,7 @@ export default function LoginPage() {
         </h1>
         <p className={styles.subtitle}>Accede a tu panel personalizado y continúa tu camino en el boxeo.</p>
 
-        <form className={styles.form}>
+        <form className={styles.form} onSubmit={handleSubmit}>
           {/* Email */}
           <div className={styles.field}>
             <label className={styles.label}>Correo electrónico</label>
@@ -95,6 +126,8 @@ export default function LoginPage() {
             </Link>
           </div>
 
+          {error && <p className={styles.errorMsg}>{error}</p>}
+
           {/* Submit */}
           <button type="submit" className={styles.submitBtn}>
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
@@ -129,13 +162,14 @@ export default function LoginPage() {
                 key={acc.role}
                 type="button"
                 className={styles.demoCard}
-                onClick={() => setEmail(acc.email)}
+                onClick={() => usarCuentaDemo(acc.email, acc.password)}
               >
                 <span className={styles.demoRole}>{acc.role}</span>
                 <span className={styles.demoEmail}>{acc.email}</span>
               </button>
             ))}
           </div>
+          <p className={styles.demoHint}>Haz clic en una cuenta para autocompletar y luego pulsa &quot;Iniciar Sesión&quot;.</p>
         </div>
       </div>
     </main>

@@ -1,5 +1,6 @@
 import './admin-theme.css';
 import AdminNav from './AdminNav';
+import RequireRole from '../components/RequireRole/RequireRole';
 
 export default function AdminLayout({
   children,
@@ -7,9 +8,11 @@ export default function AdminLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="adminModulo">
-      <AdminNav />
-      {children}
-    </div>
+    <RequireRole rolPermitido="admin">
+      <div className="adminModulo">
+        <AdminNav />
+        {children}
+      </div>
+    </RequireRole>
   );
 }

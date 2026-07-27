@@ -1,21 +1,37 @@
-// app/blog/mis-articulos/page.tsx
+// app/components/MisArticulos/MisArticulos.tsx
+// Componente compartido: se renderiza dentro del layout de Entrenador o Usuario
+// para que el sidebar de cada panel se mantenga visible al navegar.
 "use client";
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Playfair_Display, Oswald } from "next/font/google";
-import { obtenerMisArticulos, type ArticuloBlog } from "../../lib/blogStorage";
+import { obtenerMisArticulos, eliminarArticulo, type ArticuloBlog } from "../../lib/blogStorage";
 import styles from "./MisArticulos.module.css";
 
 const playfair = Playfair_Display({ subsets: ["latin"], weight: ["700"], style: ["normal", "italic"], variable: "--font-heading" });
 const oswald = Oswald({ subsets: ["latin"], weight: ["400", "500", "600"], variable: "--font-body" });
 
-export default function MisArticulosPage() {
+interface MisArticulosProps {
+  /** Ruta a la que lleva el botón "+ Nuevo artículo" */
+  writeHref: string;
+}
+
+export default function MisArticulos({ writeHref }: MisArticulosProps) {
   const [articulos, setArticulos] = useState<ArticuloBlog[]>([]);
 
   useEffect(() => {
     setArticulos(obtenerMisArticulos());
   }, []);
+
+  const handleEliminar = (id: number, titulo: string) => {
+    const confirmado = window.confirm(`¿Eliminar "${titulo}"? Esta acción no se puede deshacer.`);
+    if (!confirmado) return;
+
+    if (eliminarArticulo(id)) {
+      setArticulos((prev) => prev.filter((a) => a.id !== id));
+    }
+  };
 
   return (
     <main className={`${styles.page} ${playfair.variable} ${oswald.variable}`}>
@@ -24,19 +40,22 @@ export default function MisArticulosPage() {
           <span className={styles.tag}>TUS PUBLICACIONES</span>
           <h1 className={styles.title}>Mis Artículos</h1>
         </div>
-        <Link href="/blog/escribir" className={styles.newBtn}>+ Nuevo artículo</Link>
+        <Link href={writeHref} className={styles.newBtn}>+ Nuevo artículo</Link>
       </div>
 
       {articulos.length === 0 ? (
         <div className={styles.empty}>
           <p>Aún no has enviado ningún artículo.</p>
-          <Link href="/blog/escribir" className={styles.emptyLink}>Escribe tu primer artículo →</Link>
+          <Link href={writeHref} className={styles.emptyLink}>Escribe tu primer artículo →</Link>
         </div>
       ) : (
         <div className={styles.list}>
           {articulos.map((a) => (
             <article key={a.id} className={styles.card}>
               <div className={styles.cardTop}>
+                <span className={styles.tipoBadge} data-tipo={a.tipo}>
+                  {a.tipo === "logro" ? `${a.icono ?? "🏆"} Logro` : "📝 Artículo"}
+                </span>
                 <span className={styles.estado} data-estado={a.estado}>
                   {a.estado === "pendiente" && "⏳ En revisión"}
                   {a.estado === "aprobado" && "✓ Publicado"}
@@ -48,7 +67,16 @@ export default function MisArticulosPage() {
               </div>
               <h3 className={styles.cardTitle}>{a.titulo}</h3>
               <p className={styles.cardExcerpt}>{a.extracto}</p>
-              <span className={styles.category}>{a.categoria}</span>
+              <div className={styles.cardFooter}>
+                <span className={styles.category}>{a.categoria}</span>
+                <button
+                  type="button"
+                  className={styles.deleteBtn}
+                  onClick={() => handleEliminar(a.id, a.titulo)}
+                >
+                  Eliminar
+                </button>
+              </div>
 
               {a.estado === "rechazado" && a.motivoRechazo && (
                 <p className={styles.rejectionNote}>Motivo: {a.motivoRechazo}</p>

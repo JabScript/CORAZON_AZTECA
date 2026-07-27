@@ -165,6 +165,18 @@
   color: #e04252;
 }
 
+/* Error */
+.errorMsg {
+  font-family: var(--font-body);
+  font-size: 0.82rem;
+  color: #ff8a8a;
+  background: rgba(183, 33, 42, 0.1);
+  border: 1px solid rgba(183, 33, 42, 0.3);
+  border-radius: 8px;
+  padding: 0.65rem 0.9rem;
+  margin: 0;
+}
+
 /* Submit */
 .submitBtn {
   display: flex;
@@ -254,6 +266,13 @@
   color: rgba(241, 230, 207, 0.35);
   display: block;
   margin-bottom: 1rem;
+}
+
+.demoHint {
+  font-family: var(--font-body);
+  font-size: 0.72rem;
+  color: rgba(241, 230, 207, 0.35);
+  margin: 1rem 0 0;
 }
 
 .demoGrid {

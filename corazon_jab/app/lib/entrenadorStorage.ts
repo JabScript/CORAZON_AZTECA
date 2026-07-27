@@ -49,6 +49,86 @@ const PERFIL_DEFAULT: PerfilEntrenador = {
   galeria: [],
 };
 
+/**
+ * Entrenadores de prueba (máx. 5) que alimentan el directorio público
+ * (`/entrenadores`) y el selector de entrenador en el registro de alumnos,
+ * mientras no exista un backend real. Sus datos coinciden con las cuentas
+ * de prueba en `app/lib/authStorage.ts`.
+ */
+const ENTRENADORES_PRUEBA: PerfilEntrenador[] = [
+  PERFIL_DEFAULT,
+  {
+    id: 'entrenador-2',
+    nombre: 'Diana Reséndiz',
+    especialidad: 'Boxeo femenino y defensa personal',
+    anosTrayectoria: 9,
+    foto: '',
+    bio: 'Ex-campeona nacional amateur. Especialista en técnica defensiva y formación de boxeadoras desde nivel principiante hasta competitivo.',
+    logros: [
+      'Campeona Nacional Amateur 2018',
+      '2 alumnas medallistas en Guantes de Oro',
+      'Certificación en defensa personal femenina',
+      'Formadora de 25+ boxeadoras amateur',
+    ],
+    redes: [
+      { nombre: 'Instagram', usuario: '@diana.boxfem', url: 'https://instagram.com/diana.boxfem' },
+      { nombre: 'WhatsApp', usuario: 'Contacto directo', url: 'https://wa.me/525500000001' },
+    ],
+    galeria: [],
+  },
+  {
+    id: 'entrenador-3',
+    nombre: 'Marco Villalobos',
+    especialidad: 'Boxeo profesional y preparación física',
+    anosTrayectoria: 15,
+    foto: '',
+    bio: 'Ex-boxeador profesional con 20 peleas en su carrera. Ahora dedicado a la preparación física y técnica de boxeadores rumbo al profesionalismo.',
+    logros: [
+      'Ex-boxeador profesional (20 peleas, 14 victorias)',
+      'Entrenador principal en 3 campamentos de título',
+      'Certificación CONADE en preparación física',
+    ],
+    redes: [
+      { nombre: 'Instagram', usuario: '@marco.villalobos.box', url: 'https://instagram.com/marco.villalobos.box' },
+      { nombre: 'Facebook', usuario: 'Marco Villalobos Boxeo', url: 'https://facebook.com/marcovillalobosboxeo' },
+    ],
+    galeria: [],
+  },
+  {
+    id: 'entrenador-4',
+    nombre: 'Valentina Ortiz',
+    especialidad: 'Boxeo amateur juvenil',
+    anosTrayectoria: 6,
+    foto: '',
+    bio: 'Formadora de nuevas generaciones. Enfocada en boxeadores juveniles, disciplina, fundamentos técnicos y desarrollo deportivo integral.',
+    logros: [
+      '5 alumnos clasificados a torneos estatales juveniles',
+      'Certificación en boxeo formativo juvenil',
+    ],
+    redes: [
+      { nombre: 'TikTok', usuario: '@vale.boxjuvenil', url: 'https://tiktok.com/@vale.boxjuvenil' },
+      { nombre: 'WhatsApp', usuario: 'Contacto directo', url: 'https://wa.me/525500000002' },
+    ],
+    galeria: [],
+  },
+  {
+    id: 'entrenador-5',
+    nombre: 'Hugo Fernández',
+    especialidad: 'Sparring y estrategia de combate',
+    anosTrayectoria: 11,
+    foto: '',
+    bio: 'Especialista en sparring y análisis táctico de contrincantes. Trabaja de la mano con boxeadores en fase de campamento previo a competencia.',
+    logros: [
+      'Preparador táctico en 8 peleas de campeonato regional',
+      'Certificación Federación Mexicana de Boxeo',
+    ],
+    redes: [
+      { nombre: 'Instagram', usuario: '@hugo.sparring', url: 'https://instagram.com/hugo.sparring' },
+    ],
+    galeria: [],
+  },
+];
+
 /** Obtiene el perfil del entrenador desde localStorage */
 export function obtenerPerfil(): PerfilEntrenador {
   if (typeof window === 'undefined') return PERFIL_DEFAULT;
@@ -81,13 +161,13 @@ export function archivoABase64(archivo: File): Promise<string> {
 
 /** Obtiene la lista pública de entrenadores (para visitantes) */
 export function obtenerEntrenadoresPublicos(): PerfilEntrenador[] {
-  if (typeof window === 'undefined') return [PERFIL_DEFAULT];
+  if (typeof window === 'undefined') return ENTRENADORES_PRUEBA;
   try {
     const raw = localStorage.getItem(ENTRENADORES_KEY);
-    if (!raw) return [PERFIL_DEFAULT];
+    if (!raw) return ENTRENADORES_PRUEBA;
     return JSON.parse(raw) as PerfilEntrenador[];
   } catch {
-    return [PERFIL_DEFAULT];
+    return ENTRENADORES_PRUEBA;
   }
 }
 

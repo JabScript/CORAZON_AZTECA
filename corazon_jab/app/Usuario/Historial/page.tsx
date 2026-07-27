@@ -1,5 +1,8 @@
 'use client';
 
+import { useEffect, useState } from 'react';
+import Link from 'next/link';
+import { obtenerMisLogrosAprobados, type ArticuloBlog } from '../../lib/blogStorage';
 import styles from './Historial.module.css';
 
 /* Datos de ejemplo — en producción vendrían de una API/BD */
@@ -73,34 +76,13 @@ const PROXIMA_PELEA = {
   categoria: 'Peso Welter Jr.',
 };
 
-const LOGROS = [
-  {
-    icono: '🥊',
-    nombre: 'Debut Profesional',
-    desc: 'Primera pelea profesional completada',
-    fecha: 'Feb 2024',
-  },
-  {
-    icono: '💥',
-    nombre: 'Primer Nocaut',
-    desc: 'Ganaste por KO en tu quinta pelea',
-    fecha: 'Sep 2024',
-  },
-  {
-    icono: '🔥',
-    nombre: 'Racha de 5 Victorias',
-    desc: '5 peleas consecutivas sin derrota',
-    fecha: 'Jun 2025',
-  },
-  {
-    icono: '🏋️',
-    nombre: 'Guerrero del Gym',
-    desc: '100 entrenamientos completados',
-    fecha: 'Jul 2025',
-  },
-];
-
 export default function HistorialDeportivo() {
+  const [logros, setLogros] = useState<ArticuloBlog[]>([]);
+
+  useEffect(() => {
+    setLogros(obtenerMisLogrosAprobados());
+  }, []);
+
   return (
     <main className={styles.pagina}>
       {/* ---------- Header ---------- */}
@@ -227,19 +209,36 @@ export default function HistorialDeportivo() {
 
           {/* Logros */}
           <section className={styles.logros}>
-            <h2>Logros</h2>
-            <div className={styles.logrosLista}>
-              {LOGROS.map((logro, idx) => (
-                <div key={idx} className={styles.logroItem}>
-                  <div className={styles.logroIcono}>{logro.icono}</div>
-                  <div className={styles.logroInfo}>
-                    <span className={styles.logroNombre}>{logro.nombre}</span>
-                    <span className={styles.logroDesc}>{logro.desc}</span>
-                    <span className={styles.logroFecha}>{logro.fecha}</span>
-                  </div>
-                </div>
-              ))}
+            <div className={styles.logrosHeader}>
+              <h2>Logros</h2>
+              <Link href="/blog/escribir" className={styles.btnCompartirLogro}>
+                + Compartir logro
+              </Link>
             </div>
+
+            {logros.length === 0 ? (
+              <div className={styles.logrosVacio}>
+                <p>Aún no tienes logros publicados.</p>
+                <Link href="/blog/escribir" className={styles.logrosVacioLink}>
+                  Comparte tu primer logro →
+                </Link>
+              </div>
+            ) : (
+              <div className={styles.logrosLista}>
+                {logros.map((logro) => (
+                  <div key={logro.id} className={styles.logroItem}>
+                    <div className={styles.logroIcono}>{logro.icono ?? '🏆'}</div>
+                    <div className={styles.logroInfo}>
+                      <span className={styles.logroNombre}>{logro.titulo}</span>
+                      <span className={styles.logroDesc}>{logro.extracto}</span>
+                      <span className={styles.logroFecha}>
+                        {new Date(logro.fechaEnvio).toLocaleDateString('es-MX', { month: 'short', year: 'numeric' })}
+                      </span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
           </section>
         </aside>
       </div>

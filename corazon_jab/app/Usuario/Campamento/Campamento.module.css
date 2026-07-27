@@ -7,6 +7,14 @@
 .fightTitle { font-family: var(--font-heading); font-size: 1.1rem; color: var(--gold); margin: 0 0 1rem; }
 .fightDetails { display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem; font-family: var(--font-body); font-size: 0.85rem; color: rgba(241,230,207,0.7); }
 .label { color: rgba(241,230,207,0.4); margin-right: 0.3rem; }
+/* Cuenta regresiva destacada */
+.countdownHero { display: flex; flex-direction: column; align-items: center; gap: 0.6rem; padding: 1.8rem 1.5rem; margin-bottom: 2rem; border-radius: 12px; background: linear-gradient(160deg, rgba(183,33,42,0.14), rgba(201,161,58,0.08)); border: 1px solid rgba(183,33,42,0.35); text-align: center; }
+.countdownHeroLabel { font-family: var(--font-body); font-size: 0.7rem; font-weight: 700; letter-spacing: 0.1em; color: var(--gold); }
+.countdownHeroValue { display: flex; align-items: baseline; gap: 0.5rem; flex-wrap: wrap; justify-content: center; }
+.countdownNum { font-family: var(--font-heading); font-size: 2.6rem; color: var(--red); line-height: 1; }
+.countdownUnit { font-family: var(--font-body); font-size: 0.9rem; color: rgba(241,230,207,0.6); margin-right: 0.4rem; }
+.countdownVencido { font-family: var(--font-heading); font-size: 1.6rem; color: var(--gold); }
+
 .countdown { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-bottom: 2.5rem; }
 .countdownItem { display: flex; flex-direction: column; align-items: center; gap: 0.2rem; padding: 1.2rem; border: 1px solid rgba(183,33,42,0.3); border-radius: 10px; background: rgba(183,33,42,0.05); }
 .countdownValue { font-family: var(--font-heading); font-size: 2rem; color: var(--red); }
@@ -17,4 +25,14 @@
 .table th { text-align: left; color: rgba(241,230,207,0.4); font-size: 0.68rem; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; padding: 0.8rem 0.6rem; border-bottom: 1px solid rgba(201,161,58,0.1); }
 .table td { padding: 0.8rem 0.6rem; color: rgba(241,230,207,0.65); border-bottom: 1px solid rgba(255,255,255,0.04); }
 .dayName { color: var(--cream); font-weight: 500; }
-@media (max-width: 768px) { .countdown { grid-template-columns: 1fr; } .fightDetails { grid-template-columns: 1fr; } }
+/* Progreso de peso */
+.weightCard { border: 1px solid rgba(201,161,58,0.2); border-radius: 10px; padding: 1.5rem; margin-bottom: 2.5rem; background: rgba(20,18,16,0.5); }
+.weightHeader { display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap; margin-bottom: 1rem; }
+.weightBadge { font-family: var(--font-body); font-size: 0.72rem; font-weight: 600; color: var(--gold); background: rgba(201,161,58,0.12); border: 1px solid rgba(201,161,58,0.3); border-radius: 14px; padding: 0.25rem 0.8rem; white-space: nowrap; }
+.weightBarTrack { position: relative; width: 100%; height: 10px; border-radius: 6px; background: rgba(255,255,255,0.06); overflow: hidden; margin-bottom: 0.7rem; }
+.weightBarFill { height: 100%; border-radius: 6px; background: linear-gradient(90deg, var(--red), var(--gold)); transition: width 0.4s ease; }
+.weightMarks { display: flex; justify-content: space-between; font-family: var(--font-body); font-size: 0.78rem; color: rgba(241,230,207,0.5); }
+.weightMarks em { display: block; font-style: normal; font-size: 0.65rem; color: rgba(241,230,207,0.35); text-transform: uppercase; letter-spacing: 0.04em; }
+.weightCurrent { color: var(--gold); font-weight: 600; }
+
+@media (max-width: 768px) { .countdown { grid-template-columns: 1fr; } .fightDetails { grid-template-columns: 1fr; } .countdownNum { font-size: 2rem; } }

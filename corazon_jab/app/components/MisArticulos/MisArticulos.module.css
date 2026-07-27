@@ -1,4 +1,4 @@
-/* app/blog/mis-articulos/MisArticulos.module.css */
+/* app/components/MisArticulos/MisArticulos.module.css */
 
 .page {
   --gold: #c9a13a;
@@ -96,9 +96,24 @@
 
 .cardTop {
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  gap: 0.6rem;
   margin-bottom: 0.6rem;
+}
+
+.tipoBadge {
+  font-family: var(--font-body);
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: #9db8e8;
+  background: rgba(107, 143, 201, 0.12);
+  border-radius: 4px;
+  padding: 0.15rem 0.5rem;
+}
+
+.tipoBadge[data-tipo="logro"] {
+  color: var(--gold);
+  background: rgba(201, 161, 58, 0.12);
 }
 
 .estado {
@@ -117,6 +132,7 @@
 }
 
 .date {
+  margin-left: auto;
   font-family: var(--font-body);
   font-size: 0.72rem;
   color: rgba(241, 230, 207, 0.4);
@@ -146,6 +162,30 @@
   border: 1px solid rgba(201, 161, 58, 0.25);
   border-radius: 4px;
   padding: 0.15rem 0.5rem;
+}
+
+.cardFooter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.6rem;
+  margin-top: 0.2rem;
+}
+
+.deleteBtn {
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: rgba(241, 230, 207, 0.45);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0.15rem 0.3rem;
+  transition: color 0.2s ease;
+}
+
+.deleteBtn:hover {
+  color: var(--red);
 }
 
 .rejectionNote {

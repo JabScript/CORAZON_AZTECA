@@ -29,6 +29,56 @@
   align-items: center;
   gap: 1rem;
   margin-bottom: 2rem;
+  flex-wrap: wrap;
+}
+
+.coronaTitulo {
+  font-size: 1.1rem;
+  vertical-align: middle;
+}
+
+.tituloTexto {
+  font-family: var(--font-body);
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--gold);
+  margin: 0.3rem 0 0;
+}
+
+.headerBadges {
+  margin-left: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.4rem;
+}
+
+.headerBadgeLesion,
+.headerBadgeSano {
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  font-weight: 600;
+  border-radius: 14px;
+  padding: 0.35rem 0.9rem;
+  white-space: nowrap;
+}
+
+.headerBadgeLesion {
+  color: #ff8a8a;
+  background: rgba(183, 33, 42, 0.15);
+  border: 1px solid rgba(183, 33, 42, 0.35);
+}
+
+.headerBadgeLesion[data-alta="true"] {
+  color: #6fd196;
+  background: rgba(47, 140, 79, 0.15);
+  border-color: rgba(47, 140, 79, 0.35);
+}
+
+.headerBadgeSano {
+  color: #6fd196;
+  background: rgba(47, 140, 79, 0.1);
+  border: 1px solid rgba(47, 140, 79, 0.25);
 }
 
 .avatar {
@@ -240,8 +290,117 @@
   margin: 0 0 0.7rem;
 }
 
+/* Título de campeón */
+.tituloCard {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.9rem;
+  padding: 1.2rem 1.5rem;
+  margin-bottom: 1.2rem;
+  border-radius: 10px;
+  background: linear-gradient(135deg, rgba(201, 161, 58, 0.15), rgba(201, 161, 58, 0.04));
+  border: 1px solid rgba(201, 161, 58, 0.35);
+}
+
+.tituloIcono {
+  font-size: 1.8rem;
+  line-height: 1;
+}
+
+.tituloFederacion {
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  color: var(--gold);
+  font-weight: 600;
+  margin: 0.2rem 0 0;
+}
+
+.tituloTag {
+  display: inline-block;
+  font-family: var(--font-body);
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #1a1206;
+  background: linear-gradient(135deg, #e6c565, var(--gold));
+  border-radius: 4px;
+  padding: 0.15rem 0.5rem;
+}
+
+/* Salud */
+.saludCard {
+  padding: 1.5rem;
+  background: rgba(20, 18, 16, 0.5);
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+
+.saludEstado {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.9rem;
+  padding: 1rem;
+  border-radius: 8px;
+  background: rgba(47, 140, 79, 0.08);
+  border: 1px solid rgba(47, 140, 79, 0.25);
+}
+
+.saludEstado[data-lesionado="true"] {
+  background: rgba(183, 33, 42, 0.08);
+  border-color: rgba(183, 33, 42, 0.3);
+}
+
+.saludEstadoIcono {
+  font-size: 1.6rem;
+  line-height: 1;
+}
+
+.saludTipo {
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  color: rgba(241, 230, 207, 0.6);
+  margin: 0.2rem 0 0;
+}
+
+.altaTag {
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #ff8a8a;
+}
+
+.altaTag[data-alta="true"] {
+  color: #6fd196;
+}
+
+.observacionesBox {
+  padding-top: 0.4rem;
+  border-top: 1px solid rgba(201, 161, 58, 0.1);
+}
+
+.observacionesBox .hint {
+  margin-top: 0.4rem;
+}
+
+.saludAdvertencia {
+  font-family: var(--font-body);
+  font-size: 0.82rem;
+  color: #ffb0b0;
+  background: rgba(183, 33, 42, 0.1);
+  border: 1px solid rgba(183, 33, 42, 0.25);
+  border-radius: 8px;
+  padding: 0.8rem 1rem;
+  margin: 0;
+}
+
 @media (max-width: 600px) {
   .infoGrid {
     grid-template-columns: 1fr;
+  }
+
+  .headerBadges {
+    margin-left: 0;
+    align-items: flex-start;
   }
 }

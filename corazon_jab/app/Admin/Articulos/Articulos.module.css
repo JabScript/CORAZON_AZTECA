@@ -78,6 +78,24 @@
   margin-bottom: 0.6rem;
 }
 
+.tipoBadge {
+  display: inline-block;
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  margin-bottom: 0.4rem;
+  margin-right: 0.4rem;
+  background: rgba(107, 143, 201, 0.15);
+  color: #9db8e8;
+}
+
+.tipoBadge[data-tipo="logro"] {
+  background: rgba(217, 179, 74, 0.18);
+  color: var(--ca-oro-suave);
+}
+
 .estado {
   display: inline-block;
   font-size: 0.62rem;
@@ -196,6 +214,22 @@
 .btnAprobar:hover {
   background: #9a1b23;
   transform: translateY(-1px);
+}
+
+.btnEliminar {
+  background: transparent;
+  border: 1px solid var(--ca-borde);
+  color: var(--ca-texto-muted);
+  padding: 0.5rem 1.1rem;
+  font-weight: 600;
+  font-size: 0.82rem;
+  cursor: pointer;
+  transition: border-color 0.2s ease, color 0.2s ease;
+}
+
+.btnEliminar:hover {
+  border-color: var(--ca-rojo);
+  color: var(--ca-crema);
 }
 
 .motivo {

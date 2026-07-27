@@ -105,6 +105,40 @@
   color: rgba(241, 230, 207, 0.4);
 }
 
+/* Logros de la comunidad */
+.logrosSection {
+  margin-bottom: 3rem;
+}
+
+.logrosGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.2rem;
+}
+
+.logroCard {
+  display: flex;
+  gap: 0.9rem;
+  align-items: flex-start;
+  padding: 1.2rem;
+  border: 1px solid rgba(201, 161, 58, 0.2);
+  border-radius: 10px;
+  background: rgba(201, 161, 58, 0.05);
+}
+
+.logroIcono {
+  font-size: 1.8rem;
+  flex-shrink: 0;
+  line-height: 1;
+}
+
+.logroContenido {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  min-width: 0;
+}
+
 .headerLeft {
   display: flex;
   flex-direction: column;
@@ -303,7 +337,9 @@
 
 /* --- Responsive --- */
 @media (max-width: 1024px) {
-  .grid {
+  .grid,
+  .communityGrid,
+  .logrosGrid {
     grid-template-columns: repeat(2, 1fr);
   }
   .header {
@@ -313,7 +349,9 @@
 }
 
 @media (max-width: 600px) {
-  .grid {
+  .grid,
+  .communityGrid,
+  .logrosGrid {
     grid-template-columns: 1fr;
   }
 }
