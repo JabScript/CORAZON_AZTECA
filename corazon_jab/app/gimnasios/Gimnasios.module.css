@@ -403,6 +403,30 @@
   border: 1px solid rgba(201, 161, 58, 0.15);
 }
 
+.mapHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem 1.25rem;
+  background: #141210;
+  flex-wrap: wrap;
+}
+
+.mapTitle {
+  font-family: var(--font-heading);
+  font-size: 1.1rem;
+  font-style: italic;
+  color: var(--cream);
+  margin: 0;
+}
+
+.mapHeaderActions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
 .map {
   width: 100%;
   height: 450px;

@@ -23,6 +23,7 @@ const allPosts = [
     readTime: "8 min lectura",
     title: "Guía completa de nutrición para boxeadores",
     excerpt: "Descubre cómo estructurar tu alimentación para maximizar el rendimiento en el ring, controlar el peso y acelerar la recuperación muscular.",
+    sourceUrl: "https://okdiario.com/salud/cual-mejor-dieta-boxeadores-3088366",
   },
   {
     slug: "tecnicas-golpes-jab-cross",
@@ -34,6 +35,7 @@ const allPosts = [
     readTime: "6 min lectura",
     title: "Técnicas de golpes: perfecciona tu jab y cross",
     excerpt: "El jab y el cross son los fundamentos del boxeo. Aprende la biomecánica correcta, errores comunes y ejercicios para mejorar tu precisión.",
+    sourceUrl: "https://www.expertboxing.es/tecnicas-de-boxeo/las-5-clases-de-jabs/",
   },
   {
     slug: "preparacion-mental-campeon",
@@ -45,6 +47,7 @@ const allPosts = [
     readTime: "10 min lectura",
     title: "Preparación mental: la psicología del campeón",
     excerpt: "El boxeo es 80% mental. Estrategias de visualización, manejo de la presión pre-pelea y cómo desarrollar una mentalidad ganadora.",
+    sourceUrl: "https://wbcboxing.com/ganando-la-batalla-interna-la-psicologia-del-boxeador/",
   },
   {
     slug: "rutina-entrenamiento-principiantes",
@@ -56,6 +59,7 @@ const allPosts = [
     readTime: "7 min lectura",
     title: "Rutina de entrenamiento para principiantes",
     excerpt: "Tu primera semana en el gimnasio de boxeo. Ejercicios básicos, calentamiento correcto y cómo evitar lesiones comunes al inicio.",
+    sourceUrl: "https://www.myprotein.es/thezone/entrenamiento/entrenamiento-de-boxeo/",
   },
   {
     slug: "mejores-peleas-2026",
@@ -67,6 +71,7 @@ const allPosts = [
     readTime: "5 min lectura",
     title: "Las mejores peleas programadas para 2026",
     excerpt: "Un repaso por las peleas más esperadas del año. Análisis de los combates que definirán el panorama del boxeo mundial.",
+    sourceUrl: "https://dazn.com/es-MX/news/boxeo/calendario-boxeo-horario-fecha-y-cartelera-de-los-proximos-combates-en-dazn/15jso3jakw1zt1rjhcmgs4kz5t",
   },
   {
     slug: "recuperacion-post-pelea",
@@ -78,6 +83,7 @@ const allPosts = [
     readTime: "6 min lectura",
     title: "Recuperación post-pelea: guía completa",
     excerpt: "Cómo cuidar tu cuerpo después de un combate. Técnicas de recuperación, descanso activo y cuándo volver al entrenamiento.",
+    sourceUrl: "https://www.aztecajalisco.com/deportes/boxeo-cuantas-horas-esperar-para-comer-antes-y-despues-pelea",
   },
   {
     slug: "historia-guantes-boxeo",
@@ -89,6 +95,7 @@ const allPosts = [
     readTime: "4 min lectura",
     title: "La evolución de los guantes de boxeo",
     excerpt: "Desde las vendas de cuero hasta la tecnología moderna. Cómo los guantes han transformado la seguridad y la técnica del deporte.",
+    sourceUrl: "https://es.wikipedia.org/wiki/Guantes_de_boxeo",
   },
   {
     slug: "defensa-peekaboo",
@@ -100,6 +107,7 @@ const allPosts = [
     readTime: "7 min lectura",
     title: "Estilos defensivos: el Peek-a-Boo de Tyson",
     excerpt: "Análisis profundo del estilo defensivo que hizo legendario a Mike Tyson. Movimiento de cabeza, ángulos y contraataque explosivo.",
+    sourceUrl: "https://es.wikipedia.org/wiki/Peek-a-boo_(estilo_de_boxeo)",
   },
   {
     slug: "control-peso-pelea",
@@ -111,6 +119,7 @@ const allPosts = [
     readTime: "9 min lectura",
     title: "Control de peso antes de una pelea",
     excerpt: "Estrategias saludables para dar el peso sin comprometer tu rendimiento. Hidratación, timing y lo que los campeones hacen diferente.",
+    sourceUrl: "https://wbcboxing.com/control-de-peso-en-boxmed/",
   },
   {
     slug: "sparring-seguro",
@@ -122,6 +131,7 @@ const allPosts = [
     readTime: "5 min lectura",
     title: "Cómo hacer sparring de forma segura",
     excerpt: "Reglas de oro para sesiones de sparring productivas. Protección, comunicación con tu compañero y cuándo parar.",
+    sourceUrl: "https://www.expertboxing.es/entrenamiento-de-boxeo/sparring-de-boxeo-para-principiantes",
   },
   {
     slug: "campeon-madruga",
@@ -133,6 +143,7 @@ const allPosts = [
     readTime: "6 min lectura",
     title: "La rutina matutina del campeón",
     excerpt: "Qué hacen los boxeadores de élite antes de que salga el sol. Disciplina, meditación y el poder del hábito en el rendimiento.",
+    sourceUrl: "https://psicologiaymente.com/deporte/ventajas-vida-estable-ordenada-deportistas-elite",
   },
   {
     slug: "evento-corazon-azteca",
@@ -144,6 +155,7 @@ const allPosts = [
     readTime: "3 min lectura",
     title: "Próximo evento: Noche de Campeones 2026",
     excerpt: "Toda la información sobre la velada más esperada del año. Cartelera completa, sede, horarios y cómo conseguir boletos.",
+    sourceUrl: "https://wbcboxing.com/calendario-de-peleas-wbc-de-la-semana/",
   },
 ];
 
@@ -218,9 +230,14 @@ export default function TodosPage() {
               </div>
               <h3 className={styles.cardTitle}>{post.title}</h3>
               <p className={styles.cardExcerpt}>{post.excerpt}</p>
-              <Link href={`/blog/${post.slug}`} className={styles.readMore}>
+              <a
+                href={post.sourceUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={styles.readMore}
+              >
                 Leer artículo →
-              </Link>
+              </a>
             </div>
           </article>
         ))}
