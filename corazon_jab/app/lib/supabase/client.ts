@@ -4,10 +4,10 @@
 // en Postgres (ver .kiro/specs/supabase-database-schema/design.md), no aquí.
 
 import { createBrowserClient } from "@supabase/ssr";
+import { leerConfiguracionSupabase } from "./config";
 
 export function crearClienteSupabaseNavegador() {
-  return createBrowserClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!
-  );
+  const { url, anonKey } = leerConfiguracionSupabase();
+
+  return createBrowserClient(url, anonKey);
 }
