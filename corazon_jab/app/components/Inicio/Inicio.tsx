@@ -53,7 +53,7 @@ export default function Inicio() {
           {/* Derecha: foto del boxeador */}
           <div className={styles.right}>
             <Image
-              src="/boxeador-hero.png"
+              src="/cesar.jpg"
               alt="Boxeador Corazón Azteca"
               width={700}
               height={900}
