@@ -10,7 +10,7 @@ export default function EntrenadoresPage() {
   const [entrenadores, setEntrenadores] = useState<PerfilEntrenador[]>([]);
 
   useEffect(() => {
-    setEntrenadores(obtenerEntrenadoresPublicos());
+    obtenerEntrenadoresPublicos().then(setEntrenadores).catch(() => setEntrenadores([]));
   }, []);
 
   return (
@@ -37,6 +37,7 @@ export default function EntrenadoresPage() {
                   width={120}
                   height={120}
                   style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '50%' }}
+                  unoptimized
                 />
               ) : (
                 <span className={styles.cardPlaceholder}>🥊</span>

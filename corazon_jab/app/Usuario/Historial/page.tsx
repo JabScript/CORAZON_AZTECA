@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { obtenerMisLogrosAprobados, type ArticuloBlog } from '../../lib/blogStorage';
+import { useSesion } from '../../lib/auth/SessionProvider';
 import styles from './Historial.module.css';
 
 /* Datos de ejemplo — en producción vendrían de una API/BD */
@@ -77,11 +78,15 @@ const PROXIMA_PELEA = {
 };
 
 export default function HistorialDeportivo() {
+  const { sesion } = useSesion();
+  const cuenta = sesion.estado === 'con_sesion' ? sesion.cuenta : null;
   const [logros, setLogros] = useState<ArticuloBlog[]>([]);
 
   useEffect(() => {
-    setLogros(obtenerMisLogrosAprobados());
-  }, []);
+    if (!cuenta) return;
+    obtenerMisLogrosAprobados(cuenta.id).then(setLogros).catch(() => setLogros([]));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [cuenta?.id]);
 
   return (
     <main className={styles.pagina}>

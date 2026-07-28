@@ -6,10 +6,18 @@
 "use client";
 
 import { useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useSesion, type Rol } from "../../lib/auth/SessionProvider";
 import { rutaDestino } from "../../lib/auth/rutaDestino";
 import styles from "./RequireRole.module.css";
+
+/**
+ * Ruta de la Pantalla_Espera_Aprobacion: excluida del redirect por
+ * "admin pendiente" para que un admin pendiente pueda efectivamente ver
+ * esa pantalla en lugar de quedar en un loop de redirección hacia sí misma
+ * (esa ruta vive bajo /Admin y por lo tanto también pasa por RequireRole).
+ */
+const RUTA_ESPERA_APROBACION = "/Admin/esperando-aprobacion";
 
 interface RequireRoleProps {
   rolPermitido: Rol;
@@ -27,11 +35,18 @@ function Verificando() {
 
 export default function RequireRole({ rolPermitido, children }: RequireRoleProps) {
   const router = useRouter();
+  const pathname = usePathname();
   const { sesion } = useSesion();
+
+  const esPantallaEspera =
+    pathname === RUTA_ESPERA_APROBACION &&
+    sesion.estado === "con_sesion" &&
+    sesion.cuenta.rol === "admin";
 
   const debeRedirigirALogin = sesion.estado === "sin_sesion";
   const debeRedirigirADestino =
     sesion.estado === "con_sesion" &&
+    !esPantallaEspera &&
     (sesion.cuenta.rol !== rolPermitido ||
       (sesion.cuenta.rol === "admin" && sesion.cuenta.estadoCuenta === "pendiente"));
 

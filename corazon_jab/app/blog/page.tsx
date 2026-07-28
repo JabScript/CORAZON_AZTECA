@@ -94,8 +94,8 @@ export default function BlogPage() {
   const [communityLogros, setCommunityLogros] = useState<ArticuloBlog[]>([]);
 
   useEffect(() => {
-    setCommunityPosts(obtenerArticulosAprobados());
-    setCommunityLogros(obtenerLogrosAprobados());
+    obtenerArticulosAprobados().then(setCommunityPosts).catch(() => setCommunityPosts([]));
+    obtenerLogrosAprobados().then(setCommunityLogros).catch(() => setCommunityLogros([]));
   }, []);
 
   const filteredPosts = activeCategory

@@ -4,9 +4,10 @@
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { obtenerSesion } from "../lib/sesionStorage";
+import { useSesion } from "../lib/auth/SessionProvider";
+import { resolverUrlFoto } from "../lib/auth/fotoPerfil";
 import {
-  obtenerAlumnoPorUsuarioId,
+  obtenerAlumnoPorCuentaId,
   actualizarEntrenadorAlumno,
   type OrigenEntrenador,
 } from "../lib/alumnoStorage";
@@ -41,8 +42,11 @@ const recentTrainings = [
 
 export default function DashboardPage() {
   const maxVal = Math.max(...weeklyProgress.map(w => Math.max(w.hours, w.intensity)));
-  const sesion = obtenerSesion();
-  const primerNombre = sesion.nombre.split(" ")[0] || sesion.nombre;
+  const { sesion } = useSesion();
+  const cuenta = sesion.estado === "con_sesion" ? sesion.cuenta : null;
+  const nombre = cuenta?.nombre ?? "";
+  const primerNombre = nombre.split(" ")[0] || nombre;
+  const fotoUrl = cuenta ? resolverUrlFoto(cuenta.fotoRef) : null;
 
   const {
     status: estadoAlumno,
@@ -50,8 +54,8 @@ export default function DashboardPage() {
     error: errorAlumno,
     refetch: refetchAlumno,
   } = useAsyncData(
-    () => Promise.resolve(obtenerAlumnoPorUsuarioId(sesion.usuarioId)),
-    [sesion.usuarioId]
+    () => (cuenta ? obtenerAlumnoPorCuentaId(cuenta.id) : Promise.resolve(null)),
+    [cuenta?.id]
   );
   const [entrenadores, setEntrenadores] = useState<PerfilEntrenador[]>([]);
   const [editandoEntrenador, setEditandoEntrenador] = useState(false);
@@ -60,9 +64,8 @@ export default function DashboardPage() {
   const [nombreManual, setNombreManual] = useState("");
 
   useEffect(() => {
-    setEntrenadores(obtenerEntrenadoresPublicos());
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [sesion.usuarioId]);
+    obtenerEntrenadoresPublicos().then(setEntrenadores).catch(() => setEntrenadores([]));
+  }, [cuenta?.id]);
 
   if (estadoAlumno === "loading" || estadoAlumno === "idle") {
     return <DashboardSkeleton count={4} variant="card" />;
@@ -75,7 +78,7 @@ export default function DashboardPage() {
       />
     );
   }
-  if (!datosAlumno) {
+  if (!datosAlumno || !cuenta) {
     return null;
   }
 
@@ -91,8 +94,8 @@ export default function DashboardPage() {
     setEditandoEntrenador(true);
   };
 
-  const handleGuardarEntrenador = () => {
-    actualizarEntrenadorAlumno(sesion.usuarioId, {
+  const handleGuardarEntrenador = async () => {
+    await actualizarEntrenadorAlumno(cuenta.id, {
       origenEntrenador: opcionEntrenador,
       entrenadorId: opcionEntrenador === "directorio" ? entrenadorIdSeleccionado : undefined,
       nombreEntrenadorManual: opcionEntrenador === "manual" ? nombreManual.trim() : undefined,
@@ -101,9 +104,9 @@ export default function DashboardPage() {
     setEditandoEntrenador(false);
   };
 
-  const handleQuitarEntrenador = () => {
+  const handleQuitarEntrenador = async () => {
     if (!confirm("¿Quieres dejar de tener entrenador y pasar a entrenamiento independiente?")) return;
-    actualizarEntrenadorAlumno(sesion.usuarioId, { origenEntrenador: "independiente" });
+    await actualizarEntrenadorAlumno(cuenta.id, { origenEntrenador: "independiente" });
     refetchAlumno();
   };
 
@@ -114,10 +117,10 @@ export default function DashboardPage() {
         <div className={styles.headerLeft}>
           <div className={styles.headerUserRow}>
             <div className={styles.headerAvatar}>
-              {sesion.foto ? (
-                <Image src={sesion.foto} alt={sesion.nombre} width={56} height={56} className={styles.headerAvatarImg} unoptimized />
+              {fotoUrl ? (
+                <Image src={fotoUrl} alt={nombre} width={56} height={56} className={styles.headerAvatarImg} unoptimized />
               ) : (
-                sesion.nombre.charAt(0).toUpperCase()
+                nombre.charAt(0).toUpperCase()
               )}
             </div>
             <div>
@@ -299,13 +302,13 @@ export default function DashboardPage() {
       {/* Usuario footer */}
       <div className={styles.userBar}>
         <div className={styles.userAvatar}>
-          {sesion.foto ? (
-            <Image src={sesion.foto} alt={sesion.nombre} width={34} height={34} className={styles.userAvatarImg} unoptimized />
+          {fotoUrl ? (
+            <Image src={fotoUrl} alt={nombre} width={34} height={34} className={styles.userAvatarImg} unoptimized />
           ) : (
-            sesion.nombre.charAt(0).toUpperCase()
+            nombre.charAt(0).toUpperCase()
           )}
         </div>
-        <span className={styles.userName}>{sesion.nombre}</span>
+        <span className={styles.userName}>{nombre}</span>
       </div>
     </div>
   );

@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { cerrarSesion, obtenerSesion } from '../lib/sesionStorage';
+import { useSesion } from '../lib/auth/SessionProvider';
 import styles from './AdminNav.module.css';
 
 const SECCIONES = [
@@ -14,10 +14,11 @@ const SECCIONES = [
 export default function AdminNav() {
   const pathname = usePathname();
   const router = useRouter();
-  const sesion = obtenerSesion();
+  const { sesion, cerrarSesion } = useSesion();
+  const nombre = sesion.estado === 'con_sesion' ? sesion.cuenta.nombre : '';
 
   const handleLogout = () => {
-    cerrarSesion();
+    void cerrarSesion();
     router.push('/login');
   };
 
@@ -41,7 +42,7 @@ export default function AdminNav() {
           );
         })}
         <span className={styles.adminTag}>Admin</span>
-        <span className={styles.adminUser}>{sesion.nombre}</span>
+        <span className={styles.adminUser}>{nombre}</span>
         <button type="button" className={styles.logoutBtn} onClick={handleLogout}>
           Cerrar sesión
         </button>

@@ -82,7 +82,7 @@ export default function RegistroAlumnoPage() {
   const [enviando, setEnviando] = useState(false);
 
   useEffect(() => {
-    setEntrenadores(obtenerEntrenadoresPublicos());
+    obtenerEntrenadoresPublicos().then(setEntrenadores).catch(() => setEntrenadores([]));
   }, []);
 
   const handleFotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {

@@ -4,7 +4,7 @@
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import {
-  obtenerArticulos,
+  obtenerTodasLasPublicaciones,
   aprobarArticulo,
   rechazarArticulo,
   eliminarArticulo,
@@ -23,29 +23,31 @@ const FILTROS: { key: EstadoArticulo | 'todos'; label: string }[] = [
 export default function ArticulosAdminPage() {
   const [articulos, setArticulos] = useState<ArticuloBlog[]>([]);
   const [filtro, setFiltro] = useState<EstadoArticulo | 'todos'>('pendiente');
-  const [expandido, setExpandido] = useState<number | null>(null);
+  const [expandido, setExpandido] = useState<string | null>(null);
+
+  const refrescar = () => {
+    obtenerTodasLasPublicaciones().then(setArticulos).catch(() => setArticulos([]));
+  };
 
   useEffect(() => {
-    setArticulos(obtenerArticulos());
+    refrescar();
   }, []);
 
-  const refrescar = () => setArticulos(obtenerArticulos());
-
-  const handleAprobar = (id: number) => {
-    aprobarArticulo(id);
+  const handleAprobar = async (id: string) => {
+    await aprobarArticulo(id);
     refrescar();
   };
 
-  const handleRechazar = (id: number) => {
+  const handleRechazar = async (id: string) => {
     const motivo = window.prompt('Motivo del rechazo (opcional):') ?? undefined;
-    rechazarArticulo(id, motivo);
+    await rechazarArticulo(id, motivo);
     refrescar();
   };
 
-  const handleEliminar = (id: number, titulo: string) => {
+  const handleEliminar = async (id: string, titulo: string) => {
     const confirmado = window.confirm(`¿Eliminar "${titulo}"? Esta acción no se puede deshacer.`);
     if (!confirmado) return;
-    eliminarArticulo(id);
+    await eliminarArticulo(id);
     refrescar();
   };
 

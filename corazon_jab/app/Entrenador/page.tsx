@@ -5,21 +5,28 @@ import styles from "./Dashboard.module.css";
 
 import Image from "next/image";
 import Link from "next/link";
-import { obtenerSesion } from "../lib/sesionStorage";
-import { obtenerPerfil } from "../lib/entrenadorStorage";
+import { useSesion } from "../lib/auth/SessionProvider";
+import { resolverUrlFoto } from "../lib/auth/fotoPerfil";
+import { obtenerPerfilPorCuentaId } from "../lib/entrenadorStorage";
 import { useAsyncData } from "../lib/async/useAsyncData";
 import DashboardSkeleton from "../lib/async/DashboardSkeleton";
 import ErrorState from "../lib/async/ErrorState";
 
 export default function EntrenadorDashboard() {
-  const sesion = obtenerSesion();
+  const { sesion } = useSesion();
+  const cuenta = sesion.estado === "con_sesion" ? sesion.cuenta : null;
+  const nombre = cuenta?.nombre ?? "";
+  const fotoUrl = cuenta ? resolverUrlFoto(cuenta.fotoRef) : null;
 
   const {
     status: estadoPerfil,
     data: perfil,
     error: errorPerfil,
     refetch: refetchPerfil,
-  } = useAsyncData(() => Promise.resolve(obtenerPerfil()), [sesion.usuarioId]);
+  } = useAsyncData(
+    () => (cuenta ? obtenerPerfilPorCuentaId(cuenta.id) : Promise.resolve(null)),
+    [cuenta?.id]
+  );
 
   if (estadoPerfil === "loading" || estadoPerfil === "idle") {
     return <DashboardSkeleton count={4} variant="card" />;
@@ -41,10 +48,10 @@ export default function EntrenadorDashboard() {
       <div className={styles.headerRow}>
         <div className={styles.headerUserRow}>
           <div className={styles.headerAvatar}>
-            {sesion.foto ? (
-              <Image src={sesion.foto} alt={sesion.nombre} width={64} height={64} className={styles.headerAvatarImg} unoptimized />
+            {fotoUrl ? (
+              <Image src={fotoUrl} alt={nombre} width={64} height={64} className={styles.headerAvatarImg} unoptimized />
             ) : (
-              sesion.nombre.charAt(0).toUpperCase()
+              nombre.charAt(0).toUpperCase()
             )}
           </div>
           <div>
@@ -79,7 +86,7 @@ export default function EntrenadorDashboard() {
       <div className={styles.info}>
         <h2 className={styles.sectionTitle}>Información del Entrenador</h2>
         <div className={styles.infoGrid}>
-          <div><span className={styles.label}>Nombre:</span> {perfil.nombre}</div>
+          <div><span className={styles.label}>Nombre:</span> {nombre}</div>
           <div><span className={styles.label}>Especialidad:</span> {perfil.especialidad}</div>
           <div><span className={styles.label}>Experiencia:</span> {perfil.anosTrayectoria} años</div>
           <div><span className={styles.label}>Certificaciones:</span> {perfil.logros[0] ?? "—"}</div>

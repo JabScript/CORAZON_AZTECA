@@ -3,17 +3,23 @@
 import { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
 import styles from './Perfil.module.css';
+import { useSesion } from '../../lib/auth/SessionProvider';
 import {
-  obtenerPerfil,
+  obtenerPerfilPorCuentaId,
   guardarPerfil,
-  archivoABase64,
+  subirFotoPerfilEntrenador,
+  subirFotoGaleria,
   type PerfilEntrenador,
   type RedSocial,
   type FotoGaleria,
 } from '../../lib/entrenadorStorage';
 
 export default function EditarPerfil() {
+  const { sesion } = useSesion();
+  const cuenta = sesion.estado === 'con_sesion' ? sesion.cuenta : null;
+
   const [perfil, setPerfil] = useState<PerfilEntrenador | null>(null);
+  const [guardando, setGuardando] = useState(false);
   const [guardado, setGuardado] = useState(false);
   const [nuevoLogro, setNuevoLogro] = useState('');
   const [nuevaRed, setNuevaRed] = useState<RedSocial>({ nombre: '', usuario: '', url: '' });
@@ -21,43 +27,56 @@ export default function EditarPerfil() {
   const galeriaInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    setPerfil(obtenerPerfil());
-  }, []);
+    if (!cuenta) return;
+    obtenerPerfilPorCuentaId(cuenta.id).then(setPerfil);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [cuenta?.id]);
 
-  if (!perfil) return null;
+  if (!perfil || !cuenta) return null;
 
   const actualizar = (campos: Partial<PerfilEntrenador>) => {
     setPerfil((prev) => (prev ? { ...prev, ...campos } : prev));
     setGuardado(false);
   };
 
-  const handleGuardar = () => {
+  const handleGuardar = async () => {
     if (!perfil) return;
-    guardarPerfil(perfil);
-    setGuardado(true);
-    setTimeout(() => setGuardado(false), 3000);
+    setGuardando(true);
+    try {
+      await guardarPerfil({
+        cuentaId: cuenta.id,
+        especialidad: perfil.especialidad,
+        anosTrayectoria: perfil.anosTrayectoria,
+        bio: perfil.bio,
+        logros: perfil.logros,
+        redes: perfil.redes,
+        galeria: perfil.galeria,
+      });
+      setGuardado(true);
+      setTimeout(() => setGuardado(false), 3000);
+    } finally {
+      setGuardando(false);
+    }
   };
 
   // --- Foto de perfil ---
   const handleFotoPerfil = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const archivo = e.target.files?.[0];
     if (!archivo) return;
-    const base64 = await archivoABase64(archivo);
-    actualizar({ foto: base64 });
+    const ruta = await subirFotoPerfilEntrenador(cuenta.id, archivo);
+    const actualizado = await obtenerPerfilPorCuentaId(cuenta.id);
+    if (actualizado) setPerfil(actualizado);
+    else actualizar({ fotoRef: ruta });
   };
 
   // --- Galería ---
   const handleFotosGaleria = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const archivos = e.target.files;
-    if (!archivos) return;
+    if (!archivos || archivos.length === 0) return;
     const nuevasFotos: FotoGaleria[] = [];
     for (let i = 0; i < archivos.length; i++) {
-      const base64 = await archivoABase64(archivos[i]);
-      nuevasFotos.push({
-        id: `foto-${Date.now()}-${i}`,
-        src: base64,
-        alt: archivos[i].name,
-      });
+      const foto = await subirFotoGaleria(perfil.id, archivos[i]);
+      nuevasFotos.push(foto);
     }
     actualizar({ galeria: [...perfil.galeria, ...nuevasFotos] });
   };
@@ -96,8 +115,9 @@ export default function EditarPerfil() {
           type="button"
           className={styles.btnGuardar}
           onClick={handleGuardar}
+          disabled={guardando}
         >
-          {guardado ? '✓ Guardado' : 'Guardar cambios'}
+          {guardado ? '✓ Guardado' : guardando ? 'Guardando...' : 'Guardar cambios'}
         </button>
       </header>
 
@@ -113,6 +133,7 @@ export default function EditarPerfil() {
                 width={140}
                 height={140}
                 className={styles.fotoImg}
+                unoptimized
               />
             ) : (
               <span className={styles.fotoPlaceholder}>Sin foto</span>
@@ -139,14 +160,6 @@ export default function EditarPerfil() {
       <section className={styles.seccion}>
         <h2>Información básica</h2>
         <div className={styles.formGrid}>
-          <label className={styles.campo}>
-            <span>Nombre</span>
-            <input
-              type="text"
-              value={perfil.nombre}
-              onChange={(e) => actualizar({ nombre: e.target.value })}
-            />
-          </label>
           <label className={styles.campo}>
             <span>Especialidad</span>
             <input
@@ -268,6 +281,7 @@ export default function EditarPerfil() {
                 width={160}
                 height={160}
                 className={styles.galeriaImg}
+                unoptimized
               />
               <button
                 type="button"

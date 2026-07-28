@@ -4,10 +4,10 @@ import { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import styles from './Perfil.module.css';
-import { obtenerSesion, guardarSesion, type Sesion } from '../../lib/sesionStorage';
-import { actualizarCuenta, imagenPerfilABase64 } from '../../lib/authStorage';
+import { useSesion } from '../../lib/auth/SessionProvider';
+import { subirFotoPerfil, resolverUrlFoto } from '../../lib/auth/fotoPerfil';
 import {
-  obtenerAlumnoPorUsuarioId,
+  obtenerAlumnoPorCuentaId,
   actualizarPerfilAlumno,
   actualizarEntrenadorAlumno,
   type DatosAlumno,
@@ -16,8 +16,9 @@ import {
 import { obtenerEntrenadoresPublicos, type PerfilEntrenador } from '../../lib/entrenadorStorage';
 
 export default function EditarPerfilAlumno() {
-  const [sesion, setSesion] = useState<Sesion | null>(null);
-  const [nombre, setNombre] = useState('');
+  const { sesion } = useSesion();
+  const cuenta = sesion.estado === 'con_sesion' ? sesion.cuenta : null;
+
   const [apellido, setApellido] = useState('');
   const [apodo, setApodo] = useState('');
   const [fechaNacimiento, setFechaNacimiento] = useState('');
@@ -25,7 +26,8 @@ export default function EditarPerfilAlumno() {
   const [nivel, setNivel] = useState('Principiante');
   const [objetivo, setObjetivo] = useState('Acondicionamiento físico');
   const [ciudad, setCiudad] = useState('');
-  const [foto, setFoto] = useState<string | undefined>(undefined);
+  const [fotoUrl, setFotoUrl] = useState<string | null>(null);
+  const [guardando, setGuardando] = useState(false);
   const [guardado, setGuardado] = useState(false);
   const fotoInputRef = useRef<HTMLInputElement>(null);
 
@@ -37,18 +39,12 @@ export default function EditarPerfilAlumno() {
   const [entrenadorIdSeleccionado, setEntrenadorIdSeleccionado] = useState('');
   const [nombreManual, setNombreManual] = useState('');
 
-  useEffect(() => {
-    const s = obtenerSesion();
-    setSesion(s);
-    setFoto(s.foto);
+  const cargarDatos = async () => {
+    if (!cuenta) return;
+    setFotoUrl(resolverUrlFoto(cuenta.fotoRef));
 
-    const [primerNombre = '', ...resto] = s.nombre.split(' ');
-    setNombre(primerNombre);
-    setApellido(resto.join(' '));
-
-    const datos = obtenerAlumnoPorUsuarioId(s.usuarioId);
+    const datos = await obtenerAlumnoPorCuentaId(cuenta.id);
     if (datos) {
-      setNombre(datos.nombre);
       setApellido(datos.apellido);
       setApodo(datos.apodo ?? '');
       setFechaNacimiento(datos.fechaNacimiento);
@@ -58,10 +54,18 @@ export default function EditarPerfilAlumno() {
       setCiudad(datos.ciudad);
     }
     setDatosAlumno(datos);
-    setEntrenadores(obtenerEntrenadoresPublicos());
-  }, []);
 
-  if (!sesion) return null;
+    const lista = await obtenerEntrenadoresPublicos();
+    setEntrenadores(lista);
+  };
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    cargarDatos();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [cuenta?.id]);
+
+  if (!cuenta) return null;
 
   const entrenadorActual =
     datosAlumno?.origenEntrenador === 'directorio' && datosAlumno.entrenadorId
@@ -75,64 +79,55 @@ export default function EditarPerfilAlumno() {
     setEditandoEntrenador(true);
   };
 
-  const handleGuardarEntrenador = () => {
-    actualizarEntrenadorAlumno(sesion.usuarioId, {
+  const handleGuardarEntrenador = async () => {
+    await actualizarEntrenadorAlumno(cuenta.id, {
       origenEntrenador: opcionEntrenador,
       entrenadorId: opcionEntrenador === 'directorio' ? entrenadorIdSeleccionado : undefined,
       nombreEntrenadorManual: opcionEntrenador === 'manual' ? nombreManual.trim() : undefined,
     });
-    setDatosAlumno(obtenerAlumnoPorUsuarioId(sesion.usuarioId));
+    setDatosAlumno(await obtenerAlumnoPorCuentaId(cuenta.id));
     setEditandoEntrenador(false);
   };
 
-  const handleQuitarEntrenador = () => {
+  const handleQuitarEntrenador = async () => {
     if (!confirm('¿Quieres dejar de tener entrenador y pasar a entrenamiento independiente?')) return;
-    actualizarEntrenadorAlumno(sesion.usuarioId, { origenEntrenador: 'independiente' });
-    setDatosAlumno(obtenerAlumnoPorUsuarioId(sesion.usuarioId));
+    await actualizarEntrenadorAlumno(cuenta.id, { origenEntrenador: 'independiente' });
+    setDatosAlumno(await obtenerAlumnoPorCuentaId(cuenta.id));
   };
 
   const handleFotoChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const archivo = e.target.files?.[0];
     if (!archivo) return;
-    const base64 = await imagenPerfilABase64(archivo);
-    setFoto(base64);
+    const ruta = await subirFotoPerfil(cuenta.id, archivo);
+    setFotoUrl(resolverUrlFoto(ruta));
     setGuardado(false);
   };
 
-  const handleGuardar = () => {
-    const nombreCompleto = `${nombre.trim()} ${apellido.trim()}`.trim();
-
-    // Actualiza el perfil deportivo (crea el registro si aún no existía).
-    actualizarPerfilAlumno(sesion.usuarioId, {
-      nombre: nombre.trim(),
-      apellido: apellido.trim(),
-      apodo: apodo.trim() || undefined,
-      fechaNacimiento,
-      peso: Number(peso) || 0,
-      nivel,
-      objetivo,
-      ciudad,
-    });
-
-    // Actualiza la cuenta (nombre/foto) para que se refleje en login futuros.
-    actualizarCuenta(sesion.usuarioId, { nombre: nombreCompleto, foto });
-
-    // Actualiza la sesión activa para que el cambio se vea de inmediato
-    // en el sidebar y el dashboard, sin tener que volver a iniciar sesión.
-    const nuevaSesion: Sesion = { ...sesion, nombre: nombreCompleto, foto };
-    guardarSesion(nuevaSesion);
-    setSesion(nuevaSesion);
-
-    setGuardado(true);
-    setTimeout(() => setGuardado(false), 3000);
+  const handleGuardar = async () => {
+    setGuardando(true);
+    try {
+      await actualizarPerfilAlumno(cuenta.id, {
+        apellido: apellido.trim(),
+        apodo: apodo.trim() || undefined,
+        fechaNacimiento,
+        peso: Number(peso) || 0,
+        nivel,
+        objetivo,
+        ciudad,
+      });
+      setGuardado(true);
+      setTimeout(() => setGuardado(false), 3000);
+    } finally {
+      setGuardando(false);
+    }
   };
 
   return (
     <main className={styles.pagina}>
       <header className={styles.encabezado}>
         <h1>Editar perfil</h1>
-        <button type="button" className={styles.btnGuardar} onClick={handleGuardar}>
-          {guardado ? '✓ Guardado' : 'Guardar cambios'}
+        <button type="button" className={styles.btnGuardar} onClick={handleGuardar} disabled={guardando}>
+          {guardado ? '✓ Guardado' : guardando ? 'Guardando...' : 'Guardar cambios'}
         </button>
       </header>
 
@@ -141,14 +136,14 @@ export default function EditarPerfilAlumno() {
         <h2>Foto de perfil</h2>
         <div className={styles.fotoPerfilWrap}>
           <div className={styles.fotoPreview}>
-            {foto ? (
-              <Image src={foto} alt="Foto de perfil" width={140} height={140} className={styles.fotoImg} unoptimized />
+            {fotoUrl ? (
+              <Image src={fotoUrl} alt="Foto de perfil" width={140} height={140} className={styles.fotoImg} unoptimized />
             ) : (
-              <span className={styles.fotoPlaceholder}>{nombre.charAt(0).toUpperCase() || 'Sin foto'}</span>
+              <span className={styles.fotoPlaceholder}>{cuenta.nombre.charAt(0).toUpperCase() || 'Sin foto'}</span>
             )}
           </div>
           <button type="button" className={styles.btnSecundario} onClick={() => fotoInputRef.current?.click()}>
-            {foto ? 'Cambiar foto' : 'Subir foto'}
+            {fotoUrl ? 'Cambiar foto' : 'Subir foto'}
           </button>
           <input ref={fotoInputRef} type="file" accept="image/*" hidden onChange={handleFotoChange} />
         </div>
@@ -158,10 +153,6 @@ export default function EditarPerfilAlumno() {
       <section className={styles.seccion}>
         <h2>Información básica</h2>
         <div className={styles.formGrid}>
-          <label className={styles.campo}>
-            <span>Nombre</span>
-            <input type="text" value={nombre} onChange={(e) => setNombre(e.target.value)} />
-          </label>
           <label className={styles.campo}>
             <span>Apellido</span>
             <input type="text" value={apellido} onChange={(e) => setApellido(e.target.value)} />

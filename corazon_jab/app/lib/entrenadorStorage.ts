@@ -1,4 +1,11 @@
 // app/lib/entrenadorStorage.ts
+// Almacen_Entrenador: lee/escribe `perfiles_publicos_entrenador` y sus
+// tablas hijas (`logros_entrenador`, `redes_sociales_entrenador`,
+// `galeria_entrenador`) en Supabase, identificando al entrenador por
+// `cuentaId` (UUID), y sube imágenes reales a Supabase Storage en vez de
+// guardarlas como base64.
+
+import { crearClienteSupabaseNavegador } from "./supabase/client";
 
 export interface RedSocial {
   nombre: string;
@@ -8,190 +15,202 @@ export interface RedSocial {
 
 export interface FotoGaleria {
   id: string;
-  src: string; // base64 data URL
+  /** Ruta del objeto en el bucket `entrenador-galeria` */
+  imagenRef: string;
+  /** URL pública resuelta, lista para renderizar */
+  src: string;
   alt: string;
 }
 
 export interface PerfilEntrenador {
+  /** id de `perfiles_publicos_entrenador` */
   id: string;
+  cuentaId: string;
   nombre: string;
   especialidad: string;
   anosTrayectoria: number;
-  foto: string; // base64 data URL o path
+  /** Ruta del objeto en el bucket `avatars`, o null si no tiene foto */
+  fotoRef: string | null;
+  /** URL pública resuelta, o cadena vacía si no tiene foto */
+  foto: string;
   bio: string;
   logros: string[];
   redes: RedSocial[];
   galeria: FotoGaleria[];
 }
 
-const STORAGE_KEY = 'corazon_azteca_perfil_entrenador';
-const ENTRENADORES_KEY = 'corazon_azteca_entrenadores';
-
-const PERFIL_DEFAULT: PerfilEntrenador = {
-  id: 'entrenador-1',
-  nombre: 'Rodrigo Cazares',
-  especialidad: 'Boxeo olímpico',
-  anosTrayectoria: 12,
-  foto: '',
-  bio: 'Ex-seleccionado nacional juvenil. Formo boxeadores desde cero apoyándome en fundamentos: postura, distancia y disciplina antes que fuerza.',
-  logros: [
-    'Medalla de bronce, Nacionales Juveniles 2014',
-    '3 alumnos clasificados a Guantes de Oro',
-    'Certificación Federación Mexicana de Boxeo',
-    'Formador de 40+ boxeadores amateur',
-  ],
-  redes: [
-    { nombre: 'Instagram', usuario: '@rodrigo.box', url: 'https://instagram.com/rodrigo.box' },
-    { nombre: 'Facebook', usuario: 'Rodrigo Cazares Boxeo', url: 'https://facebook.com/rodrigocazaresboxeo' },
-    { nombre: 'TikTok', usuario: '@rcazares_box', url: 'https://tiktok.com/@rcazares_box' },
-    { nombre: 'WhatsApp', usuario: 'Contacto directo', url: 'https://wa.me/525500000000' },
-  ],
-  galeria: [],
-};
-
-/**
- * Entrenadores de prueba (máx. 5) que alimentan el directorio público
- * (`/entrenadores`) y el selector de entrenador en el registro de alumnos,
- * mientras no exista un backend real. Sus datos coinciden con las cuentas
- * de prueba en `app/lib/authStorage.ts`.
- */
-const ENTRENADORES_PRUEBA: PerfilEntrenador[] = [
-  PERFIL_DEFAULT,
-  {
-    id: 'entrenador-2',
-    nombre: 'Diana Reséndiz',
-    especialidad: 'Boxeo femenino y defensa personal',
-    anosTrayectoria: 9,
-    foto: '',
-    bio: 'Ex-campeona nacional amateur. Especialista en técnica defensiva y formación de boxeadoras desde nivel principiante hasta competitivo.',
-    logros: [
-      'Campeona Nacional Amateur 2018',
-      '2 alumnas medallistas en Guantes de Oro',
-      'Certificación en defensa personal femenina',
-      'Formadora de 25+ boxeadoras amateur',
-    ],
-    redes: [
-      { nombre: 'Instagram', usuario: '@diana.boxfem', url: 'https://instagram.com/diana.boxfem' },
-      { nombre: 'WhatsApp', usuario: 'Contacto directo', url: 'https://wa.me/525500000001' },
-    ],
-    galeria: [],
-  },
-  {
-    id: 'entrenador-3',
-    nombre: 'Marco Villalobos',
-    especialidad: 'Boxeo profesional y preparación física',
-    anosTrayectoria: 15,
-    foto: '',
-    bio: 'Ex-boxeador profesional con 20 peleas en su carrera. Ahora dedicado a la preparación física y técnica de boxeadores rumbo al profesionalismo.',
-    logros: [
-      'Ex-boxeador profesional (20 peleas, 14 victorias)',
-      'Entrenador principal en 3 campamentos de título',
-      'Certificación CONADE en preparación física',
-    ],
-    redes: [
-      { nombre: 'Instagram', usuario: '@marco.villalobos.box', url: 'https://instagram.com/marco.villalobos.box' },
-      { nombre: 'Facebook', usuario: 'Marco Villalobos Boxeo', url: 'https://facebook.com/marcovillalobosboxeo' },
-    ],
-    galeria: [],
-  },
-  {
-    id: 'entrenador-4',
-    nombre: 'Valentina Ortiz',
-    especialidad: 'Boxeo amateur juvenil',
-    anosTrayectoria: 6,
-    foto: '',
-    bio: 'Formadora de nuevas generaciones. Enfocada en boxeadores juveniles, disciplina, fundamentos técnicos y desarrollo deportivo integral.',
-    logros: [
-      '5 alumnos clasificados a torneos estatales juveniles',
-      'Certificación en boxeo formativo juvenil',
-    ],
-    redes: [
-      { nombre: 'TikTok', usuario: '@vale.boxjuvenil', url: 'https://tiktok.com/@vale.boxjuvenil' },
-      { nombre: 'WhatsApp', usuario: 'Contacto directo', url: 'https://wa.me/525500000002' },
-    ],
-    galeria: [],
-  },
-  {
-    id: 'entrenador-5',
-    nombre: 'Hugo Fernández',
-    especialidad: 'Sparring y estrategia de combate',
-    anosTrayectoria: 11,
-    foto: '',
-    bio: 'Especialista en sparring y análisis táctico de contrincantes. Trabaja de la mano con boxeadores en fase de campamento previo a competencia.',
-    logros: [
-      'Preparador táctico en 8 peleas de campeonato regional',
-      'Certificación Federación Mexicana de Boxeo',
-    ],
-    redes: [
-      { nombre: 'Instagram', usuario: '@hugo.sparring', url: 'https://instagram.com/hugo.sparring' },
-    ],
-    galeria: [],
-  },
-];
-
-/** Obtiene el perfil del entrenador desde localStorage */
-export function obtenerPerfil(): PerfilEntrenador {
-  if (typeof window === 'undefined') return PERFIL_DEFAULT;
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) return PERFIL_DEFAULT;
-    return JSON.parse(raw) as PerfilEntrenador;
-  } catch {
-    return PERFIL_DEFAULT;
-  }
+function resolverUrlPublica(bucket: string, ref: string | null): string {
+  if (!ref) return "";
+  const supabase = crearClienteSupabaseNavegador();
+  return supabase.storage.from(bucket).getPublicUrl(ref).data.publicUrl;
 }
 
-/** Guarda el perfil del entrenador en localStorage */
-export function guardarPerfil(perfil: PerfilEntrenador): void {
-  if (typeof window === 'undefined') return;
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(perfil));
-  // También actualiza el listado público de entrenadores
-  actualizarListaPublica(perfil);
+interface FilaPerfilPublicoEntrenador {
+  id: string;
+  cuenta_id: string;
+  especialidad: string | null;
+  anos_trayectoria: number | null;
+  foto_ref: string | null;
+  biografia: string | null;
+  accounts: { nombre: string; foto_ref: string | null } | { nombre: string; foto_ref: string | null }[] | null;
 }
 
-/** Convierte un archivo a base64 data URL */
-export function archivoABase64(archivo: File): Promise<string> {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload = () => resolve(reader.result as string);
-    reader.onerror = reject;
-    reader.readAsDataURL(archivo);
-  });
+async function mapearFilaEntrenador(fila: FilaPerfilPublicoEntrenador): Promise<PerfilEntrenador> {
+  const cuenta = Array.isArray(fila.accounts) ? fila.accounts[0] : fila.accounts;
+  const supabase = crearClienteSupabaseNavegador();
+
+  const [{ data: logros }, { data: redes }, { data: galeria }] = await Promise.all([
+    supabase.from("logros_entrenador").select("descripcion").eq("perfil_entrenador_id", fila.id),
+    supabase
+      .from("redes_sociales_entrenador")
+      .select("red, usuario, url")
+      .eq("perfil_entrenador_id", fila.id),
+    supabase
+      .from("galeria_entrenador")
+      .select("id, imagen_ref, texto_alternativo")
+      .eq("perfil_entrenador_id", fila.id),
+  ]);
+
+  return {
+    id: fila.id,
+    cuentaId: fila.cuenta_id,
+    nombre: cuenta?.nombre ?? "",
+    especialidad: fila.especialidad ?? "",
+    anosTrayectoria: fila.anos_trayectoria ?? 0,
+    fotoRef: fila.foto_ref ?? cuenta?.foto_ref ?? null,
+    foto: resolverUrlPublica("avatars", fila.foto_ref ?? cuenta?.foto_ref ?? null),
+    bio: fila.biografia ?? "",
+    logros: (logros ?? []).map((l) => l.descripcion),
+    redes: (redes ?? []).map((r) => ({ nombre: r.red, usuario: r.usuario, url: r.url })),
+    galeria: (galeria ?? []).map((g) => ({
+      id: g.id,
+      imagenRef: g.imagen_ref,
+      src: resolverUrlPublica("entrenador-galeria", g.imagen_ref),
+      alt: g.texto_alternativo ?? "",
+    })),
+  };
+}
+
+const SELECT_PERFIL_ENTRENADOR =
+  "id, cuenta_id, especialidad, anos_trayectoria, foto_ref, biografia, accounts(nombre, foto_ref)";
+
+/** Obtiene el perfil de un entrenador a partir del cuentaId de su sesión */
+export async function obtenerPerfilPorCuentaId(cuentaId: string): Promise<PerfilEntrenador | null> {
+  const supabase = crearClienteSupabaseNavegador();
+  const { data, error } = await supabase
+    .from("perfiles_publicos_entrenador")
+    .select(SELECT_PERFIL_ENTRENADOR)
+    .eq("cuenta_id", cuentaId)
+    .maybeSingle();
+  if (error) throw error;
+  return data ? mapearFilaEntrenador(data) : null;
 }
 
 /** Obtiene la lista pública de entrenadores (para visitantes) */
-export function obtenerEntrenadoresPublicos(): PerfilEntrenador[] {
-  if (typeof window === 'undefined') return ENTRENADORES_PRUEBA;
-  try {
-    const raw = localStorage.getItem(ENTRENADORES_KEY);
-    if (!raw) return ENTRENADORES_PRUEBA;
-    return JSON.parse(raw) as PerfilEntrenador[];
-  } catch {
-    return ENTRENADORES_PRUEBA;
-  }
+export async function obtenerEntrenadoresPublicos(): Promise<PerfilEntrenador[]> {
+  const supabase = crearClienteSupabaseNavegador();
+  const { data, error } = await supabase.from("perfiles_publicos_entrenador").select(SELECT_PERFIL_ENTRENADOR);
+  if (error) throw error;
+  return Promise.all((data ?? []).map(mapearFilaEntrenador));
 }
 
-/** Obtiene un entrenador por su ID */
-export function obtenerEntrenadorPorId(id: string): PerfilEntrenador | null {
-  const lista = obtenerEntrenadoresPublicos();
-  return lista.find((e) => e.id === id) ?? null;
+/** Obtiene un entrenador por el id de su `perfiles_publicos_entrenador` */
+export async function obtenerEntrenadorPorId(id: string): Promise<PerfilEntrenador | null> {
+  const supabase = crearClienteSupabaseNavegador();
+  const { data, error } = await supabase
+    .from("perfiles_publicos_entrenador")
+    .select(SELECT_PERFIL_ENTRENADOR)
+    .eq("id", id)
+    .maybeSingle();
+  if (error) throw error;
+  return data ? mapearFilaEntrenador(data) : null;
 }
 
-/** Actualiza la lista pública cuando un entrenador guarda su perfil */
-function actualizarListaPublica(perfil: PerfilEntrenador): void {
-  const lista = obtenerEntrenadoresPublicos();
-  const idx = lista.findIndex((e) => e.id === perfil.id);
-  if (idx >= 0) {
-    lista[idx] = perfil;
+/**
+ * Guarda los campos básicos del perfil (especialidad, años de trayectoria,
+ * biografía) y sincroniza atómicamente logros, redes sociales y galería vía
+ * la RPC `sincronizar_perfil_entrenador`. Crea el registro si el entrenador
+ * todavía no tenía uno.
+ */
+export async function guardarPerfil(perfil: {
+  cuentaId: string;
+  especialidad: string;
+  anosTrayectoria: number;
+  bio: string;
+  logros: string[];
+  redes: RedSocial[];
+  galeria: FotoGaleria[];
+}): Promise<void> {
+  const supabase = crearClienteSupabaseNavegador();
+
+  const { data: existente, error: errorBusqueda } = await supabase
+    .from("perfiles_publicos_entrenador")
+    .select("id")
+    .eq("cuenta_id", perfil.cuentaId)
+    .maybeSingle();
+  if (errorBusqueda) throw errorBusqueda;
+
+  let perfilId = existente?.id as string | undefined;
+
+  const camposBasicos = {
+    especialidad: perfil.especialidad,
+    anos_trayectoria: perfil.anosTrayectoria,
+    biografia: perfil.bio,
+  };
+
+  if (perfilId) {
+    const { error } = await supabase
+      .from("perfiles_publicos_entrenador")
+      .update(camposBasicos)
+      .eq("id", perfilId);
+    if (error) throw error;
   } else {
-    lista.push(perfil);
+    const { data: nueva, error } = await supabase
+      .from("perfiles_publicos_entrenador")
+      .insert({ cuenta_id: perfil.cuentaId, ...camposBasicos })
+      .select("id")
+      .single();
+    if (error) throw error;
+    perfilId = nueva.id;
   }
-  localStorage.setItem(ENTRENADORES_KEY, JSON.stringify(lista));
+
+  const { error: errorSync } = await supabase.rpc("sincronizar_perfil_entrenador", {
+    p_perfil_id: perfilId,
+    p_logros: perfil.logros,
+    p_redes: perfil.redes.map((r) => ({ nombre: r.nombre, usuario: r.usuario, url: r.url })),
+    p_galeria: perfil.galeria.map((g) => ({ imagenRef: g.imagenRef, alt: g.alt })),
+  });
+  if (errorSync) throw errorSync;
 }
 
-/** Elimina el perfil público de un entrenador (acción de admin) */
-export function eliminarEntrenador(id: string): void {
-  if (typeof window === 'undefined') return;
-  const lista = obtenerEntrenadoresPublicos().filter((e) => e.id !== id);
-  localStorage.setItem(ENTRENADORES_KEY, JSON.stringify(lista));
+/** Sube la foto de perfil del entrenador al bucket `avatars` y actualiza `foto_ref` */
+export async function subirFotoPerfilEntrenador(cuentaId: string, archivo: File): Promise<string> {
+  const supabase = crearClienteSupabaseNavegador();
+  const extension = archivo.name.split(".").pop() ?? "jpg";
+  const ruta = `${cuentaId}/${crypto.randomUUID()}.${extension}`;
+
+  const { error: errorUpload } = await supabase.storage.from("avatars").upload(ruta, archivo, { upsert: true });
+  if (errorUpload) throw errorUpload;
+
+  const { error: errorUpdate } = await supabase.from("accounts").update({ foto_ref: ruta }).eq("id", cuentaId);
+  if (errorUpdate) throw errorUpdate;
+
+  return ruta;
+}
+
+/** Sube una foto de galería al bucket `entrenador-galeria` bajo el prefijo del perfil */
+export async function subirFotoGaleria(perfilEntrenadorId: string, archivo: File): Promise<FotoGaleria> {
+  const supabase = crearClienteSupabaseNavegador();
+  const extension = archivo.name.split(".").pop() ?? "jpg";
+  const ruta = `${perfilEntrenadorId}/${crypto.randomUUID()}.${extension}`;
+
+  const { error } = await supabase.storage.from("entrenador-galeria").upload(ruta, archivo, { upsert: true });
+  if (error) throw error;
+
+  return {
+    id: ruta,
+    imagenRef: ruta,
+    src: resolverUrlPublica("entrenador-galeria", ruta),
+    alt: archivo.name,
+  };
 }

@@ -70,11 +70,41 @@ Este comando ejecuta todos los archivos `.sql` de `supabase/tests/pgtap/`
 usando `pgTAP` dentro de la base de datos local. Ver
 `supabase/tests/pgtap/README.md` para la convención de nombres de archivo.
 
-## Sembrar usuarios y datos de prueba (script de seed, tarea 25)
+## Sembrar las 15 cuentas de prueba de la app (Script_Siembra)
 
-Antes de ejecutar las pruebas de propiedades, hay que sembrar los usuarios
-de prueba (uno por rol, más un segundo admin pendiente) y algunos datos
-mínimos:
+Para poblar la aplicación (no solo las pruebas) con las 15 cuentas de
+prueba (5 admin, 5 entrenador, 5 alumno) como usuarios reales de Supabase
+Auth, desde la raíz de `corazon_jab`:
+
+```bash
+npm run seed
+```
+
+Esto ejecuta `scripts/seed-cuentas-prueba.ts`, que:
+
+1. Crea cada cuenta con `auth.admin.createUser` (dispara `handle_new_user()`,
+   que puebla `accounts` automáticamente).
+2. Omite sin abortar las cuentas cuyo correo ya exista.
+3. Crea el registro representativo en `perfiles_deportivos`/
+   `perfiles_publicos_entrenador` para alumnos/entrenadores.
+4. Aprueba automáticamente la primera cuenta admin (bootstrap), para poder
+   aprobar al resto desde `Admin/Directorio`.
+
+Requiere en `.env.local`:
+
+```
+NEXT_PUBLIC_SUPABASE_URL=...
+SUPABASE_SERVICE_ROLE_KEY=...   # Settings → API → service_role (secret)
+```
+
+⚠️ **La `service_role key` es secreta.** Bypassa Row Level Security por
+completo. Nunca la incluyas en código de cliente ni la commitees.
+
+## Sembrar usuarios y datos de prueba para las pruebas de propiedades (tarea 25)
+
+Antes de ejecutar las pruebas de propiedades del spec
+`supabase-database-schema`, hay que sembrar por separado los usuarios de
+prueba de esas pruebas (uno por rol, más un segundo admin pendiente):
 
 ```bash
 cd supabase/tests/property
@@ -82,22 +112,6 @@ npm install
 cp .env.example .env
 npm run seed
 ```
-
-El script (`supabase/tests/property/seed/seed.ts`) usa el SDK admin de
-Supabase con la **`service_role key`** solo para crear los usuarios de Auth;
-el trigger `handle_new_user()` crea automáticamente su fila en `accounts`.
-
-Para obtener la `service_role key`:
-
-- **Supabase local**: la imprime `supabase start` junto a la `anon key`.
-- **Supabase Cloud**: en el dashboard del proyecto, ve a
-  **Settings → API → Project API keys → `service_role`** (sección
-  "secret", no la `anon`/`public`).
-
-⚠️ **La `service_role key` es secreta.** Bypassa Row Level Security por
-completo. Nunca la incluyas en código de cliente, nunca la commitees, y
-nunca compartas tu archivo `.env` (está en `.gitignore` por diseño). Úsala
-únicamente para ejecutar este script de seed de forma local/manual.
 
 Ver `supabase/tests/property/README.md` para el detalle de qué crea el
 script y cómo se comporta ante re-ejecuciones.

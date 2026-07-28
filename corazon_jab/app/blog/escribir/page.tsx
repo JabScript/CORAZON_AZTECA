@@ -5,8 +5,8 @@ import { useState, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { Playfair_Display, Oswald } from "next/font/google";
-import { enviarArticulo, imagenABase64, type TipoPublicacion } from "../../lib/blogStorage";
-import { obtenerSesion } from "../../lib/sesionStorage";
+import { enviarArticulo, subirImagenPublicacion, type TipoPublicacion } from "../../lib/blogStorage";
+import { useSesion } from "../../lib/auth/SessionProvider";
 import styles from "./Escribir.module.css";
 
 const MAX_IMAGEN_MB = 4;
@@ -20,8 +20,9 @@ const categoriesLogro = ["Debut", "Nocaut", "Racha de victorias", "Campeonato", 
 const iconosLogro = ["🥊", "💥", "🔥", "🏋️", "🏆", "🥇", "⭐", "🎯"];
 
 export default function EscribirArticuloPage() {
-  const sesion = obtenerSesion();
-  const misArticulosHref = sesion.rol === "entrenador" ? "/Entrenador/mis-articulos" : "/Usuario/mis-articulos";
+  const { sesion } = useSesion();
+  const cuenta = sesion.estado === "con_sesion" ? sesion.cuenta : null;
+  const misArticulosHref = cuenta?.rol === "entrenador" ? "/Entrenador/mis-articulos" : "/Usuario/mis-articulos";
 
   const [tipo, setTipo] = useState<TipoPublicacion>("articulo");
   const [titulo, setTitulo] = useState("");
@@ -29,15 +30,17 @@ export default function EscribirArticuloPage() {
   const [contenido, setContenido] = useState("");
   const [categoria, setCategoria] = useState(categoriesArticulo[0]);
   const [icono, setIcono] = useState(iconosLogro[0]);
-  const [imagen, setImagen] = useState<string | null>(null);
+  const [imagenArchivo, setImagenArchivo] = useState<File | null>(null);
+  const [imagenPreview, setImagenPreview] = useState<string | null>(null);
   const [errorImagen, setErrorImagen] = useState("");
+  const [enviando, setEnviando] = useState(false);
   const [enviado, setEnviado] = useState(false);
   const inputImagenRef = useRef<HTMLInputElement>(null);
 
-  const puedeEscribir = sesion.rol === "entrenador" || sesion.rol === "usuario";
+  const puedeEscribir = cuenta?.rol === "entrenador" || cuenta?.rol === "usuario";
   const categorias = tipo === "logro" ? categoriesLogro : categoriesArticulo;
 
-  const handleImagenChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImagenChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const archivo = e.target.files?.[0];
     if (!archivo) return;
 
@@ -53,12 +56,13 @@ export default function EscribirArticuloPage() {
       return;
     }
 
-    const base64 = await imagenABase64(archivo);
-    setImagen(base64);
+    setImagenArchivo(archivo);
+    setImagenPreview(URL.createObjectURL(archivo));
   };
 
   const quitarImagen = () => {
-    setImagen(null);
+    setImagenArchivo(null);
+    setImagenPreview(null);
     setErrorImagen("");
     if (inputImagenRef.current) inputImagenRef.current.value = "";
   };
@@ -68,20 +72,30 @@ export default function EscribirArticuloPage() {
     setCategoria(nuevoTipo === "logro" ? categoriesLogro[0] : categoriesArticulo[0]);
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!titulo.trim() || !extracto.trim() || !contenido.trim()) return;
+    if (!titulo.trim() || !extracto.trim() || !contenido.trim() || !cuenta) return;
 
-    enviarArticulo({
-      tipo,
-      titulo,
-      extracto,
-      contenido,
-      categoria,
-      icono: tipo === "logro" ? icono : undefined,
-      imagen: imagen ?? undefined,
-    });
-    setEnviado(true);
+    setEnviando(true);
+    try {
+      let imagenRef: string | undefined;
+      if (imagenArchivo) {
+        imagenRef = await subirImagenPublicacion(cuenta.id, imagenArchivo);
+      }
+
+      await enviarArticulo(cuenta.id, {
+        tipo,
+        titulo,
+        extracto,
+        contenido,
+        categoria,
+        icono: tipo === "logro" ? icono : undefined,
+        imagenRef,
+      });
+      setEnviado(true);
+    } finally {
+      setEnviando(false);
+    }
   };
 
   if (!puedeEscribir) {
@@ -170,10 +184,10 @@ export default function EscribirArticuloPage() {
           <div className={styles.field}>
             <label className={styles.label}>Imagen (opcional)</label>
 
-            {imagen ? (
+            {imagenPreview ? (
               <div className={styles.imagenPreviewWrap}>
                 <Image
-                  src={imagen}
+                  src={imagenPreview}
                   alt="Vista previa de la imagen"
                   width={400}
                   height={220}
@@ -287,8 +301,8 @@ export default function EscribirArticuloPage() {
             />
           </div>
 
-          <button type="submit" className={styles.submitBtn}>
-            {tipo === "logro" ? "Enviar logro a revisión" : "Enviar a revisión"}
+          <button type="submit" className={styles.submitBtn} disabled={enviando}>
+            {enviando ? "Enviando..." : tipo === "logro" ? "Enviar logro a revisión" : "Enviar a revisión"}
           </button>
         </form>
       </div>

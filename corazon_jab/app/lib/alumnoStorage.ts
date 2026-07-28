@@ -1,164 +1,191 @@
 // app/lib/alumnoStorage.ts
-// Registro de alumnos y su relación con un entrenador (o independiente), usando localStorage.
+// Almacen_Alumno: lee/escribe `perfiles_deportivos` en Supabase usando
+// `cuentaId` (UUID de la Sesion_Activa) en lugar de un `usuarioId` numérico.
 
-export type OrigenEntrenador = 'directorio' | 'manual' | 'independiente';
+import { crearClienteSupabaseNavegador } from "./supabase/client";
+
+export type OrigenEntrenador = "directorio" | "manual" | "independiente";
 
 export interface DatosAlumno {
-  id: number;
-  /** usuarioId de la cuenta de sesión (authStorage), para vincular el registro con quien inició sesión */
-  usuarioId: number;
-  nombre: string;
+  id: string;
+  cuentaId: string;
   apellido: string;
   apodo?: string;
-  email: string;
   fechaNacimiento: string;
   peso: number;
   nivel: string;
   objetivo: string;
   ciudad: string;
-  /** Cómo quedó asociado el entrenador al momento del registro */
   origenEntrenador: OrigenEntrenador;
-  /** ID del entrenador del directorio público (solo si origenEntrenador === 'directorio') */
   entrenadorId?: string;
-  /** Nombre del entrenador cuando se agrega manualmente (no está en el directorio) */
   nombreEntrenadorManual?: string;
-  fechaRegistro: string; // ISO date
 }
 
-const ALUMNOS_KEY = 'corazon_azteca_alumnos';
-
-const ALUMNOS_DEFAULT: DatosAlumno[] = [];
-
-/** Obtiene todos los alumnos registrados */
-export function obtenerAlumnos(): DatosAlumno[] {
-  if (typeof window === 'undefined') return ALUMNOS_DEFAULT;
-  try {
-    const raw = localStorage.getItem(ALUMNOS_KEY);
-    if (!raw) return ALUMNOS_DEFAULT;
-    return JSON.parse(raw) as DatosAlumno[];
-  } catch {
-    return ALUMNOS_DEFAULT;
-  }
+interface FilaPerfilDeportivo {
+  id: string;
+  cuenta_id: string;
+  apellido: string | null;
+  apodo: string | null;
+  fecha_nacimiento: string | null;
+  peso_kg: number | string | null;
+  nivel: string | null;
+  objetivo: string | null;
+  ciudad: string | null;
+  origen_entrenador: OrigenEntrenador | null;
+  entrenador_directorio_id: string | null;
+  entrenador_manual_nombre: string | null;
 }
 
-function guardarAlumnos(alumnos: DatosAlumno[]): void {
-  if (typeof window === 'undefined') return;
-  localStorage.setItem(ALUMNOS_KEY, JSON.stringify(alumnos));
-}
-
-/** Registra un nuevo alumno con su relación de entrenador (directorio, manual o independiente) */
-export function registrarAlumno(data: Omit<DatosAlumno, 'id' | 'fechaRegistro'>): DatosAlumno {
-  const alumnos = obtenerAlumnos();
-
-  const nuevo: DatosAlumno = {
-    ...data,
-    id: Date.now(),
-    fechaRegistro: new Date().toISOString(),
+function mapearFila(fila: FilaPerfilDeportivo): DatosAlumno {
+  return {
+    id: fila.id,
+    cuentaId: fila.cuenta_id,
+    apellido: fila.apellido ?? "",
+    apodo: fila.apodo ?? undefined,
+    fechaNacimiento: fila.fecha_nacimiento ?? "",
+    peso: fila.peso_kg != null ? Number(fila.peso_kg) : 0,
+    nivel: fila.nivel ?? "Principiante",
+    objetivo: fila.objetivo ?? "",
+    ciudad: fila.ciudad ?? "",
+    origenEntrenador: fila.origen_entrenador ?? "independiente",
+    entrenadorId: fila.entrenador_directorio_id ?? undefined,
+    nombreEntrenadorManual: fila.entrenador_manual_nombre ?? undefined,
   };
-
-  guardarAlumnos([nuevo, ...alumnos]);
-  return nuevo;
 }
 
-/** Obtiene el registro deportivo de un alumno a partir del usuarioId de su sesión */
-export function obtenerAlumnoPorUsuarioId(usuarioId: number): DatosAlumno | null {
-  return obtenerAlumnos().find((a) => a.usuarioId === usuarioId) ?? null;
+/**
+ * Anula explícitamente los campos de entrenador que no correspondan al
+ * `origenEntrenador` indicado, para respetar el `CHECK` compuesto de
+ * `perfiles_deportivos` (Property 6 del diseño).
+ */
+function limpiarCamposEntrenador(datos: {
+  origenEntrenador: OrigenEntrenador;
+  entrenadorId?: string;
+  nombreEntrenadorManual?: string;
+}) {
+  return {
+    origen_entrenador: datos.origenEntrenador,
+    entrenador_directorio_id: datos.origenEntrenador === "directorio" ? datos.entrenadorId ?? null : null,
+    entrenador_manual_nombre: datos.origenEntrenador === "manual" ? datos.nombreEntrenadorManual ?? null : null,
+  };
+}
+
+/** Obtiene el registro deportivo de un alumno a partir del cuentaId de su sesión */
+export async function obtenerAlumnoPorCuentaId(cuentaId: string): Promise<DatosAlumno | null> {
+  const supabase = crearClienteSupabaseNavegador();
+  const { data, error } = await supabase
+    .from("perfiles_deportivos")
+    .select("*")
+    .eq("cuenta_id", cuentaId)
+    .maybeSingle();
+  if (error) throw error;
+  return data ? mapearFila(data) : null;
 }
 
 /**
  * Actualiza la relación de entrenador de un alumno (cambiar de entrenador,
  * elegir uno nuevo del directorio, agregar uno manual, o quedar independiente).
+ * Crea el registro si el alumno todavía no tenía uno.
  */
-export function actualizarEntrenadorAlumno(
-  usuarioId: number,
+export async function actualizarEntrenadorAlumno(
+  cuentaId: string,
   data: {
     origenEntrenador: OrigenEntrenador;
     entrenadorId?: string;
     nombreEntrenadorManual?: string;
   }
-): void {
-  const alumnos = obtenerAlumnos();
-  const existe = alumnos.some((a) => a.usuarioId === usuarioId);
+): Promise<void> {
+  const supabase = crearClienteSupabaseNavegador();
+  const campos = limpiarCamposEntrenador(data);
 
-  if (existe) {
-    const actualizados = alumnos.map((a) =>
-      a.usuarioId === usuarioId
-        ? {
-            ...a,
-            origenEntrenador: data.origenEntrenador,
-            entrenadorId: data.origenEntrenador === 'directorio' ? data.entrenadorId : undefined,
-            nombreEntrenadorManual: data.origenEntrenador === 'manual' ? data.nombreEntrenadorManual : undefined,
-          }
-        : a
-    );
-    guardarAlumnos(actualizados);
-    return;
+  const { data: existente, error: errorBusqueda } = await supabase
+    .from("perfiles_deportivos")
+    .select("id")
+    .eq("cuenta_id", cuentaId)
+    .maybeSingle();
+  if (errorBusqueda) throw errorBusqueda;
+
+  if (existente) {
+    const { error } = await supabase.from("perfiles_deportivos").update(campos).eq("cuenta_id", cuentaId);
+    if (error) throw error;
+  } else {
+    const { error } = await supabase.from("perfiles_deportivos").insert({
+      cuenta_id: cuentaId,
+      apellido: "",
+      fecha_nacimiento: null,
+      peso_kg: 0.1,
+      nivel: "Principiante",
+      objetivo: "Acondicionamiento físico",
+      ciudad: null,
+      ...campos,
+    });
+    if (error) throw error;
   }
-
-  // Si el alumno no tiene un registro deportivo previo (ej. cuentas demo),
-  // crea uno nuevo con datos básicos y la relación de entrenador indicada.
-  const nuevo: DatosAlumno = {
-    id: Date.now(),
-    usuarioId,
-    nombre: '',
-    apellido: '',
-    email: '',
-    fechaNacimiento: '',
-    peso: 0,
-    nivel: 'Principiante',
-    objetivo: 'Acondicionamiento físico',
-    ciudad: '',
-    origenEntrenador: data.origenEntrenador,
-    entrenadorId: data.origenEntrenador === 'directorio' ? data.entrenadorId : undefined,
-    nombreEntrenadorManual: data.origenEntrenador === 'manual' ? data.nombreEntrenadorManual : undefined,
-    fechaRegistro: new Date().toISOString(),
-  };
-  guardarAlumnos([nuevo, ...alumnos]);
 }
 
-/** Elimina el registro deportivo de un alumno, por usuarioId */
-export function eliminarAlumnoPorUsuarioId(usuarioId: number): void {
-  guardarAlumnos(obtenerAlumnos().filter((a) => a.usuarioId !== usuarioId));
-}
-
-/** Elimina el registro deportivo de un alumno, por su id interno */
-export function eliminarAlumnoPorId(id: number): void {
-  guardarAlumnos(obtenerAlumnos().filter((a) => a.id !== id));
+/** Elimina el registro deportivo de un alumno, por cuentaId */
+export async function eliminarAlumnoPorCuentaId(cuentaId: string): Promise<void> {
+  const supabase = crearClienteSupabaseNavegador();
+  const { error } = await supabase.from("perfiles_deportivos").delete().eq("cuenta_id", cuentaId);
+  if (error) throw error;
 }
 
 /**
  * Actualiza los datos generales de perfil de un alumno (apodo, peso, nivel,
  * objetivo, ciudad, fecha de nacimiento). Si el alumno no tiene un registro
- * previo (ej. cuentas de demostración), crea uno nuevo con los datos básicos.
+ * previo, crea uno nuevo (upsert por `cuenta_id`).
  */
-export function actualizarPerfilAlumno(
-  usuarioId: number,
-  data: Partial<Pick<DatosAlumno, 'apodo' | 'fechaNacimiento' | 'peso' | 'nivel' | 'objetivo' | 'ciudad' | 'nombre' | 'apellido' | 'email'>>
-): DatosAlumno {
-  const alumnos = obtenerAlumnos();
-  const existente = alumnos.find((a) => a.usuarioId === usuarioId);
+export async function actualizarPerfilAlumno(
+  cuentaId: string,
+  data: Partial<Pick<DatosAlumno, "apodo" | "fechaNacimiento" | "peso" | "nivel" | "objetivo" | "ciudad" | "apellido">>
+): Promise<DatosAlumno> {
+  const supabase = crearClienteSupabaseNavegador();
+
+  const campos: Record<string, unknown> = {};
+  if (data.apellido !== undefined) campos.apellido = data.apellido;
+  if (data.apodo !== undefined) campos.apodo = data.apodo || null;
+  if (data.fechaNacimiento !== undefined) campos.fecha_nacimiento = data.fechaNacimiento || null;
+  if (data.peso !== undefined) campos.peso_kg = data.peso;
+  if (data.nivel !== undefined) campos.nivel = data.nivel;
+  if (data.objetivo !== undefined) campos.objetivo = data.objetivo || null;
+  if (data.ciudad !== undefined) campos.ciudad = data.ciudad || null;
+
+  const { data: existente, error: errorBusqueda } = await supabase
+    .from("perfiles_deportivos")
+    .select("id")
+    .eq("cuenta_id", cuentaId)
+    .maybeSingle();
+  if (errorBusqueda) throw errorBusqueda;
 
   if (existente) {
-    const actualizado = { ...existente, ...data };
-    guardarAlumnos(alumnos.map((a) => (a.usuarioId === usuarioId ? actualizado : a)));
-    return actualizado;
+    const { data: fila, error } = await supabase
+      .from("perfiles_deportivos")
+      .update(campos)
+      .eq("cuenta_id", cuentaId)
+      .select()
+      .single();
+    if (error) throw error;
+    return mapearFila(fila);
   }
 
-  const nuevo: DatosAlumno = {
-    id: Date.now(),
-    usuarioId,
-    nombre: data.nombre ?? '',
-    apellido: data.apellido ?? '',
-    apodo: data.apodo,
-    email: data.email ?? '',
-    fechaNacimiento: data.fechaNacimiento ?? '',
-    peso: data.peso ?? 0,
-    nivel: data.nivel ?? 'Principiante',
-    objetivo: data.objetivo ?? 'Acondicionamiento físico',
-    ciudad: data.ciudad ?? '',
-    origenEntrenador: 'independiente',
-    fechaRegistro: new Date().toISOString(),
-  };
-  guardarAlumnos([nuevo, ...alumnos]);
-  return nuevo;
+  // No hay registro previo: crea uno nuevo con valores por defecto para el
+  // resto de campos requeridos (incluyendo origen_entrenador='independiente').
+  const { data: fila, error } = await supabase
+    .from("perfiles_deportivos")
+    .insert({
+      cuenta_id: cuentaId,
+      apellido: data.apellido ?? "",
+      fecha_nacimiento: data.fechaNacimiento || null,
+      peso_kg: data.peso ?? 0.1,
+      nivel: data.nivel ?? "Principiante",
+      objetivo: data.objetivo ?? "Acondicionamiento físico",
+      ciudad: data.ciudad || null,
+      origen_entrenador: "independiente",
+      ...campos,
+    })
+    .select()
+    .single();
+
+  if (error) throw error;
+  return mapearFila(fila);
 }

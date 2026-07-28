@@ -15,12 +15,13 @@ export default function EntrenadorPublico() {
   const [fotoAmpliada, setFotoAmpliada] = useState<{ src: string; alt: string } | null>(null);
 
   useEffect(() => {
-    const datos = obtenerEntrenadorPorId(id);
-    if (datos) {
-      setPerfil(datos);
-    } else {
-      setNoEncontrado(true);
-    }
+    obtenerEntrenadorPorId(id).then((datos) => {
+      if (datos) {
+        setPerfil(datos);
+      } else {
+        setNoEncontrado(true);
+      }
+    });
   }, [id]);
 
   if (noEncontrado) {
@@ -55,6 +56,7 @@ export default function EntrenadorPublico() {
               width={180}
               height={180}
               style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '50%' }}
+              unoptimized
             />
           ) : (
             <span className={styles.fotoPlaceholder}>🥊</span>
@@ -101,6 +103,7 @@ export default function EntrenadorPublico() {
                   width={200}
                   height={200}
                   style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                  unoptimized
                 />
               </button>
             ))}
@@ -144,6 +147,7 @@ export default function EntrenadorPublico() {
             height={800}
             className={styles.visorImg}
             style={{ maxWidth: '90vw', maxHeight: '85vh', objectFit: 'contain' }}
+            unoptimized
           />
           <button
             type="button"

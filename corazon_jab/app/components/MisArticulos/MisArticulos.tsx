@@ -8,6 +8,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { Playfair_Display, Oswald } from "next/font/google";
 import { obtenerMisArticulos, eliminarArticulo, type ArticuloBlog } from "../../lib/blogStorage";
+import { useSesion } from "../../lib/auth/SessionProvider";
 import styles from "./MisArticulos.module.css";
 
 const playfair = Playfair_Display({ subsets: ["latin"], weight: ["700"], style: ["normal", "italic"], variable: "--font-heading" });
@@ -19,17 +20,21 @@ interface MisArticulosProps {
 }
 
 export default function MisArticulos({ writeHref }: MisArticulosProps) {
+  const { sesion } = useSesion();
+  const cuenta = sesion.estado === "con_sesion" ? sesion.cuenta : null;
   const [articulos, setArticulos] = useState<ArticuloBlog[]>([]);
 
   useEffect(() => {
-    setArticulos(obtenerMisArticulos());
-  }, []);
+    if (!cuenta) return;
+    obtenerMisArticulos(cuenta.id).then(setArticulos).catch(() => setArticulos([]));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [cuenta?.id]);
 
-  const handleEliminar = (id: number, titulo: string) => {
+  const handleEliminar = async (id: string, titulo: string) => {
     const confirmado = window.confirm(`¿Eliminar "${titulo}"? Esta acción no se puede deshacer.`);
     if (!confirmado) return;
 
-    if (eliminarArticulo(id)) {
+    if (await eliminarArticulo(id)) {
       setArticulos((prev) => prev.filter((a) => a.id !== id));
     }
   };

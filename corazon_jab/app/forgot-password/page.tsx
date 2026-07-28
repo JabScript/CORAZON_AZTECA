@@ -4,6 +4,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import { Playfair_Display, Oswald } from "next/font/google";
+import { solicitarRecuperacion } from "../lib/auth/authService";
 import { useFormValidation } from "../lib/validation/useFormValidation";
 import type { ValidationSchema } from "../lib/validation/validateField";
 import FormField from "../lib/validation/FormField";
@@ -23,15 +24,22 @@ const forgotPasswordSchema: ValidationSchema<ForgotPasswordValues> = {
 
 export default function ForgotPasswordPage() {
   const [sent, setSent] = useState(false);
+  const [enviando, setEnviando] = useState(false);
 
   const { values, errors, touched, handleChange, handleBlur, validateAll } =
     useFormValidation<ForgotPasswordValues>({ email: "" }, forgotPasswordSchema);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!validateAll()) return;
 
+    setEnviando(true);
+    // Property 10: el mensaje de confirmación es siempre el mismo, sin
+    // importar si `resetPasswordForEmail` tuvo éxito o el correo no existe
+    // (Supabase no revela esa información por diseño).
+    await solicitarRecuperacion(values.email).catch(() => undefined);
+    setEnviando(false);
     setSent(true);
   };
 
@@ -78,7 +86,9 @@ export default function ForgotPasswordPage() {
                 </div>
               </FormField>
 
-              <button type="submit" className={styles.submitBtn}>Enviar enlace de recuperación</button>
+              <button type="submit" className={styles.submitBtn} disabled={enviando}>
+                {enviando ? "Enviando..." : "Enviar enlace de recuperación"}
+              </button>
             </form>
           </>
         ) : (
