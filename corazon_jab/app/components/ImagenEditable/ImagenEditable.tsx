@@ -24,6 +24,31 @@ interface ImagenEditableProps extends Omit<ImageProps, "src"> {
   wrapperClassName?: string;
 }
 
+/**
+ * Garantiza que toda imagen renderizada con `fill` tenga `sizes` definido.
+ *
+ * Si `imageProps.fill === true` y `imageProps.sizes` es `undefined`, emite un
+ * `console.error` en desarrollo (mencionando la `clave` de la imagen para
+ * ubicar fácilmente el caller) y retorna `"100vw"` como fallback en cualquier
+ * entorno. Si `fill` no está presente o `sizes` ya viene definido, retorna el
+ * `sizes` original sin modificar (no-op). Nunca lanza una excepción: es una
+ * salvaguarda, no una validación bloqueante.
+ */
+function assertSizesWhenFill(
+  imageProps: Omit<ImageProps, "src">,
+  clave: string
+): ImageProps["sizes"] | undefined {
+  if (imageProps.fill === true && imageProps.sizes === undefined) {
+    if (process.env.NODE_ENV !== "production") {
+      console.error(
+        `ImagenEditable ("${clave}"): se usó "fill" sin "sizes". Se aplicará sizes="100vw" como fallback, pero deberías declarar un "sizes" explícito para evitar servir la imagen a resolución completa en todos los breakpoints.`
+      );
+    }
+    return "100vw";
+  }
+  return imageProps.sizes;
+}
+
 export default function ImagenEditable({
   clave,
   srcOriginal,
@@ -65,6 +90,7 @@ export default function ImagenEditable({
   };
 
   const tieneImagenPersonalizada = srcActual !== srcOriginal;
+  const sizesEfectivo = assertSizesWhenFill(imageProps, clave);
 
   return (
     <div className={`${styles.wrapper} ${wrapperClassName ?? ""}`}>
@@ -72,6 +98,7 @@ export default function ImagenEditable({
         {...imageProps}
         src={srcActual}
         className={className}
+        sizes={sizesEfectivo}
         unoptimized={srcActual.startsWith("data:")}
       />
 

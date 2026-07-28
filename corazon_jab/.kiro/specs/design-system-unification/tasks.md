@@ -40,21 +40,21 @@ Este plan implementa el diseño en cuatro bloques incrementales y no disruptivos
   - Ejecutar la suite de pruebas (`npm run test`) y revisar manualmente que Header, Footer, Inicio, Admin y Entrenador se ven igual que antes de introducir `tokens.css`
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 5. Migrar `.module.css` legacy y `admin-theme.css` a depender solo de los tokens globales
-  - [ ] 5.1 Eliminar el bloque de redefinición local de `--gold`/`--red`/`--cream` en cada uno de los módulos: `Header.module.css`, `Footer.module.css`, `CTA.module.css`, `Inicio.module.css`, `Funcionalidades.module.css`, `Secciones.module.css`, `login`, `registro`, `blog` (`Blog.module.css`)
+- [x] 5. Migrar `.module.css` legacy y `admin-theme.css` a depender solo de los tokens globales
+  - [x] 5.1 Eliminar el bloque de redefinición local de `--gold`/`--red`/`--cream` en cada uno de los módulos: `Header.module.css`, `Footer.module.css`, `CTA.module.css`, `Inicio.module.css`, `Funcionalidades.module.css`, `Secciones.module.css`, `login`, `registro`, `blog` (`Blog.module.css`)
     - _Requirements: 2.2_
-  - [ ] 5.2 Eliminar el bloque de redefinición local de `--ca-oro`/`--ca-rojo`/`--ca-crema` (y variantes) en `app/Admin/admin-theme.css`, dejando que resuelvan desde los tokens globales
+  - [x] 5.2 Eliminar el bloque de redefinición local de `--ca-oro`/`--ca-rojo`/`--ca-crema` (y variantes) en `app/Admin/admin-theme.css`, dejando que resuelvan desde los tokens globales
     - _Requirements: 2.3_
   - [ ]* 5.3 Ejecutar de nuevo la prueba de propiedad de la tarea 2.3 tras la limpieza para confirmar que los módulos migrados siguen resolviendo los mismos valores
     - **Property 1: Alias de tokens legacy resuelven al mismo valor que su token canónico**
     - **Validates: Requirements 1.2, 2.1**
 
-- [ ] 6. Implementar `DashboardLayout` compartido
-  - [ ] 6.1 Crear `app/components/DashboardLayout/DashboardLayout.tsx` con la interfaz `DashboardLayoutProps` (`role`, `navItems`, `sidebarWidthPx`, `subNav`, `children`), envolviendo el contenido en `RequireRole`
+- [x] 6. Implementar `DashboardLayout` compartido
+  - [x] 6.1 Crear `app/components/DashboardLayout/DashboardLayout.tsx` con la interfaz `DashboardLayoutProps` (`role`, `navItems`, `sidebarWidthPx`, `subNav`, `children`), envolviendo el contenido en `RequireRole`
     - _Requirements: 3.1, 3.2, 3.6_
-  - [ ] 6.2 Implementar el renderizado del `<aside>` con `navItems`, marcando el ítem activo según `usePathname()`, y el bloque de usuario (avatar, nombre) + botón de logout usando `obtenerSesion()`/`cerrarSesion()`
+  - [x] 6.2 Implementar el renderizado del `<aside>` con `navItems`, marcando el ítem activo según `usePathname()`, y el bloque de usuario (avatar, nombre) + botón de logout usando `obtenerSesion()`/`cerrarSesion()`
     - _Requirements: 3.3, 3.4, 3.5_
-  - [ ] 6.3 Crear `app/components/DashboardLayout/DashboardLayout.module.css` consolidando las clases `.sidebar`, `.navItem`, `.logoutBtn` (y variantes) hoy duplicadas en `Usuario.module.css`/`Entrenador.module.css`, usando los tokens de diseño
+  - [x] 6.3 Crear `app/components/DashboardLayout/DashboardLayout.module.css` consolidando las clases `.sidebar`, `.navItem`, `.logoutBtn` (y variantes) hoy duplicadas en `Usuario.module.css`/`Entrenador.module.css`, usando los tokens de diseño
     - _Requirements: 3.7_
   - [ ]* 6.4 Escribir prueba de propiedad: `DashboardLayout` preserva la guarda de acceso por rol
     - **Property 3: `DashboardLayout` preserva la guarda de acceso por rol**
@@ -67,26 +67,26 @@ Este plan implementa el diseño en cuatro bloques incrementales y no disruptivos
   - [ ]* 6.6 Escribir prueba unitaria: `DashboardLayout` renderiza el bloque de usuario y logout usando la sesión actual
     - _Requirements: 3.3_
 
-- [ ] 7. Migrar `Usuario` y `Entrenador` a `DashboardLayout`
-  - [ ] 7.1 Crear `app/components/DashboardLayout/EntrenadorTabs.tsx` (o equivalente) para la navegación secundaria de tabs horizontales, pasado vía `subNav`
+- [x] 7. Migrar `Usuario` y `Entrenador` a `DashboardLayout`
+  - [x] 7.1 Crear `app/components/DashboardLayout/EntrenadorTabs.tsx` (o equivalente) para la navegación secundaria de tabs horizontales, pasado vía `subNav`
     - _Requirements: 3.6_
-  - [ ] 7.2 Reescribir `app/Usuario/layout.tsx` para usar `DashboardLayout role="usuario"` con sus `navItems` y `sidebarWidthPx={220}`
+  - [x] 7.2 Reescribir `app/Usuario/layout.tsx` para usar `DashboardLayout role="usuario"` con sus `navItems` y `sidebarWidthPx={220}`
     - _Requirements: 3.1, 3.2, 3.3_
-  - [ ] 7.3 Reescribir `app/Entrenador/layout.tsx` para usar `DashboardLayout role="entrenador"` con sus `navItems`, `sidebarWidthPx={240}` y `subNav={<EntrenadorTabs />}`
+  - [x] 7.3 Reescribir `app/Entrenador/layout.tsx` para usar `DashboardLayout role="entrenador"` con sus `navItems`, `sidebarWidthPx={240}` y `subNav={<EntrenadorTabs />}`
     - _Requirements: 3.1, 3.2, 3.3, 3.6_
-  - [ ] 7.4 Eliminar las clases `.sidebar`, `.navItem`, `.logoutBtn` (y variantes) de `Usuario.module.css` y `Entrenador.module.css`, dejando solo los estilos específicos de contenido de cada uno
+  - [x] 7.4 Eliminar las clases `.sidebar`, `.navItem`, `.logoutBtn` (y variantes) de `Usuario.module.css` y `Entrenador.module.css`, dejando solo los estilos específicos de contenido de cada uno
     - _Requirements: 3.7_
 
-- [ ] 8. Checkpoint - Ensure all tests pass, ask the user if questions arise.
+- [x] 8. Checkpoint - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 9. Implementar el sistema de validación de formularios accesible
-  - [ ] 9.1 Crear `app/lib/validation/validateField.ts` implementando `validateField` (reglas `required`, `email`, `minLength`, `matches`) según el orden determinista de evaluación descrito en el diseño
+- [x] 9. Implementar el sistema de validación de formularios accesible
+  - [x] 9.1 Crear `app/lib/validation/validateField.ts` implementando `validateField` (reglas `required`, `email`, `minLength`, `matches`) según el orden determinista de evaluación descrito en el diseño
     - _Requirements: 5.1, 5.2, 5.3, 5.4_
   - [ ]* 9.2 Escribir prueba de propiedad: validación por regla es exacta respecto a su predicado declarado
     - **Property 6: Validación por regla es exacta respecto a su predicado declarado**
     - **Validates: Requirements 5.2, 5.3, 5.4**
     - Generar strings/pares arbitrarios (incluyendo strings construidos con la gramática `local@domain.tld` para positivos de email) para cada tipo de regla y verificar equivalencia con el predicado declarado
-  - [ ] 9.3 Crear `app/lib/validation/useFormValidation.ts` implementando el hook (`values`, `errors`, `touched`, `isValid`, `handleChange`, `handleBlur`, `validateAll`, `setValues`) sobre `validateField`
+  - [x] 9.3 Crear `app/lib/validation/useFormValidation.ts` implementando el hook (`values`, `errors`, `touched`, `isValid`, `handleChange`, `handleBlur`, `validateAll`, `setValues`) sobre `validateField`
     - _Requirements: 5.1, 5.5, 5.6_
   - [ ]* 9.4 Escribir prueba de propiedad: los `Error_Campo` permanecen ocultos hasta que el campo es tocado o se envía el formulario
     - **Property 7: Los `Error_Campo` permanecen ocultos hasta que el campo es tocado o se envía el formulario**
@@ -96,35 +96,35 @@ Este plan implementa el diseño en cuatro bloques incrementales y no disruptivos
     - **Property 8: `validateAll()` es consistente con el contenido de `errors`**
     - **Validates: Requirements 5.6**
     - Generar esquemas y valores arbitrarios; verificar que el booleano retornado por `validateAll()` coincide con `Object.keys(errors).length === 0` y que todos los campos del esquema quedan `touched`
-  - [ ] 9.6 Crear el componente `FormField` (`app/lib/validation/FormField.tsx`) que asocia `<label htmlFor={id}>` con el control de entrada y renderiza el `Error_Campo` con `role="alert"` e `id={`${id}-error`}`
+  - [x] 9.6 Crear el componente `FormField` (`app/lib/validation/FormField.tsx`) que asocia `<label htmlFor={id}>` con el control de entrada y renderiza el `Error_Campo` con `role="alert"` e `id={`${id}-error`}`
     - _Requirements: 4.1, 4.3_
   - [ ]* 9.7 Escribir prueba de propiedad: asociación label-input y `aria-describedby` total en formularios validados
     - **Property 5: Asociación label-input y `aria-describedby` total en formularios validados**
     - **Validates: Requirements 4.1, 4.2, 4.3**
     - Generar configuraciones arbitrarias de campos (con/sin error visible, incluyendo el caso checkbox) renderizados con `FormField`; verificar que todo `<label>` tiene `htmlFor` apuntando a un `id` existente y que todo campo con error visible expone `aria-describedby` apuntando al `id` del mensaje
 
-- [ ] 10. Checkpoint - Ensure all tests pass, ask the user if questions arise.
+- [x] 10. Checkpoint - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 11. Aplicar la validación accesible a los formularios de autenticación
-  - [ ] 11.1 Migrar `login/page.tsx` para usar `useFormValidation` + `FormField`, incluyendo la asociación `htmlFor`/`id` del checkbox "Recordarme", preservando el flujo de `autenticar()` y el mensaje de error de negocio a nivel de formulario (`role="alert"`)
+- [-] 11. Aplicar la validación accesible a los formularios de autenticación
+  - [x] 11.1 Migrar `login/page.tsx` para usar `useFormValidation` + `FormField`, incluyendo la asociación `htmlFor`/`id` del checkbox "Recordarme", preservando el flujo de `autenticar()` y el mensaje de error de negocio a nivel de formulario (`role="alert"`)
     - _Requirements: 4.1, 4.2, 4.4, 5.7, 5.8, 5.9_
-  - [ ] 11.2 Migrar el formulario de registro de alumno para usar `useFormValidation` + `FormField`, preservando el flujo de `registrarCuenta()`
+  - [x] 11.2 Migrar el formulario de registro de alumno para usar `useFormValidation` + `FormField`, preservando el flujo de `registrarCuenta()`
     - _Requirements: 4.1, 4.4, 5.4, 5.7, 5.8, 5.9_
-  - [ ] 11.3 Migrar el formulario de registro de entrenador para usar `useFormValidation` + `FormField`, preservando su flujo existente
+  - [x] 11.3 Migrar el formulario de registro de entrenador para usar `useFormValidation` + `FormField`, preservando su flujo existente
     - _Requirements: 4.1, 4.4, 5.7, 5.8, 5.9_
-  - [ ] 11.4 Migrar el formulario de registro de admin para usar `useFormValidation` + `FormField`, preservando su flujo existente
+  - [x] 11.4 Migrar el formulario de registro de admin para usar `useFormValidation` + `FormField`, preservando su flujo existente
     - _Requirements: 4.1, 4.4, 5.7, 5.8, 5.9_
-  - [ ] 11.5 Migrar el formulario de forgot-password para usar `useFormValidation` + `FormField`, preservando su flujo existente
+  - [x] 11.5 Migrar el formulario de forgot-password para usar `useFormValidation` + `FormField`, preservando su flujo existente
     - _Requirements: 4.1, 4.4, 5.9_
   - [ ]* 11.6 Escribir pruebas de integración para login: email inválido muestra error inline sin submit, corregirlo lo hace desaparecer, y credenciales incorrectas muestran error de formulario (no de campo)
     - _Requirements: 5.7, 5.8_
   - [ ]* 11.7 Escribir pruebas de integración equivalentes para al menos uno de los formularios de registro (confirmación de contraseña no coincidente muestra `Error_Campo` en el campo de confirmación)
     - _Requirements: 5.4, 5.7_
 
-- [ ] 12. Checkpoint - Ensure all tests pass, ask the user if questions arise.
+- [x] 12. Checkpoint - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 13. Implementar el manejo de estados de carga y error para datos asíncronos
-  - [ ] 13.1 Crear `app/lib/async/useAsyncData.ts` implementando el hook (`status`, `data`, `error`, `refetch`) con protección contra actualizaciones tras desmontaje
+- [x] 13. Implementar el manejo de estados de carga y error para datos asíncronos
+  - [x] 13.1 Crear `app/lib/async/useAsyncData.ts` implementando el hook (`status`, `data`, `error`, `refetch`) con protección contra actualizaciones tras desmontaje
     - _Requirements: 6.1, 6.2, 6.4, 6.5, 6.6, 6.7, 6.8_
   - [ ]* 13.2 Escribir prueba de propiedad: la máquina de estados de `useAsyncData` nunca queda inconsistente
     - **Property 9: La máquina de estados de `useAsyncData` nunca queda inconsistente**
@@ -134,25 +134,25 @@ Este plan implementa el diseño en cuatro bloques incrementales y no disruptivos
     - **Property 10: `useAsyncData` no actualiza estado tras el desmontaje del componente**
     - **Validates: Requirements 6.8**
     - Generar momentos de desmontaje arbitrarios relativos a la resolución/rechazo del fetcher mockeado (antes, durante, después); verificar que ninguna transición de estado ocurre después del desmontaje
-  - [ ] 13.4 Crear `DashboardSkeleton` (`app/lib/async/DashboardSkeleton.tsx`) y `ErrorState` (`app/lib/async/ErrorState.tsx`) según las interfaces `SkeletonProps`/`ErrorStateProps` del diseño
+  - [x] 13.4 Crear `DashboardSkeleton` (`app/lib/async/DashboardSkeleton.tsx`) y `ErrorState` (`app/lib/async/ErrorState.tsx`) según las interfaces `SkeletonProps`/`ErrorStateProps` del diseño
     - _Requirements: 6.3, 6.5_
   - [ ]* 13.5 Escribir prueba unitaria: durante `status === "loading"` se renderiza `DashboardSkeleton` y no el contenido final ni una pantalla vacía
     - _Requirements: 6.3_
 
 - [ ] 14. Aplicar `useAsyncData` a los dashboards existentes
-  - [ ] 14.1 Migrar `Usuario/page.tsx` para envolver su lectura actual de `localStorage` (`obtenerAlumnoPorUsuarioId`) en un fetcher de `useAsyncData`, renderizando `DashboardSkeleton` en `loading` y `ErrorState` en `error`
+  - [x] 14.1 Migrar `Usuario/page.tsx` para envolver su lectura actual de `localStorage` (`obtenerAlumnoPorUsuarioId`) en un fetcher de `useAsyncData`, renderizando `DashboardSkeleton` en `loading` y `ErrorState` en `error`
     - _Requirements: 6.1, 6.2, 6.3, 6.4, 6.5, 6.6, 6.7_
-  - [ ] 14.2 Migrar `Entrenador/page.tsx` de la misma forma, envolviendo su lectura actual de datos en un fetcher de `useAsyncData`
+  - [x] 14.2 Migrar `Entrenador/page.tsx` de la misma forma, envolviendo su lectura actual de datos en un fetcher de `useAsyncData`
     - _Requirements: 6.1, 6.2, 6.3, 6.4, 6.5, 6.6, 6.7_
-  - [ ] 14.3 Migrar `Admin/page.tsx` de la misma forma, envolviendo su lectura actual de datos en un fetcher de `useAsyncData`
+  - [x] 14.3 Migrar `Admin/page.tsx` de la misma forma, envolviendo su lectura actual de datos en un fetcher de `useAsyncData`
     - _Requirements: 6.1, 6.2, 6.3, 6.4, 6.5, 6.6, 6.7_
   - [ ]* 14.4 Escribir prueba de integración: `Usuario/page.tsx` con `useAsyncData` mockeado — loading muestra skeleton, success muestra contenido, error muestra `ErrorState` con retry funcional que vuelve a invocar el fetcher
     - _Requirements: 6.3, 6.4, 6.5, 6.6_
 
-- [ ] 15. Checkpoint - Ensure all tests pass, ask the user if questions arise.
+- [x] 15. Checkpoint - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 16. Endurecer `ImagenEditable` y corregir usos de `fill` sin `sizes`
-  - [ ] 16.1 Implementar `assertSizesWhenFill` en `app/components/ImagenEditable/ImagenEditable.tsx`: si `fill === true` y `sizes` es `undefined`, emitir `console.error` en desarrollo y aplicar `sizes="100vw"` como fallback antes de renderizar
+- [x] 16. Endurecer `ImagenEditable` y corregir usos de `fill` sin `sizes`
+  - [x] 16.1 Implementar `assertSizesWhenFill` en `app/components/ImagenEditable/ImagenEditable.tsx`: si `fill === true` y `sizes` es `undefined`, emitir `console.error` en desarrollo y aplicar `sizes="100vw"` como fallback antes de renderizar
     - _Requirements: 7.1, 7.2_
   - [ ]* 16.2 Escribir prueba de propiedad: toda imagen con `fill` tiene `sizes` definido
     - **Property 11: Toda imagen con `fill` tiene `sizes` definido**
@@ -160,14 +160,14 @@ Este plan implementa el diseño en cuatro bloques incrementales y no disruptivos
     - Generar combinaciones arbitrarias de props `{fill: boolean, sizes?: string}`; verificar que el elemento renderizado siempre tiene `sizes` no vacío cuando `fill === true`, y que el valor del caller se preserva cuando se provee
   - [ ]* 16.3 Escribir prueba unitaria con spy: `fill` sin `sizes` invoca `console.error` con el `clave` de la imagen en entorno de desarrollo
     - _Requirements: 7.2_
-  - [ ] 16.4 Añadir `sizes="(max-width: 768px) 100vw, 33vw"` a los usos de `next/image` con `fill` en `app/blog/page.tsx` (tarjetas de logros y posts de comunidad)
+  - [x] 16.4 Añadir `sizes="(max-width: 768px) 100vw, 33vw"` a los usos de `next/image` con `fill` en `app/blog/page.tsx` (tarjetas de logros y posts de comunidad)
     - _Requirements: 7.3, 7.4_
-  - [ ] 16.5 Añadir `sizes="(max-width: 768px) 100vw, 33vw"` al uso de `next/image` con `fill` en `app/components/MisArticulos/MisArticulos.tsx`
+  - [x] 16.5 Añadir `sizes="(max-width: 768px) 100vw, 33vw"` al uso de `next/image` con `fill` en `app/components/MisArticulos/MisArticulos.tsx`
     - _Requirements: 7.3, 7.4_
-  - [ ] 16.6 Añadir `sizes="(max-width: 768px) 100vw, 33vw"` al uso de `next/image` con `fill` en `app/Admin/Articulos/page.tsx`
+  - [x] 16.6 Añadir `sizes="(max-width: 768px) 100vw, 33vw"` al uso de `next/image` con `fill` en `app/Admin/Articulos/page.tsx`
     - _Requirements: 7.3, 7.4_
 
-- [ ] 17. Checkpoint final - Ensure all tests pass, ask the user if questions arise.
+- [x] 17. Checkpoint final - Ensure all tests pass, ask the user if questions arise.
 
 ## Notes
 

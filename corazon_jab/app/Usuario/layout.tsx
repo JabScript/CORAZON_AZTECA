@@ -1,16 +1,5 @@
 // app/usuario/layout.tsx
-"use client";
-
-import Link from "next/link";
-import Image from "next/image";
-import { usePathname, useRouter } from "next/navigation";
-import { Playfair_Display, Oswald } from "next/font/google";
-import { cerrarSesion, obtenerSesion } from "../lib/sesionStorage";
-import RequireRole from "../components/RequireRole/RequireRole";
-import styles from "./Usuario.module.css";
-
-const playfair = Playfair_Display({ subsets: ["latin"], weight: ["700"], style: ["normal", "italic"], variable: "--font-heading" });
-const oswald = Oswald({ subsets: ["latin"], weight: ["400", "500", "600"], variable: "--font-body" });
+import DashboardLayout from "../components/DashboardLayout/DashboardLayout";
 
 const navItems = [
   {
@@ -51,66 +40,10 @@ const navItems = [
   },
 ];
 
-function UsuarioLayoutInner({ children }: { children: React.ReactNode }) {
-  const pathname = usePathname();
-  const router = useRouter();
-  const sesion = obtenerSesion();
-
-  const handleLogout = () => {
-    cerrarSesion();
-    router.push("/login");
-  };
-
-  return (
-    <div className={`${styles.layout} ${playfair.variable} ${oswald.variable}`}>
-      <aside className={styles.sidebar}>
-        <nav className={styles.nav}>
-          {navItems.map((item) => {
-            const isActive = pathname === item.href;
-            return (
-              <Link
-                key={item.href}
-                href={item.href}
-                className={`${styles.navItem} ${isActive ? styles.navItemActive : ""}`}
-              >
-              <span className={styles.navIcon}>{item.icon}</span>
-                <span className={styles.navLabel}>{item.label}</span>
-              </Link>
-            );
-          })}
-        </nav>
-        <div className={styles.sidebarFooter}>
-          <div className={styles.sidebarUserRow}>
-            <div className={styles.sidebarAvatar}>
-              {sesion.foto ? (
-                <Image src={sesion.foto} alt={sesion.nombre} width={32} height={32} className={styles.sidebarAvatarImg} unoptimized />
-              ) : (
-                sesion.nombre.charAt(0).toUpperCase()
-              )}
-            </div>
-            <span className={styles.sidebarUser}>{sesion.nombre}</span>
-          </div>
-          <button type="button" className={styles.logoutBtn} onClick={handleLogout}>
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
-              <polyline points="16 17 21 12 16 7" />
-              <line x1="21" y1="12" x2="9" y2="12" />
-            </svg>
-            Cerrar sesión
-          </button>
-        </div>
-      </aside>
-      <main className={styles.content}>
-        {children}
-      </main>
-    </div>
-  );
-}
-
 export default function UsuarioLayout({ children }: { children: React.ReactNode }) {
   return (
-    <RequireRole rolPermitido="usuario">
-      <UsuarioLayoutInner>{children}</UsuarioLayoutInner>
-    </RequireRole>
+    <DashboardLayout role="usuario" navItems={navItems} sidebarWidthPx={220}>
+      {children}
+    </DashboardLayout>
   );
 }

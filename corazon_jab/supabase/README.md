@@ -70,15 +70,45 @@ Este comando ejecuta todos los archivos `.sql` de `supabase/tests/pgtap/`
 usando `pgTAP` dentro de la base de datos local. Ver
 `supabase/tests/pgtap/README.md` para la convención de nombres de archivo.
 
-## Ejecutar las pruebas de propiedades (`fast-check`)
+## Sembrar usuarios y datos de prueba (script de seed, tarea 25)
 
-Con Supabase local corriendo, migraciones aplicadas y usuarios de prueba
-sembrados (script de seed de la tarea 25 del plan):
+Antes de ejecutar las pruebas de propiedades, hay que sembrar los usuarios
+de prueba (uno por rol, más un segundo admin pendiente) y algunos datos
+mínimos:
 
 ```bash
 cd supabase/tests/property
 npm install
-cp .env.example .env   # completar con URL/anon key locales y credenciales de prueba
+cp .env.example .env
+npm run seed
+```
+
+El script (`supabase/tests/property/seed/seed.ts`) usa el SDK admin de
+Supabase con la **`service_role key`** solo para crear los usuarios de Auth;
+el trigger `handle_new_user()` crea automáticamente su fila en `accounts`.
+
+Para obtener la `service_role key`:
+
+- **Supabase local**: la imprime `supabase start` junto a la `anon key`.
+- **Supabase Cloud**: en el dashboard del proyecto, ve a
+  **Settings → API → Project API keys → `service_role`** (sección
+  "secret", no la `anon`/`public`).
+
+⚠️ **La `service_role key` es secreta.** Bypassa Row Level Security por
+completo. Nunca la incluyas en código de cliente, nunca la commitees, y
+nunca compartas tu archivo `.env` (está en `.gitignore` por diseño). Úsala
+únicamente para ejecutar este script de seed de forma local/manual.
+
+Ver `supabase/tests/property/README.md` para el detalle de qué crea el
+script y cómo se comporta ante re-ejecuciones.
+
+## Ejecutar las pruebas de propiedades (`fast-check`)
+
+Con Supabase local corriendo, migraciones aplicadas y usuarios de prueba
+sembrados (ver sección anterior):
+
+```bash
+cd supabase/tests/property
 npm test
 ```
 
@@ -91,5 +121,7 @@ de las pruebas de propiedades.
 2. Escribir/actualizar la migración correspondiente en `supabase/migrations/`.
 3. `supabase db reset` (o `supabase migration up`) para aplicarla.
 4. Ejecutar `supabase test db` para las pruebas pgTAP de esa tarea.
-5. Ejecutar `npm test` en `supabase/tests/property/` para las pruebas de
+5. Ejecutar `npm run seed` en `supabase/tests/property/` si aún no hay
+   usuarios de prueba sembrados (una sola vez, o tras cada `db reset`).
+6. Ejecutar `npm test` en `supabase/tests/property/` para las pruebas de
    propiedades de esa tarea.

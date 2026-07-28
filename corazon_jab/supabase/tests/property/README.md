@@ -20,6 +20,37 @@ cp .env.example .env
 # de los usuarios de prueba sembrados
 ```
 
+## Sembrar usuarios y datos de prueba
+
+Antes de ejecutar las pruebas de propiedades por primera vez (o después de
+resetear la base de datos), hay que sembrar los usuarios de prueba y algunos
+datos mínimos con el script de la tarea 25:
+
+```bash
+npm run seed
+```
+
+Este script usa `@supabase/supabase-js` con la **`service_role key`** (leída
+de `SUPABASE_SERVICE_ROLE_KEY` en `.env`) exclusivamente para crear los
+usuarios de Auth vía `supabase.auth.admin.createUser()`. El trigger
+`handle_new_user()` ya existente en la base de datos crea automáticamente la
+fila correspondiente en `accounts`. El script crea:
+
+- Un usuario con rol `entrenador` (`TEST_USER_ENTRENADOR_*`).
+- Un usuario con rol `usuario` (`TEST_USER_USUARIO_*`).
+- Un usuario con rol `admin` que queda **aprobado** (`TEST_USER_ADMIN_*`).
+- Un segundo usuario con rol `admin` que queda **pendiente** de aprobación
+  (`TEST_USER_ADMIN_PENDIENTE_*`), tal como lo deja el trigger por defecto.
+- Datos representativos mínimos en `perfiles_deportivos`,
+  `perfiles_publicos_entrenador`, `gimnasios` y `contenido_editorial`.
+
+El script tolera re-ejecuciones: si un usuario ya existe, lo reutiliza en
+vez de fallar.
+
+> **Nunca** compartas ni commitees tu `.env` ni la `service_role key`: esa
+> key bypassa Row Level Security por completo. Consulta
+> `supabase/README.md` para saber cómo obtenerla del dashboard de Supabase.
+
 ## Ejecutar las pruebas
 
 ```bash

@@ -137,7 +137,7 @@ export default function BlogPage() {
               <article key={logro.id} className={styles.logroCard}>
                 {logro.imagen ? (
                   <div className={styles.communityImageWrap}>
-                    <Image src={logro.imagen} alt={logro.titulo} fill className={styles.communityImg} unoptimized />
+                    <Image src={logro.imagen} alt={logro.titulo} fill sizes="(max-width: 768px) 100vw, 33vw" className={styles.communityImg} unoptimized />
                   </div>
                 ) : (
                   <span className={styles.logroIcono}>{logro.icono ?? "🏆"}</span>
@@ -165,7 +165,7 @@ export default function BlogPage() {
               <article key={post.id} className={styles.communityCard}>
                 {post.imagen && (
                   <div className={styles.communityImageWrap}>
-                    <Image src={post.imagen} alt={post.titulo} fill className={styles.communityImg} unoptimized />
+                    <Image src={post.imagen} alt={post.titulo} fill sizes="(max-width: 768px) 100vw, 33vw" className={styles.communityImg} unoptimized />
                   </div>
                 )}
                 <span className={styles.communityCategory}>{post.categoria}</span>
