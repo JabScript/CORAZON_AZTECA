@@ -4,7 +4,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { Playfair_Display, Oswald } from "next/font/google";
-import { correoExiste, registrarCuenta } from "../../lib/authStorage";
+import { registrarCuenta } from "../../lib/auth/authService";
 import { useFormValidation } from "../../lib/validation/useFormValidation";
 import type { ValidationSchema } from "../../lib/validation/validateField";
 import FormField from "../../lib/validation/FormField";
@@ -59,26 +59,33 @@ export default function RegistroAdminPage() {
   const [error, setError] = useState("");
   const [enviado, setEnviado] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
 
     if (!validateAll()) return;
 
-    if (correoExiste(values.email)) {
-      setError("Ya existe una cuenta con ese correo.");
-      return;
-    }
-
-    // Las cuentas de admin quedan marcadas como "pendiente" — requieren
-    // aprobación manual antes de poder iniciar sesión. No hay auto-login.
-    registrarCuenta({
+    // Las cuentas de admin quedan marcadas como "pendiente" automáticamente
+    // por el trigger handle_new_user() en Supabase — requieren aprobación
+    // manual antes de poder iniciar sesión. No hay auto-login.
+    const { data, error } = await registrarCuenta({
       email: values.email,
       password: values.password,
       nombre: `${values.nombre.trim()} ${values.apellido.trim()}`,
       rol: "admin",
-      pendiente: true,
     });
+
+    if (error) {
+      if (
+        error.message.toLowerCase().includes("already registered") ||
+        error.message.toLowerCase().includes("user_already_exists")
+      ) {
+        setError("Ya existe una cuenta con ese correo.");
+      } else {
+        setError("No se pudo procesar tu solicitud. Intenta de nuevo.");
+      }
+      return;
+    }
 
     setEnviado(true);
   };

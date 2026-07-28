@@ -1,13 +1,14 @@
 // app/components/RequireRole/RequireRole.tsx
 // Guarda de ruta: solo deja ver el contenido si hay una sesión activa con el
-// rol permitido. Si no hay sesión, redirige a /login. Si hay sesión pero con
-// un rol distinto, redirige al panel correspondiente a ese rol.
+// rol permitido (y, si es admin, con la cuenta aprobada). Si no hay sesión,
+// redirige a /login. Si hay sesión pero con un rol distinto, o es admin
+// pendiente de aprobación, redirige a la ruta que le corresponde.
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { haySesion, obtenerSesion, type Rol } from "../../lib/sesionStorage";
-import { rutaPanel } from "../../lib/authStorage";
+import { useSesion, type Rol } from "../../lib/auth/SessionProvider";
+import { rutaDestino } from "../../lib/auth/rutaDestino";
 import styles from "./RequireRole.module.css";
 
 interface RequireRoleProps {
@@ -15,34 +16,37 @@ interface RequireRoleProps {
   children: React.ReactNode;
 }
 
+function Verificando() {
+  return (
+    <div className={styles.cargando}>
+      <span className={styles.spinner} aria-hidden />
+      <p>Verificando sesión…</p>
+    </div>
+  );
+}
+
 export default function RequireRole({ rolPermitido, children }: RequireRoleProps) {
   const router = useRouter();
-  const [autorizado, setAutorizado] = useState(false);
-  const [verificando, setVerificando] = useState(true);
+  const { sesion } = useSesion();
+
+  const debeRedirigirALogin = sesion.estado === "sin_sesion";
+  const debeRedirigirADestino =
+    sesion.estado === "con_sesion" &&
+    (sesion.cuenta.rol !== rolPermitido ||
+      (sesion.cuenta.rol === "admin" && sesion.cuenta.estadoCuenta === "pendiente"));
 
   useEffect(() => {
-    if (!haySesion()) {
+    if (debeRedirigirALogin) {
       router.replace(`/login?redirigido=${rolPermitido}`);
       return;
     }
-
-    const sesion = obtenerSesion();
-    if (sesion.rol !== rolPermitido) {
-      router.replace(rutaPanel(sesion.rol));
-      return;
+    if (sesion.estado === "con_sesion" && debeRedirigirADestino) {
+      router.replace(rutaDestino(sesion.cuenta.rol, sesion.cuenta.estadoCuenta));
     }
+  }, [debeRedirigirALogin, debeRedirigirADestino, router, rolPermitido, sesion]);
 
-    setAutorizado(true);
-    setVerificando(false);
-  }, [router, rolPermitido]);
-
-  if (verificando || !autorizado) {
-    return (
-      <div className={styles.cargando}>
-        <span className={styles.spinner} aria-hidden />
-        <p>Verificando sesión…</p>
-      </div>
-    );
+  if (sesion.estado === "cargando" || debeRedirigirALogin || debeRedirigirADestino) {
+    return <Verificando />;
   }
 
   return <>{children}</>;

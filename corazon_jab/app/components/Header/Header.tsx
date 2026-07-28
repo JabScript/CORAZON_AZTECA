@@ -6,8 +6,8 @@ import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import { Bungee, Oswald } from "next/font/google";
-import { haySesion, obtenerSesion, cerrarSesion, type Sesion } from "../../lib/sesionStorage";
-import { rutaPanel } from "../../lib/authStorage";
+import { useSesion } from "../../lib/auth/SessionProvider";
+import { rutaDestino } from "../../lib/auth/rutaDestino";
 import styles from "./Header.module.css";
 
 const bungee = Bungee({ subsets: ["latin"], weight: "400", variable: "--font-brand" });
@@ -26,7 +26,7 @@ export default function Header() {
   const pathname = usePathname();
   const router = useRouter();
   const [scrolled, setScrolled] = useState(false);
-  const [sesion, setSesion] = useState<Sesion | null>(null);
+  const { sesion, cerrarSesion } = useSesion();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -36,14 +36,8 @@ export default function Header() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Revisa la sesión al montar y cada vez que cambia la ruta (ej. tras login/logout).
-  useEffect(() => {
-    setSesion(haySesion() ? obtenerSesion() : null);
-  }, [pathname]);
-
   const handleLogout = () => {
     cerrarSesion();
-    setSesion(null);
     router.push("/");
   };
 
@@ -83,10 +77,13 @@ export default function Header() {
 
         {/* Botones de acción */}
         <div className={styles.actions}>
-          {sesion ? (
+          {sesion.estado === "con_sesion" ? (
             <>
-              <Link href={rutaPanel(sesion.rol)} className={styles.btnLogin}>
-                {sesion.nombre}
+              <Link
+                href={rutaDestino(sesion.cuenta.rol, sesion.cuenta.estadoCuenta)}
+                className={styles.btnLogin}
+              >
+                {sesion.cuenta.nombre}
               </Link>
               <button type="button" className={styles.btnStart} onClick={handleLogout}>
                 Cerrar sesión

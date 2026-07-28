@@ -7,9 +7,9 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { Playfair_Display, Oswald } from "next/font/google";
 import { obtenerEntrenadoresPublicos, type PerfilEntrenador } from "../../lib/entrenadorStorage";
-import { registrarAlumno, type OrigenEntrenador } from "../../lib/alumnoStorage";
-import { correoExiste, registrarCuenta, rutaPanel, imagenPerfilABase64 } from "../../lib/authStorage";
-import { guardarSesion } from "../../lib/sesionStorage";
+import { registrarCuenta } from "../../lib/auth/authService";
+import { rutaDestino } from "../../lib/auth/rutaDestino";
+import { crearClienteSupabaseNavegador } from "../../lib/supabase/client";
 import { useFormValidation } from "../../lib/validation/useFormValidation";
 import type { ValidationSchema } from "../../lib/validation/validateField";
 import FormField from "../../lib/validation/FormField";
@@ -19,6 +19,7 @@ const playfair = Playfair_Display({ subsets: ["latin"], weight: ["700"], style: 
 const oswald = Oswald({ subsets: ["latin"], weight: ["400", "500", "600"], variable: "--font-body" });
 
 type OpcionEntrenador = "sin_entrenador" | "del_directorio" | "manual";
+type OrigenEntrenador = "directorio" | "manual" | "independiente";
 
 interface AlumnoFormValues {
   nombre: string;
@@ -77,28 +78,30 @@ export default function RegistroAlumnoPage() {
   const [nombreEntrenadorManual, setNombreEntrenadorManual] = useState("");
 
   const [error, setError] = useState("");
+  const [infoMsg, setInfoMsg] = useState("");
+  const [enviando, setEnviando] = useState(false);
 
   useEffect(() => {
     setEntrenadores(obtenerEntrenadoresPublicos());
   }, []);
 
-  const handleFotoChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const archivo = e.target.files?.[0];
     if (!archivo) return;
-    const base64 = await imagenPerfilABase64(archivo);
-    setFoto(base64);
+    // TODO(task 17.2): subir la foto vía `subirFotoPerfil` (app/lib/auth/fotoPerfil.ts)
+    // una vez exista una cuenta creada. Por ahora solo se muestra la vista previa
+    // y no se persiste en el registro.
+    const reader = new FileReader();
+    reader.onload = () => setFoto(reader.result as string);
+    reader.readAsDataURL(archivo);
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
+    setInfoMsg("");
 
     if (!validateAll()) return;
-
-    if (correoExiste(values.email)) {
-      setError("Ya existe una cuenta con ese correo. Intenta iniciar sesión.");
-      return;
-    }
 
     if (opcionEntrenador === "del_directorio" && !entrenadorSeleccionadoId) {
       setError("Selecciona a tu entrenador del directorio.");
@@ -119,35 +122,64 @@ export default function RegistroAlumnoPage() {
 
     const nombreCompleto = `${values.nombre.trim()} ${values.apellido.trim()}`;
 
-    // Crea la cuenta de login real
-    const cuenta = registrarCuenta({
+    setEnviando(true);
+
+    const { data, error: authError } = await registrarCuenta({
       email: values.email,
       password: values.password,
       nombre: nombreCompleto,
       rol: "usuario",
-      foto: foto ?? undefined,
     });
 
-    // Guarda los datos deportivos/de entrenador del alumno
-    registrarAlumno({
-      usuarioId: cuenta.usuarioId,
-      nombre: values.nombre,
-      apellido: values.apellido,
-      apodo: values.apodo.trim() || undefined,
-      email: values.email,
-      fechaNacimiento: values.fechaNacimiento,
-      peso: Number(values.peso) || 0,
+    if (authError) {
+      const mensaje = authError.message.toLowerCase();
+      setError(
+        mensaje.includes("already registered") || mensaje.includes("already exists") || mensaje.includes("ya registrad")
+          ? "Ya existe una cuenta con ese correo. Intenta iniciar sesión."
+          : "No pudimos crear tu cuenta. Intenta de nuevo en unos minutos."
+      );
+      setEnviando(false);
+      return;
+    }
+
+    if (!data.user) {
+      setError("No pudimos crear tu cuenta. Intenta de nuevo en unos minutos.");
+      setEnviando(false);
+      return;
+    }
+
+    // Crea el registro deportivo asociado a la cuenta recién creada.
+    const supabase = crearClienteSupabaseNavegador();
+    const { error: perfilError } = await supabase.from("perfiles_deportivos").insert({
+      cuenta_id: data.user.id,
+      apellido: values.apellido.trim(),
+      apodo: values.apodo.trim() || null,
+      fecha_nacimiento: values.fechaNacimiento,
+      peso_kg: Number(values.peso) || 0.1,
       nivel: values.nivel,
-      objetivo: values.objetivo,
-      ciudad: values.ciudad,
-      origenEntrenador,
-      entrenadorId: origenEntrenador === "directorio" ? entrenadorSeleccionadoId : undefined,
-      nombreEntrenadorManual: origenEntrenador === "manual" ? nombreEntrenadorManual.trim() : undefined,
+      objetivo: values.objetivo || null,
+      ciudad: values.ciudad || null,
+      origen_entrenador: origenEntrenador,
+      entrenador_directorio_id: origenEntrenador === "directorio" ? entrenadorSeleccionadoId : null,
+      entrenador_manual_nombre: origenEntrenador === "manual" ? nombreEntrenadorManual.trim() : null,
     });
 
-    // Auto-login: el alumno queda logueado inmediatamente tras registrarse.
-    guardarSesion({ usuarioId: cuenta.usuarioId, nombre: nombreCompleto, rol: "usuario", foto: foto ?? undefined });
-    router.push(rutaPanel("usuario"));
+    if (perfilError) {
+      setError("Tu cuenta se creó pero hubo un problema guardando tus datos deportivos. Contacta soporte.");
+      setEnviando(false);
+      return;
+    }
+
+    // Auto-login: si Supabase ya dejó una sesión activa (confirmación de correo
+    // deshabilitada), redirigimos directo al panel. Si no, el proyecto requiere
+    // confirmar el correo antes de poder iniciar sesión.
+    if (data.session) {
+      router.push(rutaDestino("usuario", "aprobado"));
+      return;
+    }
+
+    setEnviando(false);
+    setInfoMsg("Tu cuenta se creó correctamente. Revisa tu correo para confirmarla antes de iniciar sesión.");
   };
 
   return (
@@ -477,9 +509,10 @@ export default function RegistroAlumnoPage() {
           )}
 
           {error && <p className={styles.errorMsg} role="alert">{error}</p>}
+          {infoMsg && <p className={styles.hint} role="status">{infoMsg}</p>}
 
-          <button type="submit" className={styles.submitBtn} disabled={!values.aceptaTerminos}>
-            Crear cuenta de Alumno
+          <button type="submit" className={styles.submitBtn} disabled={!values.aceptaTerminos || enviando}>
+            {enviando ? "Creando cuenta..." : "Crear cuenta de Alumno"}
           </button>
         </form>
 

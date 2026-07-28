@@ -1,14 +1,13 @@
 // app/registro/entrenador/page.tsx
 "use client";
 
-import { useState, useRef } from "react";
+import { useState } from "react";
 import Link from "next/link";
-import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { Playfair_Display, Oswald } from "next/font/google";
-import { correoExiste, registrarCuenta, rutaPanel, imagenPerfilABase64 } from "../../lib/authStorage";
-import { guardarSesion } from "../../lib/sesionStorage";
-import { guardarPerfil } from "../../lib/entrenadorStorage";
+import { registrarCuenta } from "../../lib/auth/authService";
+import { rutaDestino } from "../../lib/auth/rutaDestino";
+import { crearClienteSupabaseNavegador } from "../../lib/supabase/client";
 import { useFormValidation } from "../../lib/validation/useFormValidation";
 import type { ValidationSchema } from "../../lib/validation/validateField";
 import FormField from "../../lib/validation/FormField";
@@ -67,54 +66,66 @@ export default function RegistroEntrenadorPage() {
   );
 
   const [error, setError] = useState("");
-  const [foto, setFoto] = useState<string | null>(null);
-  const fotoInputRef = useRef<HTMLInputElement>(null);
+  const [enviando, setEnviando] = useState(false);
 
-  const handleFotoChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const archivo = e.target.files?.[0];
-    if (!archivo) return;
-    const base64 = await imagenPerfilABase64(archivo);
-    setFoto(base64);
-  };
-
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
 
     if (!validateAll()) return;
 
-    if (correoExiste(values.email)) {
-      setError("Ya existe una cuenta con ese correo. Intenta iniciar sesión.");
-      return;
-    }
+    setEnviando(true);
 
     const nombreCompleto = `${values.nombre.trim()} ${values.apellido.trim()}`;
 
-    const cuenta = registrarCuenta({
+    const { data, error: signUpError } = await registrarCuenta({
       email: values.email,
       password: values.password,
       nombre: nombreCompleto,
       rol: "entrenador",
-      foto: foto ?? undefined,
     });
+
+    if (signUpError) {
+      setEnviando(false);
+      if (signUpError.message.toLowerCase().includes("already registered") || signUpError.message.toLowerCase().includes("already been registered")) {
+        setError("Ya existe una cuenta con ese correo. Intenta iniciar sesión.");
+      } else {
+        setError("No se pudo crear la cuenta. Intenta de nuevo más tarde.");
+      }
+      return;
+    }
+
+    if (!data.user) {
+      setEnviando(false);
+      setError("No se pudo crear la cuenta. Intenta de nuevo más tarde.");
+      return;
+    }
 
     // Crea el perfil público de entrenador para que aparezca en /entrenadores
     // y en el selector de "elegir entrenador del directorio" al registrar alumnos.
-    guardarPerfil({
-      id: `entrenador-${cuenta.usuarioId}`,
-      nombre: nombreCompleto,
+    const supabase = crearClienteSupabaseNavegador();
+    const { error: perfilError } = await supabase.from("perfiles_publicos_entrenador").insert({
+      cuenta_id: data.user.id,
       especialidad: values.especialidades.trim() || "Boxeo",
-      anosTrayectoria: Number(values.anosExperiencia) || 0,
-      foto: foto ?? "",
-      bio: values.bio.trim() || `Entrenador en ${values.gimnasio.trim() || "Corazón Azteca"}.`,
-      logros: values.certificaciones.trim() ? [values.certificaciones.trim()] : [],
-      redes: [],
-      galeria: [],
+      anos_trayectoria: Number(values.anosExperiencia) || 0,
+      biografia: values.bio.trim() || `Entrenador en ${values.gimnasio.trim() || "Corazón Azteca"}.`,
     });
 
+    if (perfilError) {
+      setEnviando(false);
+      setError("Tu cuenta se creó, pero no se pudo guardar tu perfil de entrenador. Intenta de nuevo más tarde.");
+      return;
+    }
+
+    // Si Supabase requiere confirmación de correo, no habrá sesión activa todavía.
+    if (!data.session) {
+      setEnviando(false);
+      setError("Revisa tu correo para confirmar tu cuenta antes de iniciar sesión.");
+      return;
+    }
+
     // Auto-login: el entrenador queda logueado inmediatamente tras registrarse.
-    guardarSesion({ usuarioId: cuenta.usuarioId, nombre: nombreCompleto, rol: "entrenador", foto: foto ?? undefined });
-    router.push(rutaPanel("entrenador"));
+    router.push(rutaDestino("entrenador", "aprobado"));
   };
 
   return (
@@ -129,32 +140,6 @@ export default function RegistroEntrenadorPage() {
         <p className={styles.subtitle}>Comparte tu experiencia y guía a la próxima generación.</p>
 
         <form className={styles.form} onSubmit={handleSubmit}>
-          <div className={styles.field}>
-            <label className={styles.label}>Foto de perfil (opcional)</label>
-            <div className={styles.fotoPerfilWrap}>
-              <div className={styles.fotoPreviewCircle}>
-                {foto ? (
-                  <Image src={foto} alt="Vista previa" width={72} height={72} className={styles.fotoPreviewImg} unoptimized />
-                ) : (
-                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-                    <circle cx="12" cy="8" r="4" />
-                    <path d="M4 21v-2a4 4 0 0 1 4-4h8a4 4 0 0 1 4 4v2" />
-                  </svg>
-                )}
-              </div>
-              <button type="button" className={styles.entrenadorOpcionBtn} onClick={() => fotoInputRef.current?.click()}>
-                {foto ? "Cambiar foto" : "Subir foto"}
-              </button>
-              <input
-                ref={fotoInputRef}
-                type="file"
-                accept="image/*"
-                hidden
-                onChange={handleFotoChange}
-              />
-            </div>
-          </div>
-
           <div className={styles.fieldGroup}>
             <FormField
               id="nombre"
@@ -366,7 +351,9 @@ export default function RegistroEntrenadorPage() {
 
           {error && <p className={styles.errorMsg} role="alert">{error}</p>}
 
-          <button type="submit" className={styles.submitBtn}>Crear cuenta de Entrenador</button>
+          <button type="submit" className={styles.submitBtn} disabled={enviando}>
+            {enviando ? "Creando cuenta..." : "Crear cuenta de Entrenador"}
+          </button>
         </form>
 
         <p className={styles.footerNote}>

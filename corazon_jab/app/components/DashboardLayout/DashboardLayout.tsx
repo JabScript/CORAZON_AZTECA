@@ -8,8 +8,9 @@
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
-import type { Rol } from "../../lib/sesionStorage";
-import { cerrarSesion, obtenerSesion } from "../../lib/sesionStorage";
+import type { Rol } from "../../lib/auth/SessionProvider";
+import { useSesion } from "../../lib/auth/SessionProvider";
+import { resolverUrlFoto } from "../../lib/auth/fotoPerfil";
 import RequireRole from "../RequireRole/RequireRole";
 import styles from "./DashboardLayout.module.css";
 
@@ -48,10 +49,14 @@ function DashboardLayoutBody({
 }: DashboardLayoutProps) {
   const pathname = usePathname();
   const router = useRouter();
-  const sesion = obtenerSesion();
+  const { sesion, cerrarSesion } = useSesion();
+
+  const cuenta = sesion.estado === "con_sesion" ? sesion.cuenta : null;
+  const nombre = cuenta?.nombre ?? "";
+  const fotoUrl = cuenta ? resolverUrlFoto(cuenta.fotoRef) : null;
 
   const handleLogout = () => {
-    cerrarSesion();
+    void cerrarSesion();
     router.push("/login");
   };
 
@@ -79,20 +84,20 @@ function DashboardLayoutBody({
         <div className={styles.sidebarFooter}>
           <div className={styles.sidebarUserRow}>
             <div className={styles.sidebarAvatar}>
-              {sesion.foto ? (
+              {fotoUrl ? (
                 <Image
-                  src={sesion.foto}
-                  alt={sesion.nombre}
+                  src={fotoUrl}
+                  alt={nombre}
                   width={32}
                   height={32}
                   className={styles.sidebarAvatarImg}
                   unoptimized
                 />
               ) : (
-                sesion.nombre.charAt(0).toUpperCase()
+                nombre.charAt(0).toUpperCase()
               )}
             </div>
-            <span className={styles.sidebarUser}>{sesion.nombre}</span>
+            <span className={styles.sidebarUser}>{nombre}</span>
           </div>
           <button type="button" className={styles.logoutBtn} onClick={handleLogout}>
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">

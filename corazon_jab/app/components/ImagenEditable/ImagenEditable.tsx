@@ -6,7 +6,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import Image, { type ImageProps } from "next/image";
-import { esAdmin } from "../../lib/sesionStorage";
+import { useSesion } from "../../lib/auth/SessionProvider";
 import {
   obtenerImagenPersonalizada,
   guardarImagenPersonalizada,
@@ -56,15 +56,16 @@ export default function ImagenEditable({
   className,
   ...imageProps
 }: ImagenEditableProps) {
+  const { sesion } = useSesion();
+  const esAdminActual = sesion.estado === "con_sesion" && sesion.cuenta.rol === "admin";
+
   const [srcActual, setSrcActual] = useState(srcOriginal);
-  const [esAdminActual, setEsAdminActual] = useState(false);
   const [cargando, setCargando] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     const personalizada = obtenerImagenPersonalizada(clave);
     setSrcActual(personalizada ?? srcOriginal);
-    setEsAdminActual(esAdmin());
   }, [clave, srcOriginal]);
 
   const handleArchivo = async (e: React.ChangeEvent<HTMLInputElement>) => {

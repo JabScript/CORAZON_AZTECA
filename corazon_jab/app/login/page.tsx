@@ -5,8 +5,9 @@ import Link from "next/link";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Playfair_Display, Oswald } from "next/font/google";
-import { guardarSesion, haySesion, obtenerSesion } from "../lib/sesionStorage";
-import { autenticar, rutaPanel } from "../lib/authStorage";
+import { useSesion } from "../lib/auth/SessionProvider";
+import { iniciarSesion } from "../lib/auth/authService";
+import { rutaDestino } from "../lib/auth/rutaDestino";
 import { useFormValidation } from "../lib/validation/useFormValidation";
 import type { ValidationSchema } from "../lib/validation/validateField";
 import FormField from "../lib/validation/FormField";
@@ -14,12 +15,6 @@ import styles from "./Login.module.css";
 
 const playfair = Playfair_Display({ subsets: ["latin"], weight: ["700"], style: ["normal", "italic"], variable: "--font-heading" });
 const oswald = Oswald({ subsets: ["latin"], weight: ["400", "500", "600"], variable: "--font-body" });
-
-const demoAccounts = [
-  { role: "Alumno", email: "iker.dominguez@corazonazteca.com", password: "Boxer123" },
-  { role: "Entrenador", email: "rodrigo.cazares@corazonazteca.com", password: "Coach123" },
-  { role: "Admin", email: "admin1@corazonazteca.com", password: "Admin123" },
-];
 
 interface LoginValues {
   email: string;
@@ -35,39 +30,58 @@ const loginSchema: ValidationSchema<LoginValues> = {
 
 export default function LoginPage() {
   const router = useRouter();
+  const { sesion } = useSesion();
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
+  const [enviando, setEnviando] = useState(false);
 
-  const { values, errors, touched, handleChange, handleBlur, validateAll, setValues } =
+  const { values, errors, touched, handleChange, handleBlur, validateAll } =
     useFormValidation<LoginValues>({ email: "", password: "", recordarme: false }, loginSchema);
 
-  // Si ya hay una sesión activa, no tiene sentido mostrar el login: redirige al panel.
+  // Si ya hay una sesión activa (o el login recién enviado ya resolvió
+  // cuenta), no tiene sentido mostrar el login: redirige al destino que le
+  // corresponde según rol y estado de aprobación.
   useEffect(() => {
-    if (haySesion()) {
-      router.replace(rutaPanel(obtenerSesion().rol));
+    if (sesion.estado === "con_sesion") {
+      router.replace(rutaDestino(sesion.cuenta.rol, sesion.cuenta.estadoCuenta));
     }
-  }, [router]);
+  }, [sesion, router]);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!validateAll()) return;
 
-    const cuenta = autenticar(values.email, values.password);
+    setError("");
+    setEnviando(true);
 
-    if (!cuenta) {
-      setError("Correo o contraseña incorrectos, o la cuenta está pendiente de aprobación.");
+    const { data, error: errorLogin } = await iniciarSesion(values.email, values.password);
+
+    if (errorLogin || !data.user) {
+      setError("Correo o contraseña incorrectos.");
+      setEnviando(false);
       return;
     }
 
-    guardarSesion({ usuarioId: cuenta.usuarioId, nombre: cuenta.nombre, rol: cuenta.rol, foto: cuenta.foto });
-    router.push(rutaPanel(cuenta.rol));
+    // Login exitoso: el SessionProvider ya está suscrito a onAuthStateChange
+    // y resolverá la cuenta automáticamente; el useEffect anterior redirige
+    // en cuanto `useSesion()` refleje "con_sesion".
   };
 
-  const usarCuentaDemo = (demoEmail: string, demoPassword: string) => {
-    setValues((prev) => ({ ...prev, email: demoEmail, password: demoPassword, recordarme: prev.recordarme }));
-    setError("");
-  };
+  // Mientras se verifica la sesión inicial, ya hay una sesión activa, o se
+  // acaba de enviar un login exitoso y se espera la redirección, no se
+  // muestra el formulario.
+  const ocultarFormulario = sesion.estado === "cargando" || sesion.estado === "con_sesion" || enviando;
+
+  if (ocultarFormulario) {
+    return (
+      <main className={`${styles.page} ${playfair.variable} ${oswald.variable}`}>
+        <div className={styles.container}>
+          <p className={styles.subtitle}>Verificando sesión…</p>
+        </div>
+      </main>
+    );
+  }
 
   return (
     <main className={`${styles.page} ${playfair.variable} ${oswald.variable}`}>
@@ -194,25 +208,6 @@ export default function LoginPage() {
           </svg>
           Crear Cuenta Nueva
         </Link>
-
-        {/* Cuentas demo */}
-        <div className={styles.demoSection}>
-          <span className={styles.demoLabel}>CUENTAS DE DEMOSTRACIÓN</span>
-          <div className={styles.demoGrid}>
-            {demoAccounts.map((acc) => (
-              <button
-                key={acc.role}
-                type="button"
-                className={styles.demoCard}
-                onClick={() => usarCuentaDemo(acc.email, acc.password)}
-              >
-                <span className={styles.demoRole}>{acc.role}</span>
-                <span className={styles.demoEmail}>{acc.email}</span>
-              </button>
-            ))}
-          </div>
-          <p className={styles.demoHint}>Haz clic en una cuenta para autocompletar y luego pulsa &quot;Iniciar Sesión&quot;.</p>
-        </div>
       </div>
     </main>
   );
