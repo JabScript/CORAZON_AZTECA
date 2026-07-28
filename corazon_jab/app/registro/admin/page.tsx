@@ -76,7 +76,9 @@ export default function RegistroAdminPage() {
     });
 
     if (error) {
-      if (
+      if (error.code === "over_email_send_rate_limit") {
+        setError("Demasiados intentos de registro. Espera unos minutos e intenta de nuevo.");
+      } else if (
         error.message.toLowerCase().includes("already registered") ||
         error.message.toLowerCase().includes("user_already_exists")
       ) {

@@ -66,11 +66,13 @@ export default function RegistroEntrenadorPage() {
   );
 
   const [error, setError] = useState("");
+  const [infoMsg, setInfoMsg] = useState("");
   const [enviando, setEnviando] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
+    setInfoMsg("");
 
     if (!validateAll()) return;
 
@@ -87,7 +89,12 @@ export default function RegistroEntrenadorPage() {
 
     if (signUpError) {
       setEnviando(false);
-      if (signUpError.message.toLowerCase().includes("already registered") || signUpError.message.toLowerCase().includes("already been registered")) {
+      if (signUpError.code === "over_email_send_rate_limit") {
+        setError("Demasiados intentos de registro. Espera unos minutos e intenta de nuevo.");
+      } else if (
+        signUpError.message.toLowerCase().includes("already registered") ||
+        signUpError.message.toLowerCase().includes("already been registered")
+      ) {
         setError("Ya existe una cuenta con ese correo. Intenta iniciar sesión.");
       } else {
         setError("No se pudo crear la cuenta. Intenta de nuevo más tarde.");
@@ -98,6 +105,12 @@ export default function RegistroEntrenadorPage() {
     if (!data.user) {
       setEnviando(false);
       setError("No se pudo crear la cuenta. Intenta de nuevo más tarde.");
+      return;
+    }
+
+    if (!data.session) {
+      setEnviando(false);
+      setInfoMsg("Tu cuenta se creó correctamente. Revisa tu correo para confirmar la cuenta antes de iniciar sesión.");
       return;
     }
 
@@ -350,6 +363,7 @@ export default function RegistroEntrenadorPage() {
           )}
 
           {error && <p className={styles.errorMsg} role="alert">{error}</p>}
+          {infoMsg && <p className={styles.hint} role="status">{infoMsg}</p>}
 
           <button type="submit" className={styles.submitBtn} disabled={enviando}>
             {enviando ? "Creando cuenta..." : "Crear cuenta de Entrenador"}

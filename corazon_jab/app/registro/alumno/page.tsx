@@ -134,7 +134,9 @@ export default function RegistroAlumnoPage() {
     if (authError) {
       const mensaje = authError.message.toLowerCase();
       setError(
-        mensaje.includes("already registered") || mensaje.includes("already exists") || mensaje.includes("ya registrad")
+        authError.code === "over_email_send_rate_limit"
+          ? "Demasiados intentos de registro. Espera unos minutos e intenta de nuevo."
+          : mensaje.includes("already registered") || mensaje.includes("already exists") || mensaje.includes("ya registrad")
           ? "Ya existe una cuenta con ese correo. Intenta iniciar sesión."
           : "No pudimos crear tu cuenta. Intenta de nuevo en unos minutos."
       );
@@ -144,6 +146,16 @@ export default function RegistroAlumnoPage() {
 
     if (!data.user) {
       setError("No pudimos crear tu cuenta. Intenta de nuevo en unos minutos.");
+      setEnviando(false);
+      return;
+    }
+
+    if (!data.session) {
+      // Si el proyecto requiere confirmación de correo, Supabase devuelve el
+      // usuario pero no deja sesión activa en el cliente. En ese caso, no se
+      // puede crear el perfil desde el navegador porque las políticas RLS
+      // exigen un usuario autenticado.
+      setInfoMsg("Tu cuenta se creó correctamente. Revisa tu correo para confirmar tu cuenta antes de iniciar sesión.");
       setEnviando(false);
       return;
     }
