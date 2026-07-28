@@ -1,9 +1,6 @@
 /* app/components/CTA/CTA.module.css */
 
 .section {
-  --gold: #c9a13a;
-  --red: #b7212a;
-  --cream: #f1e6cf;
   --bg: #0a0908;
 
   background: transparent;

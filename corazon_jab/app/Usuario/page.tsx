@@ -8,10 +8,12 @@ import { obtenerSesion } from "../lib/sesionStorage";
 import {
   obtenerAlumnoPorUsuarioId,
   actualizarEntrenadorAlumno,
-  type DatosAlumno,
   type OrigenEntrenador,
 } from "../lib/alumnoStorage";
 import { obtenerEntrenadoresPublicos, type PerfilEntrenador } from "../lib/entrenadorStorage";
+import { useAsyncData } from "../lib/async/useAsyncData";
+import DashboardSkeleton from "../lib/async/DashboardSkeleton";
+import ErrorState from "../lib/async/ErrorState";
 import styles from "./Dashboard.module.css";
 
 const stats = [
@@ -42,7 +44,15 @@ export default function DashboardPage() {
   const sesion = obtenerSesion();
   const primerNombre = sesion.nombre.split(" ")[0] || sesion.nombre;
 
-  const [datosAlumno, setDatosAlumno] = useState<DatosAlumno | null>(null);
+  const {
+    status: estadoAlumno,
+    data: datosAlumno,
+    error: errorAlumno,
+    refetch: refetchAlumno,
+  } = useAsyncData(
+    () => Promise.resolve(obtenerAlumnoPorUsuarioId(sesion.usuarioId)),
+    [sesion.usuarioId]
+  );
   const [entrenadores, setEntrenadores] = useState<PerfilEntrenador[]>([]);
   const [editandoEntrenador, setEditandoEntrenador] = useState(false);
   const [opcionEntrenador, setOpcionEntrenador] = useState<OrigenEntrenador>("independiente");
@@ -50,10 +60,24 @@ export default function DashboardPage() {
   const [nombreManual, setNombreManual] = useState("");
 
   useEffect(() => {
-    setDatosAlumno(obtenerAlumnoPorUsuarioId(sesion.usuarioId));
     setEntrenadores(obtenerEntrenadoresPublicos());
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sesion.usuarioId]);
+
+  if (estadoAlumno === "loading" || estadoAlumno === "idle") {
+    return <DashboardSkeleton count={4} variant="card" />;
+  }
+  if (estadoAlumno === "error") {
+    return (
+      <ErrorState
+        message={errorAlumno ?? "No se pudo cargar tu información."}
+        onRetry={refetchAlumno}
+      />
+    );
+  }
+  if (!datosAlumno) {
+    return null;
+  }
 
   const entrenadorActual =
     datosAlumno?.origenEntrenador === "directorio" && datosAlumno.entrenadorId
@@ -73,14 +97,14 @@ export default function DashboardPage() {
       entrenadorId: opcionEntrenador === "directorio" ? entrenadorIdSeleccionado : undefined,
       nombreEntrenadorManual: opcionEntrenador === "manual" ? nombreManual.trim() : undefined,
     });
-    setDatosAlumno(obtenerAlumnoPorUsuarioId(sesion.usuarioId));
+    refetchAlumno();
     setEditandoEntrenador(false);
   };
 
   const handleQuitarEntrenador = () => {
     if (!confirm("¿Quieres dejar de tener entrenador y pasar a entrenamiento independiente?")) return;
     actualizarEntrenadorAlumno(sesion.usuarioId, { origenEntrenador: "independiente" });
-    setDatosAlumno(obtenerAlumnoPorUsuarioId(sesion.usuarioId));
+    refetchAlumno();
   };
 
   return (

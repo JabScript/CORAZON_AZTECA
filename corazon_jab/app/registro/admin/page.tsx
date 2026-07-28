@@ -5,23 +5,57 @@ import { useState } from "react";
 import Link from "next/link";
 import { Playfair_Display, Oswald } from "next/font/google";
 import { correoExiste, registrarCuenta } from "../../lib/authStorage";
+import { useFormValidation } from "../../lib/validation/useFormValidation";
+import type { ValidationSchema } from "../../lib/validation/validateField";
+import FormField from "../../lib/validation/FormField";
 import styles from "../FormRegistro.module.css";
 
 const playfair = Playfair_Display({ subsets: ["latin"], weight: ["700"], style: ["normal", "italic"], variable: "--font-heading" });
 const oswald = Oswald({ subsets: ["latin"], weight: ["400", "500", "600"], variable: "--font-body" });
 
+interface RegistroAdminValues {
+  nombre: string;
+  apellido: string;
+  email: string;
+  telefono: string;
+  organizacion: string;
+  puesto: string;
+  codigoInvitacion: string;
+  motivo: string;
+  password: string;
+  confirmPassword: string;
+  aceptaTerminos: boolean;
+  [key: string]: string | boolean;
+}
+
+const registroAdminSchema: ValidationSchema<RegistroAdminValues> = {
+  nombre: [{ type: "required" }],
+  apellido: [{ type: "required" }],
+  email: [{ type: "required" }, { type: "email" }],
+  password: [{ type: "required" }, { type: "minLength", length: 6 }],
+  confirmPassword: [{ type: "required" }, { type: "matches", field: "password", message: "Las contraseñas no coinciden." }],
+  aceptaTerminos: [{ type: "required", message: "Debes aceptar los términos y condiciones." }],
+};
+
 export default function RegistroAdminPage() {
-  const [nombre, setNombre] = useState("");
-  const [apellido, setApellido] = useState("");
-  const [email, setEmail] = useState("");
-  const [telefono, setTelefono] = useState("");
-  const [organizacion, setOrganizacion] = useState("");
-  const [puesto, setPuesto] = useState("Dueño de gimnasio");
-  const [codigoInvitacion, setCodigoInvitacion] = useState("");
-  const [motivo, setMotivo] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [aceptaTerminos, setAceptaTerminos] = useState(false);
+  const { values, errors, touched, handleChange, handleBlur, validateAll } =
+    useFormValidation<RegistroAdminValues>(
+      {
+        nombre: "",
+        apellido: "",
+        email: "",
+        telefono: "",
+        organizacion: "",
+        puesto: "Dueño de gimnasio",
+        codigoInvitacion: "",
+        motivo: "",
+        password: "",
+        confirmPassword: "",
+        aceptaTerminos: false,
+      },
+      registroAdminSchema
+    );
+
   const [error, setError] = useState("");
   const [enviado, setEnviado] = useState(false);
 
@@ -29,37 +63,19 @@ export default function RegistroAdminPage() {
     e.preventDefault();
     setError("");
 
-    if (!nombre.trim() || !apellido.trim() || !email.trim()) {
-      setError("Completa tu nombre, apellido y correo electrónico.");
-      return;
-    }
+    if (!validateAll()) return;
 
-    if (correoExiste(email)) {
+    if (correoExiste(values.email)) {
       setError("Ya existe una cuenta con ese correo.");
-      return;
-    }
-
-    if (!password || password.length < 6) {
-      setError("La contraseña debe tener al menos 6 caracteres.");
-      return;
-    }
-
-    if (password !== confirmPassword) {
-      setError("Las contraseñas no coinciden.");
-      return;
-    }
-
-    if (!aceptaTerminos) {
-      setError("Debes aceptar los términos y condiciones.");
       return;
     }
 
     // Las cuentas de admin quedan marcadas como "pendiente" — requieren
     // aprobación manual antes de poder iniciar sesión. No hay auto-login.
     registrarCuenta({
-      email,
-      password,
-      nombre: `${nombre.trim()} ${apellido.trim()}`,
+      email: values.email,
+      password: values.password,
+      nombre: `${values.nombre.trim()} ${values.apellido.trim()}`,
       rol: "admin",
       pendiente: true,
     });
@@ -102,62 +118,171 @@ export default function RegistroAdminPage() {
 
         <form className={styles.form} onSubmit={handleSubmit}>
           <div className={styles.fieldGroup}>
-            <div className={styles.field}>
-              <label className={styles.label}>Nombre</label>
-              <input type="text" className={styles.input} placeholder="Nombre" value={nombre} onChange={(e) => setNombre(e.target.value)} required />
-            </div>
-            <div className={styles.field}>
-              <label className={styles.label}>Apellido</label>
-              <input type="text" className={styles.input} placeholder="Apellido" value={apellido} onChange={(e) => setApellido(e.target.value)} required />
-            </div>
+            <FormField
+              id="admin-nombre"
+              label="Nombre"
+              error={touched.nombre ? errors.nombre : undefined}
+              className={styles.field}
+              labelClassName={styles.label}
+            >
+              <input
+                id="admin-nombre"
+                type="text"
+                className={styles.input}
+                placeholder="Nombre"
+                value={values.nombre}
+                onChange={(e) => handleChange("nombre", e.target.value)}
+                onBlur={() => handleBlur("nombre")}
+                aria-invalid={Boolean(touched.nombre && errors.nombre)}
+                aria-describedby={touched.nombre && errors.nombre ? "admin-nombre-error" : undefined}
+              />
+            </FormField>
+            <FormField
+              id="admin-apellido"
+              label="Apellido"
+              error={touched.apellido ? errors.apellido : undefined}
+              className={styles.field}
+              labelClassName={styles.label}
+            >
+              <input
+                id="admin-apellido"
+                type="text"
+                className={styles.input}
+                placeholder="Apellido"
+                value={values.apellido}
+                onChange={(e) => handleChange("apellido", e.target.value)}
+                onBlur={() => handleBlur("apellido")}
+                aria-invalid={Boolean(touched.apellido && errors.apellido)}
+                aria-describedby={touched.apellido && errors.apellido ? "admin-apellido-error" : undefined}
+              />
+            </FormField>
           </div>
 
-          <div className={styles.field}>
-            <label className={styles.label}>Correo corporativo</label>
-            <input type="email" className={styles.input} placeholder="admin@corazonazteca.com" value={email} onChange={(e) => setEmail(e.target.value)} required />
-          </div>
+          <FormField
+            id="admin-email"
+            label="Correo corporativo"
+            error={touched.email ? errors.email : undefined}
+            className={styles.field}
+            labelClassName={styles.label}
+          >
+            <input
+              id="admin-email"
+              type="email"
+              className={styles.input}
+              placeholder="admin@corazonazteca.com"
+              value={values.email}
+              onChange={(e) => handleChange("email", e.target.value)}
+              onBlur={() => handleBlur("email")}
+              aria-invalid={Boolean(touched.email && errors.email)}
+              aria-describedby={touched.email && errors.email ? "admin-email-error" : undefined}
+            />
+          </FormField>
 
-          <div className={styles.field}>
-            <label className={styles.label}>Teléfono</label>
-            <input type="tel" className={styles.input} placeholder="+52 55 1234 5678" value={telefono} onChange={(e) => setTelefono(e.target.value)} />
-          </div>
+          <FormField id="admin-telefono" label="Teléfono" className={styles.field} labelClassName={styles.label}>
+            <input
+              id="admin-telefono"
+              type="tel"
+              className={styles.input}
+              placeholder="+52 55 1234 5678"
+              value={values.telefono}
+              onChange={(e) => handleChange("telefono", e.target.value)}
+              onBlur={() => handleBlur("telefono")}
+            />
+          </FormField>
 
-          <div className={styles.field}>
-            <label className={styles.label}>Organización / Empresa</label>
-            <input type="text" className={styles.input} placeholder="Corazón Azteca Boxing Gym" value={organizacion} onChange={(e) => setOrganizacion(e.target.value)} />
-          </div>
+          <FormField id="admin-organizacion" label="Organización / Empresa" className={styles.field} labelClassName={styles.label}>
+            <input
+              id="admin-organizacion"
+              type="text"
+              className={styles.input}
+              placeholder="Corazón Azteca Boxing Gym"
+              value={values.organizacion}
+              onChange={(e) => handleChange("organizacion", e.target.value)}
+              onBlur={() => handleBlur("organizacion")}
+            />
+          </FormField>
 
-          <div className={styles.field}>
-            <label className={styles.label}>Puesto / Rol</label>
-            <select className={styles.select} value={puesto} onChange={(e) => setPuesto(e.target.value)}>
+          <FormField id="admin-puesto" label="Puesto / Rol" className={styles.field} labelClassName={styles.label}>
+            <select
+              id="admin-puesto"
+              className={styles.select}
+              value={values.puesto}
+              onChange={(e) => handleChange("puesto", e.target.value)}
+              onBlur={() => handleBlur("puesto")}
+            >
               <option>Dueño de gimnasio</option>
               <option>Gerente de operaciones</option>
               <option>Director técnico</option>
               <option>Federación / Organizador</option>
               <option>Otro</option>
             </select>
-          </div>
+          </FormField>
 
-          <div className={styles.field}>
-            <label className={styles.label}>Código de invitación</label>
-            <input type="text" className={styles.input} placeholder="XXXX-XXXX-XXXX" value={codigoInvitacion} onChange={(e) => setCodigoInvitacion(e.target.value)} />
-            <span className={styles.hint}>Si no tienes uno, deja este campo vacío. Revisaremos tu solicitud manualmente.</span>
-          </div>
+          <FormField id="admin-codigo" label="Código de invitación" className={styles.field} labelClassName={styles.label}>
+            <>
+              <input
+                id="admin-codigo"
+                type="text"
+                className={styles.input}
+                placeholder="XXXX-XXXX-XXXX"
+                value={values.codigoInvitacion}
+                onChange={(e) => handleChange("codigoInvitacion", e.target.value)}
+                onBlur={() => handleBlur("codigoInvitacion")}
+              />
+              <span className={styles.hint}>Si no tienes uno, deja este campo vacío. Revisaremos tu solicitud manualmente.</span>
+            </>
+          </FormField>
 
-          <div className={styles.field}>
-            <label className={styles.label}>Motivo de solicitud</label>
-            <textarea className={styles.textarea} placeholder="Describe brevemente el propósito de la cuenta administrativa..." value={motivo} onChange={(e) => setMotivo(e.target.value)} />
-          </div>
+          <FormField id="admin-motivo" label="Motivo de solicitud" className={styles.field} labelClassName={styles.label}>
+            <textarea
+              id="admin-motivo"
+              className={styles.textarea}
+              placeholder="Describe brevemente el propósito de la cuenta administrativa..."
+              value={values.motivo}
+              onChange={(e) => handleChange("motivo", e.target.value)}
+              onBlur={() => handleBlur("motivo")}
+            />
+          </FormField>
 
           <div className={styles.fieldGroup}>
-            <div className={styles.field}>
-              <label className={styles.label}>Contraseña</label>
-              <input type="password" className={styles.input} placeholder="••••••••" value={password} onChange={(e) => setPassword(e.target.value)} required />
-            </div>
-            <div className={styles.field}>
-              <label className={styles.label}>Confirmar contraseña</label>
-              <input type="password" className={styles.input} placeholder="••••••••" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} required />
-            </div>
+            <FormField
+              id="admin-password"
+              label="Contraseña"
+              error={touched.password ? errors.password : undefined}
+              className={styles.field}
+              labelClassName={styles.label}
+            >
+              <input
+                id="admin-password"
+                type="password"
+                className={styles.input}
+                placeholder="••••••••"
+                value={values.password}
+                onChange={(e) => handleChange("password", e.target.value)}
+                onBlur={() => handleBlur("password")}
+                aria-invalid={Boolean(touched.password && errors.password)}
+                aria-describedby={touched.password && errors.password ? "admin-password-error" : undefined}
+              />
+            </FormField>
+            <FormField
+              id="admin-confirmPassword"
+              label="Confirmar contraseña"
+              error={touched.confirmPassword ? errors.confirmPassword : undefined}
+              className={styles.field}
+              labelClassName={styles.label}
+            >
+              <input
+                id="admin-confirmPassword"
+                type="password"
+                className={styles.input}
+                placeholder="••••••••"
+                value={values.confirmPassword}
+                onChange={(e) => handleChange("confirmPassword", e.target.value)}
+                onBlur={() => handleBlur("confirmPassword")}
+                aria-invalid={Boolean(touched.confirmPassword && errors.confirmPassword)}
+                aria-describedby={touched.confirmPassword && errors.confirmPassword ? "admin-confirmPassword-error" : undefined}
+              />
+            </FormField>
           </div>
 
           <div className={styles.checkboxField}>
@@ -165,15 +290,21 @@ export default function RegistroAdminPage() {
               type="checkbox"
               id="terms"
               className={styles.checkbox}
-              checked={aceptaTerminos}
-              onChange={(e) => setAceptaTerminos(e.target.checked)}
+              checked={values.aceptaTerminos}
+              onChange={(e) => handleChange("aceptaTerminos", e.target.checked)}
+              onBlur={() => handleBlur("aceptaTerminos")}
+              aria-invalid={Boolean(touched.aceptaTerminos && errors.aceptaTerminos)}
+              aria-describedby={touched.aceptaTerminos && errors.aceptaTerminos ? "terms-error" : undefined}
             />
             <label htmlFor="terms" className={styles.checkboxLabel}>
               Acepto los <a href="/terminos">términos y condiciones</a> y entiendo que la solicitud está sujeta a revisión.
             </label>
           </div>
+          {touched.aceptaTerminos && errors.aceptaTerminos && (
+            <p id="terms-error" role="alert" className={styles.errorMsg}>{errors.aceptaTerminos}</p>
+          )}
 
-          {error && <p className={styles.errorMsg}>{error}</p>}
+          {error && <p className={styles.errorMsg} role="alert">{error}</p>}
 
           <button type="submit" className={styles.submitBtn}>Enviar solicitud</button>
         </form>

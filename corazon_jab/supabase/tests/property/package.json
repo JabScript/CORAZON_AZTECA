@@ -1,0 +1,23 @@
+{
+  "name": "supabase-database-schema-property-tests",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Pruebas de propiedades (fast-check) contra las políticas RLS de Supabase para el spec supabase-database-schema.",
+  "type": "module",
+  "scripts": {
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "seed": "tsx seed/seed.ts"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "2.45.4"
+  },
+  "devDependencies": {
+    "@types/node": "20.16.11",
+    "dotenv": "16.4.5",
+    "fast-check": "3.22.0",
+    "tsx": "4.19.1",
+    "typescript": "5.6.3",
+    "vitest": "2.1.4"
+  }
+}

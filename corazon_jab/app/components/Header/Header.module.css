@@ -1,10 +1,6 @@
 /* app/Header/Header.module.css */
 
 .header {
-  --gold: #c9a13a;
-  --gold-light: #e6c565;
-  --red: #b7212a;
-  --cream: #f1e6cf;
   --bg: #0a0908;
 
   background: var(--bg);

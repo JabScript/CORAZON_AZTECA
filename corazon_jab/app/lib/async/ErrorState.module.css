@@ -1,0 +1,53 @@
+/* app/lib/async/ErrorState.module.css */
+/* Estado de error para dashboards (Usuario/Entrenador/Admin) cuando `useAsyncData`
+   está en status === "error". Usa colores de error consistentes con --red /
+   #ff8a8a ya usados en el resto del proyecto (ver Login.module.css,
+   FormRegistro.module.css, FormField.tsx). */
+
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.9rem;
+  padding: 2.5rem 1.5rem;
+  text-align: center;
+  border-radius: 12px;
+  border: 1px solid rgba(183, 33, 42, 0.3);
+  background: rgba(183, 33, 42, 0.06);
+}
+
+.icon {
+  color: #ff8a8a;
+  flex-shrink: 0;
+}
+
+.message {
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  color: #ff8a8a;
+  margin: 0;
+  max-width: 32rem;
+}
+
+.retryBtn {
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--cream);
+  background: var(--red);
+  border: none;
+  border-radius: 8px;
+  padding: 0.6rem 1.4rem;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+}
+
+.retryBtn:hover {
+  opacity: 0.85;
+}
+
+.retryBtn:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 2px;
+}
