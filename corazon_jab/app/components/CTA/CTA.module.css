@@ -16,21 +16,6 @@
   gap: 2.5rem;
 }
 
-/* --- Imagen --- */
-.imageWrapper {
-  width: 100vw;
-  margin-left: calc(-50vw + 50%);
-  border-radius: 0;
-  overflow: hidden;
-}
-
-.image {
-  width: 100%;
-  height: auto;
-  display: block;
-  object-fit: cover;
-}
-
 /* --- Texto --- */
 .content {
   text-align: center;
