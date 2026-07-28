@@ -105,7 +105,7 @@ Este plan implementa el diseño en cuatro bloques incrementales y no disruptivos
 
 - [x] 10. Checkpoint - Ensure all tests pass, ask the user if questions arise.
 
-- [-] 11. Aplicar la validación accesible a los formularios de autenticación
+- [x] 11. Aplicar la validación accesible a los formularios de autenticación
   - [x] 11.1 Migrar `login/page.tsx` para usar `useFormValidation` + `FormField`, incluyendo la asociación `htmlFor`/`id` del checkbox "Recordarme", preservando el flujo de `autenticar()` y el mensaje de error de negocio a nivel de formulario (`role="alert"`)
     - _Requirements: 4.1, 4.2, 4.4, 5.7, 5.8, 5.9_
   - [x] 11.2 Migrar el formulario de registro de alumno para usar `useFormValidation` + `FormField`, preservando el flujo de `registrarCuenta()`
