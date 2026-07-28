@@ -1,0 +1,81 @@
+/*
+ * app/styles/tokens.css
+ *
+ * Fuente única de verdad de tokens de diseño (color, tipografía, espaciado).
+ * Ver .kiro/specs/design-system-unification/design.md ("Design Tokens").
+ *
+ * Estrategia de migración (Requirement 1, 2):
+ * - Los tokens canónicos (--ca-color-*, --ca-font-*, --ca-space-*) son la
+ *   única fuente de verdad.
+ * - Los 14 alias legacy de abajo referencian (var()) su token canónico para
+ *   que los `.module.css` existentes (que hoy redefinen --gold/--red/--cream
+ *   localmente, o --ca-oro/--ca-rojo/--ca-crema en admin-theme.css) sigan
+ *   funcionando sin modificarse el día 1. Mientras esas redefiniciones
+ *   locales sigan existiendo, tienen prioridad de cascada sobre estos alias
+ *   globales, por lo que el aspecto visual actual no cambia (Requirement 1.6)
+ *   hasta que se elimine cada redefinición local en la limpieza incremental
+ *   (Requirement 2.2, 2.3 — no forma parte de esta tarea).
+ */
+
+:root {
+  /* ---------------------------------------------------------------------
+   * Tokens canónicos de color
+   * ------------------------------------------------------------------- */
+  --ca-color-gold: #c9a13a;
+  --ca-color-gold-light: #e6c565;
+  --ca-color-red: #b7212a;
+  --ca-color-red-dark: #7a141a;
+  --ca-color-cream: #f1e6cf;
+  --ca-color-black: #0d0705;
+  --ca-color-black-alt: #170d0a;
+  --ca-color-green: #2f6b4f;
+  --ca-color-text-muted: #cbbfae;
+  --ca-color-border: rgba(217, 179, 74, 0.25);
+
+  /* ---------------------------------------------------------------------
+   * Tokens canónicos de tipografía
+   * `app/styles/fonts.ts` expone las variables `--font-heading`/
+   * `--font-display`/`--font-accent`/`--font-body`/`--font-body-alt` vía
+   * next/font/google, aplicadas al elemento `<html>` en `app/layout.tsx`.
+   * Estos tokens referencian dichas variables como fuente única de verdad.
+   * ------------------------------------------------------------------- */
+  --ca-font-heading: var(--font-heading); /* Playfair Display */
+  --ca-font-display: var(--font-display); /* Anton */
+  --ca-font-accent: var(--font-accent); /* Bungee */
+  --ca-font-body: var(--font-body); /* Oswald */
+  --ca-font-body-alt: var(--font-body-alt); /* Barlow */
+
+  /* ---------------------------------------------------------------------
+   * Tokens canónicos de espaciado
+   * ------------------------------------------------------------------- */
+  --ca-space-1: 4px;
+  --ca-space-2: 8px;
+  --ca-space-3: 12px;
+  --ca-space-4: 16px;
+  --ca-space-6: 24px;
+  --ca-space-8: 32px;
+
+  /* ---------------------------------------------------------------------
+   * Alias legacy retrocompatibles — Tema_Moderno
+   * (Header, Footer, CTA, Inicio, Funcionalidades, Secciones, Usuario,
+   * Entrenador, login, registro, blog)
+   * ------------------------------------------------------------------- */
+  --gold: var(--ca-color-gold); /* alias de --ca-color-gold */
+  --gold-light: var(--ca-color-gold-light); /* alias de --ca-color-gold-light */
+  --red: var(--ca-color-red); /* alias de --ca-color-red */
+  --cream: var(--ca-color-cream); /* alias de --ca-color-cream */
+
+  /* ---------------------------------------------------------------------
+   * Alias legacy retrocompatibles — Tema_Admin (admin-theme.css)
+   * ------------------------------------------------------------------- */
+  --ca-oro: var(--ca-color-gold); /* alias de --ca-color-gold */
+  --ca-oro-suave: var(--ca-color-gold-light); /* alias de --ca-color-gold-light */
+  --ca-rojo: var(--ca-color-red); /* alias de --ca-color-red */
+  --ca-rojo-oscuro: var(--ca-color-red-dark); /* alias de --ca-color-red-dark */
+  --ca-negro: var(--ca-color-black); /* alias de --ca-color-black */
+  --ca-negro-alt: var(--ca-color-black-alt); /* alias de --ca-color-black-alt */
+  --ca-verde: var(--ca-color-green); /* alias de --ca-color-green */
+  --ca-crema: var(--ca-color-cream); /* alias de --ca-color-cream */
+  --ca-texto-muted: var(--ca-color-text-muted); /* alias de --ca-color-text-muted */
+  --ca-borde: var(--ca-color-border); /* alias de --ca-color-border */
+}

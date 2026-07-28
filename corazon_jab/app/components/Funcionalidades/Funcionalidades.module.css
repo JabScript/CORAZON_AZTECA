@@ -1,9 +1,6 @@
 /* app/components/Funcionalidades/Funcionalidades.module.css */
 
 .section {
-  --gold: #c9a13a;
-  --gold-light: #e6c565;
-  --cream: #f1e6cf;
   --bg: #0a0908;
 
   background: transparent;

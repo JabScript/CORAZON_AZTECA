@@ -55,7 +55,7 @@ export default function MisArticulos({ writeHref }: MisArticulosProps) {
             <article key={a.id} className={styles.card}>
               {a.imagen && (
                 <div className={styles.cardImageWrap}>
-                  <Image src={a.imagen} alt={a.titulo} fill className={styles.cardImg} unoptimized />
+                  <Image src={a.imagen} alt={a.titulo} fill sizes="(max-width: 768px) 100vw, 33vw" className={styles.cardImg} unoptimized />
                 </div>
               )}
               <div className={styles.cardTop}>

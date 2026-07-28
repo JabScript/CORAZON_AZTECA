@@ -7,6 +7,9 @@ import { useRouter } from "next/navigation";
 import { Playfair_Display, Oswald } from "next/font/google";
 import { guardarSesion, haySesion, obtenerSesion } from "../lib/sesionStorage";
 import { autenticar, rutaPanel } from "../lib/authStorage";
+import { useFormValidation } from "../lib/validation/useFormValidation";
+import type { ValidationSchema } from "../lib/validation/validateField";
+import FormField from "../lib/validation/FormField";
 import styles from "./Login.module.css";
 
 const playfair = Playfair_Display({ subsets: ["latin"], weight: ["700"], style: ["normal", "italic"], variable: "--font-heading" });
@@ -18,12 +21,25 @@ const demoAccounts = [
   { role: "Admin", email: "admin1@corazonazteca.com", password: "Admin123" },
 ];
 
+interface LoginValues {
+  email: string;
+  password: string;
+  recordarme: boolean;
+  [key: string]: string | boolean;
+}
+
+const loginSchema: ValidationSchema<LoginValues> = {
+  email: [{ type: "required" }, { type: "email" }],
+  password: [{ type: "required" }],
+};
+
 export default function LoginPage() {
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+
+  const { values, errors, touched, handleChange, handleBlur, validateAll, setValues } =
+    useFormValidation<LoginValues>({ email: "", password: "", recordarme: false }, loginSchema);
 
   // Si ya hay una sesión activa, no tiene sentido mostrar el login: redirige al panel.
   useEffect(() => {
@@ -34,7 +50,10 @@ export default function LoginPage() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const cuenta = autenticar(email, password);
+
+    if (!validateAll()) return;
+
+    const cuenta = autenticar(values.email, values.password);
 
     if (!cuenta) {
       setError("Correo o contraseña incorrectos, o la cuenta está pendiente de aprobación.");
@@ -46,8 +65,7 @@ export default function LoginPage() {
   };
 
   const usarCuentaDemo = (demoEmail: string, demoPassword: string) => {
-    setEmail(demoEmail);
-    setPassword(demoPassword);
+    setValues((prev) => ({ ...prev, email: demoEmail, password: demoPassword, recordarme: prev.recordarme }));
     setError("");
   };
 
@@ -62,37 +80,55 @@ export default function LoginPage() {
 
         <form className={styles.form} onSubmit={handleSubmit}>
           {/* Email */}
-          <div className={styles.field}>
-            <label className={styles.label}>Correo electrónico</label>
+          <FormField
+            id="login-email"
+            label="Correo electrónico"
+            error={touched.email ? errors.email : undefined}
+            className={styles.field}
+            labelClassName={styles.label}
+          >
             <div className={styles.inputWrapper}>
               <svg className={styles.inputIcon} width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
                 <rect x="3" y="5" width="18" height="14" rx="2"/>
                 <polyline points="3 7 12 13 21 7"/>
               </svg>
               <input
+                id="login-email"
                 type="email"
                 className={styles.input}
                 placeholder="alumno@knockout.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                value={values.email}
+                onChange={(e) => handleChange("email", e.target.value)}
+                onBlur={() => handleBlur("email")}
+                aria-invalid={Boolean(touched.email && errors.email)}
+                aria-describedby={touched.email && errors.email ? "login-email-error" : undefined}
               />
             </div>
-          </div>
+          </FormField>
 
           {/* Password */}
-          <div className={styles.field}>
-            <label className={styles.label}>Contraseña</label>
+          <FormField
+            id="login-password"
+            label="Contraseña"
+            error={touched.password ? errors.password : undefined}
+            className={styles.field}
+            labelClassName={styles.label}
+          >
             <div className={styles.inputWrapper}>
               <svg className={styles.inputIcon} width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
                 <rect x="5" y="11" width="14" height="10" rx="2"/>
                 <path d="M8 11V7a4 4 0 0 1 8 0v4"/>
               </svg>
               <input
+                id="login-password"
                 type={showPassword ? "text" : "password"}
                 className={styles.input}
                 placeholder="••••••••"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                value={values.password}
+                onChange={(e) => handleChange("password", e.target.value)}
+                onBlur={() => handleBlur("password")}
+                aria-invalid={Boolean(touched.password && errors.password)}
+                aria-describedby={touched.password && errors.password ? "login-password-error" : undefined}
               />
               <button
                 type="button"
@@ -113,12 +149,18 @@ export default function LoginPage() {
                 )}
               </button>
             </div>
-          </div>
+          </FormField>
 
           {/* Remember + Forgot */}
           <div className={styles.options}>
-            <label className={styles.rememberLabel}>
-              <input type="checkbox" className={styles.checkbox} />
+            <label htmlFor="login-recordarme" className={styles.rememberLabel}>
+              <input
+                id="login-recordarme"
+                type="checkbox"
+                className={styles.checkbox}
+                checked={values.recordarme}
+                onChange={(e) => handleChange("recordarme", e.target.checked)}
+              />
               <span>Recordarme</span>
             </label>
             <Link href="/forgot-password" className={styles.forgotLink}>
@@ -126,7 +168,7 @@ export default function LoginPage() {
             </Link>
           </div>
 
-          {error && <p className={styles.errorMsg}>{error}</p>}
+          {error && <p className={styles.errorMsg} role="alert">{error}</p>}
 
           {/* Submit */}
           <button type="submit" className={styles.submitBtn}>

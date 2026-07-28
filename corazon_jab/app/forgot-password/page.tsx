@@ -4,17 +4,34 @@
 import Link from "next/link";
 import { useState } from "react";
 import { Playfair_Display, Oswald } from "next/font/google";
+import { useFormValidation } from "../lib/validation/useFormValidation";
+import type { ValidationSchema } from "../lib/validation/validateField";
+import FormField from "../lib/validation/FormField";
 import styles from "./ForgotPassword.module.css";
 
 const playfair = Playfair_Display({ subsets: ["latin"], weight: ["700"], style: ["normal", "italic"], variable: "--font-heading" });
 const oswald = Oswald({ subsets: ["latin"], weight: ["400", "500", "600"], variable: "--font-body" });
 
+interface ForgotPasswordValues {
+  email: string;
+  [key: string]: string | boolean;
+}
+
+const forgotPasswordSchema: ValidationSchema<ForgotPasswordValues> = {
+  email: [{ type: "required" }, { type: "email" }],
+};
+
 export default function ForgotPasswordPage() {
-  const [email, setEmail] = useState("");
   const [sent, setSent] = useState(false);
+
+  const { values, errors, touched, handleChange, handleBlur, validateAll } =
+    useFormValidation<ForgotPasswordValues>({ email: "" }, forgotPasswordSchema);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (!validateAll()) return;
+
     setSent(true);
   };
 
@@ -35,23 +52,31 @@ export default function ForgotPasswordPage() {
             </p>
 
             <form className={styles.form} onSubmit={handleSubmit}>
-              <div className={styles.field}>
-                <label className={styles.label}>Correo electrónico</label>
+              <FormField
+                id="forgot-email"
+                label="Correo electrónico"
+                error={touched.email ? errors.email : undefined}
+                className={styles.field}
+                labelClassName={styles.label}
+              >
                 <div className={styles.inputWrapper}>
                   <svg className={styles.inputIcon} width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
                     <rect x="3" y="5" width="18" height="14" rx="2"/>
                     <polyline points="3 7 12 13 21 7"/>
                   </svg>
                   <input
+                    id="forgot-email"
                     type="email"
                     className={styles.input}
                     placeholder="tu@correo.com"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    required
+                    value={values.email}
+                    onChange={(e) => handleChange("email", e.target.value)}
+                    onBlur={() => handleBlur("email")}
+                    aria-invalid={Boolean(touched.email && errors.email)}
+                    aria-describedby={touched.email && errors.email ? "forgot-email-error" : undefined}
                   />
                 </div>
-              </div>
+              </FormField>
 
               <button type="submit" className={styles.submitBtn}>Enviar enlace de recuperación</button>
             </form>
@@ -63,7 +88,7 @@ export default function ForgotPasswordPage() {
               <path d="M9 12l2 2 4-4"/>
             </svg>
             <p className={styles.confirmText}>
-              Si existe una cuenta asociada a <strong>{email}</strong>, recibirás un correo con
+              Si existe una cuenta asociada a <strong>{values.email}</strong>, recibirás un correo con
               instrucciones para restablecer tu contraseña.
             </p>
           </div>

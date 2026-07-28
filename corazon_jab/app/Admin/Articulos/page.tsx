@@ -83,7 +83,7 @@ export default function ArticulosAdminPage() {
             <article key={a.id} className={styles.tarjeta}>
               {a.imagen && (
                 <div className={styles.imagenWrap}>
-                  <Image src={a.imagen} alt={a.titulo} fill className={styles.imagen} unoptimized />
+                  <Image src={a.imagen} alt={a.titulo} fill sizes="(max-width: 768px) 100vw, 33vw" className={styles.imagen} unoptimized />
                 </div>
               )}
               <div className={styles.cabecera}>

@@ -1,11 +1,6 @@
 /* app/components/Footer/Footer.module.css */
 
 .footer {
-  --gold: #c9a13a;
-  --gold-light: #e6c565;
-  --red: #b7212a;
-  --cream: #f1e6cf;
-
   border-top: 1px solid rgba(201, 161, 58, 0.2);
   padding: 4rem 2rem 0;
 }

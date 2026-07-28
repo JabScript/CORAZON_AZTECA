@@ -6,9 +6,35 @@ import styles from "./Dashboard.module.css";
 import Image from "next/image";
 import Link from "next/link";
 import { obtenerSesion } from "../lib/sesionStorage";
+import { obtenerPerfil } from "../lib/entrenadorStorage";
+import { useAsyncData } from "../lib/async/useAsyncData";
+import DashboardSkeleton from "../lib/async/DashboardSkeleton";
+import ErrorState from "../lib/async/ErrorState";
 
 export default function EntrenadorDashboard() {
   const sesion = obtenerSesion();
+
+  const {
+    status: estadoPerfil,
+    data: perfil,
+    error: errorPerfil,
+    refetch: refetchPerfil,
+  } = useAsyncData(() => Promise.resolve(obtenerPerfil()), [sesion.usuarioId]);
+
+  if (estadoPerfil === "loading" || estadoPerfil === "idle") {
+    return <DashboardSkeleton count={4} variant="card" />;
+  }
+  if (estadoPerfil === "error") {
+    return (
+      <ErrorState
+        message={errorPerfil ?? "No se pudo cargar tu información."}
+        onRetry={refetchPerfil}
+      />
+    );
+  }
+  if (!perfil) {
+    return null;
+  }
 
   return (
     <div className={styles.page}>
@@ -53,12 +79,10 @@ export default function EntrenadorDashboard() {
       <div className={styles.info}>
         <h2 className={styles.sectionTitle}>Información del Entrenador</h2>
         <div className={styles.infoGrid}>
-          <div><span className={styles.label}>Nombre:</span> Ricardo Mendoza</div>
-          <div><span className={styles.label}>Especialidad:</span> Boxeo Profesional, Sparring</div>
-          <div><span className={styles.label}>Experiencia:</span> 12 años</div>
-          <div><span className={styles.label}>Certificaciones:</span> WBC Trainer Level 2</div>
-          <div><span className={styles.label}>Gimnasio principal:</span> Triple Boxing CDMX</div>
-          <div><span className={styles.label}>Contacto:</span> coach.mendoza@corazonazteca.com</div>
+          <div><span className={styles.label}>Nombre:</span> {perfil.nombre}</div>
+          <div><span className={styles.label}>Especialidad:</span> {perfil.especialidad}</div>
+          <div><span className={styles.label}>Experiencia:</span> {perfil.anosTrayectoria} años</div>
+          <div><span className={styles.label}>Certificaciones:</span> {perfil.logros[0] ?? "—"}</div>
         </div>
       </div>
     </div>

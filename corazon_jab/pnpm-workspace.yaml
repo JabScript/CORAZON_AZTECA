@@ -1,6 +1,14 @@
 allowBuilds:
+  esbuild: true
   sharp: true
   unrs-resolver: true
 ignoredBuiltDependencies:
   - sharp
   - unrs-resolver
+minimumReleaseAgeExclude:
+  - '@supabase/auth-js@2.110.9'
+  - '@supabase/functions-js@2.110.9'
+  - '@supabase/postgrest-js@2.110.9'
+  - '@supabase/realtime-js@2.110.9'
+  - '@supabase/storage-js@2.110.9'
+  - '@supabase/supabase-js@2.110.9'

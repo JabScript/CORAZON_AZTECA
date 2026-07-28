@@ -1,13 +1,17 @@
-/* app/usuario/Usuario.module.css */
+/* app/components/DashboardLayout/DashboardLayout.module.css */
+/* Consolidación de las clases .layout, .sidebar, .nav, .navItem,
+   .navItemActive, .navIcon, .navLabel, .sidebarFooter, .sidebarUserRow,
+   .sidebarAvatar, .sidebarAvatarImg, .sidebarUser, .logoutBtn y .content,
+   antes duplicadas casi al carácter en app/Usuario/Usuario.module.css y
+   app/Entrenador/Entrenador.module.css. Usa los tokens de diseño globales
+   (--gold/--red/--cream de app/styles/tokens.css) en vez de redefinirlos
+   localmente, y lee el ancho del sidebar desde la variable CSS
+   `--sidebar-width` inyectada por DashboardLayout.tsx según la prop
+   `sidebarWidthPx` (220px en Usuario, 240px en Entrenador). */
 
 .layout {
-  --gold: #c9a13a;
-  --gold-light: #e6c565;
-  --red: #b7212a;
-  --cream: #f1e6cf;
-
   display: grid;
-  grid-template-columns: 220px 1fr;
+  grid-template-columns: var(--sidebar-width, 220px) 1fr;
   min-height: calc(100vh - 70px);
 }
 
@@ -120,9 +124,10 @@
 }
 
 .navIcon {
-  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   width: 20px;
-  text-align: center;
 }
 
 .navLabel {
