@@ -50,18 +50,6 @@ export default function Inicio() {
             />
           </div>
 
-          {/* Derecha: foto del boxeador */}
-          <div className={styles.right}>
-            <Image
-              src="/cesar.jpg"
-              alt="Boxeador Corazón Azteca"
-              width={700}
-              height={900}
-              priority
-              className={styles.fighterImg}
-            />
-            <div className={styles.fighterGlow} aria-hidden />
-          </div>
         </div>
 
         <div className={styles.decorBottom} aria-hidden />

@@ -1,9 +1,23 @@
 // app/Entrenador/Analisis/page.tsx
 "use client";
 
+import { useEffect, useState } from "react";
+import type { AlumnoParaAnalisis, AnalisisIAResponse, InsightIA } from "./types";
+import ChatIA from "./ChatIA";
 import styles from "./Analisis.module.css";
 
-const insights = [
+// Alumnos de ejemplo del entrenador (mismos datos que app/Entrenador/Alumnos/page.tsx),
+// enviados a Gemini para generar insights reales sobre este grupo específico.
+const alumnosEntrenador: AlumnoParaAnalisis[] = [
+  { nombre: "Carlos 'El Rayo' Gutiérrez", categoria: "Ligero", nivel: "Avanzado", adherencia: 92, lesionado: false, altaMedica: true, esCampeon: true },
+  { nombre: "Ana Martínez", categoria: "Pluma", nivel: "Intermedio", adherencia: 92, lesionado: false, altaMedica: true, esCampeon: false },
+  { nombre: "Diego Rivera", categoria: "Welter", nivel: "Principiante", adherencia: 55, lesionado: true, tipoLesion: "Contusión en costillas", altaMedica: false, esCampeon: false },
+  { nombre: "Mariana Solís", categoria: "Pluma", nivel: "Intermedio", adherencia: 78, lesionado: true, tipoLesion: "Esguince de tobillo (grado I)", altaMedica: false, esCampeon: false },
+  { nombre: "Camila Vega", categoria: "Mosca", nivel: "Avanzado", adherencia: 88, lesionado: false, altaMedica: true, esCampeon: true },
+];
+
+// Insights de respaldo, usados mientras Gemini responde o si la API falla.
+const insightsFallback: InsightIA[] = [
   {
     tipo: "riesgo",
     prioridad: "alta",
@@ -44,13 +58,69 @@ const trends = [
 ];
 
 export default function AnalisisPage() {
+  const [insights, setInsights] = useState<InsightIA[]>(insightsFallback);
+  const [cargando, setCargando] = useState(true);
+  const [usandoIA, setUsandoIA] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [preguntaInicialChat, setPreguntaInicialChat] = useState<string | null>(null);
+
+  const handleAccionInsight = (insight: InsightIA) => {
+    setPreguntaInicialChat(
+      `Sobre este insight de ${insight.alumno} — "${insight.titulo}": ${insight.desc}\n\n` +
+        `Quiero: ${insight.accion}. Dame una recomendación concreta y los siguientes pasos.`
+    );
+  };
+
+  useEffect(() => {
+    const controller = new AbortController();
+
+    fetch("/api/analisis-ia", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ alumnos: alumnosEntrenador }),
+      signal: controller.signal,
+    })
+      .then((res) => res.json() as Promise<AnalisisIAResponse>)
+      .then((data) => {
+        if (data.error || data.insights.length === 0) {
+          setError(data.error);
+          setInsights(insightsFallback);
+          setUsandoIA(false);
+          return;
+        }
+        setInsights(data.insights);
+        setUsandoIA(true);
+        setError(null);
+      })
+      .catch((err) => {
+        if (err.name === "AbortError") return;
+        setError("No se pudo conectar con Gemini en este momento.");
+        setInsights(insightsFallback);
+        setUsandoIA(false);
+      })
+      .finally(() => setCargando(false));
+
+    return () => controller.abort();
+  }, []);
+
   return (
     <div className={styles.page}>
       <div className={styles.header}>
         <div>
-          <span className={styles.badge}>◇ POWERED BY AI</span>
+          <span className={styles.badge}>◇ POWERED BY GEMINI</span>
           <h1 className={styles.title}>Análisis Inteligente</h1>
           <p className={styles.subtitle}>Insights automáticos, predicciones y recomendaciones basadas en los datos de tus alumnos.</p>
+          {cargando && (
+            <p className={styles.iaEstado}>Generando insights con Gemini...</p>
+          )}
+          {!cargando && usandoIA && (
+            <p className={styles.iaEstadoActivo}>✓ Insights generados en tiempo real por Gemini</p>
+          )}
+          {!cargando && !usandoIA && (
+            <p className={styles.iaEstado}>
+              {error ?? "Mostrando insights de ejemplo."}
+            </p>
+          )}
         </div>
       </div>
 
@@ -77,7 +147,9 @@ export default function AnalisisPage() {
               <h3 className={styles.insightTitle}>{i.titulo}</h3>
               <p className={styles.insightDesc}>{i.desc}</p>
             </div>
-            <button className={styles.insightBtn}>{i.accion} →</button>
+            <button type="button" className={styles.insightBtn} onClick={() => handleAccionInsight(i)}>
+              {i.accion} →
+            </button>
           </div>
         ))}
       </div>
@@ -105,6 +177,12 @@ export default function AnalisisPage() {
           </div>
         ))}
       </div>
+
+      <ChatIA
+        alumnos={alumnosEntrenador}
+        preguntaInicial={preguntaInicialChat}
+        onPreguntaInicialConsumida={() => setPreguntaInicialChat(null)}
+      />
     </div>
   );
 }

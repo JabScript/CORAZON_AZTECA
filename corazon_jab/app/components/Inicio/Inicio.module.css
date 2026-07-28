@@ -36,7 +36,7 @@
 
 .content {
   display: grid;
-  grid-template-columns: 1fr 1.1fr 1fr;
+  grid-template-columns: 1.1fr 1fr;
   align-items: center;
   gap: 2rem;
   max-width: 1400px;
@@ -147,26 +147,6 @@
   filter: drop-shadow(0 10px 30px rgba(0, 0, 0, 0.6));
 }
 
-/* --- Derecha: boxeador --- */
-.right {
-  position: relative;
-  display: flex;
-  justify-content: center;
-}
-.fighterImg {
-  width: 100%;
-  height: auto;
-  max-width: 520px;
-  object-fit: cover;
-  mask-image: linear-gradient(90deg, transparent, black 15%);
-}
-.fighterGlow {
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(circle at 60% 40%, rgba(183, 33, 42, 0.25), transparent 60%);
-  pointer-events: none;
-}
-
 /* --- Responsive --- */
 @media (max-width: 1024px) {
   .content {
@@ -183,9 +163,6 @@
   .ctaGroup {
     align-self: center;
     justify-content: center;
-  }
-  .right {
-    order: 3;
   }
 }
 

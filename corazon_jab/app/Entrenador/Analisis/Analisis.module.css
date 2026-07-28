@@ -3,6 +3,8 @@
 .badge { font-family: var(--font-body); font-size: 0.65rem; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--gold); background: rgba(201,161,58,0.12); border: 1px solid rgba(201,161,58,0.3); border-radius: 14px; padding: 0.25rem 0.7rem; display: inline-block; margin-bottom: 0.8rem; }
 .title { font-family: var(--font-heading); font-size: 2rem; color: var(--cream); margin: 0; }
 .subtitle { font-family: var(--font-body); font-size: 0.85rem; color: rgba(241,230,207,0.5); margin: 0.3rem 0 0; max-width: 600px; }
+.iaEstado { font-family: var(--font-body); font-size: 0.78rem; color: rgba(241,230,207,0.4); margin: 0.6rem 0 0; }
+.iaEstadoActivo { font-family: var(--font-body); font-size: 0.78rem; color: var(--green); margin: 0.6rem 0 0; }
 
 .trends { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 2.5rem; }
 .trendCard { padding: 1.2rem; border-radius: 10px; background: rgba(20,18,16,0.5); display: flex; flex-direction: column; gap: 0.3rem; }
